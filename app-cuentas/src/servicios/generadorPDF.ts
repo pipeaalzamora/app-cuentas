@@ -1,0 +1,460 @@
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import type { 
+  CuentaServicio, 
+  ConfiguracionReporte, 
+  EstadisticasMensuales 
+} from '../tipos';
+import { servicioCalculosEstadisticas } from './calculosEstadisticas';
+import { format } from 'date-fns';
+
+/**
+ * Servicio para generar reportes PDF utilizando jsPDF y html2canvas
+ */
+export class ServicioGeneradorPDF {
+  
+  /**
+   * Configuración por defecto para la generación de PDFs
+   */
+  private static readonly CONFIG_PDF = {
+    format: 'a4' as const,
+    orientation: 'portrait' as const,
+    unit: 'mm' as const,
+    compress: true,
+    precision: 2
+  };
+
+  /**
+   * Configuración para html2canvas
+   */
+  private static readonly CONFIG_CANVAS = {
+    scale: 2, // Mayor resolución
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+    width: 794, // A4 width en pixels (210mm * 3.78)
+    height: 1123, // A4 height en pixels (297mm * 3.78)
+    scrollX: 0,
+    scrollY: 0
+  };
+
+  /**
+   * Genera un reporte mensual en PDF
+   */
+  async generarReporteMensual(
+    cuentas: CuentaServicio[],
+    año: number,
+    mes: number,
+    _incluirGraficos: boolean = true // TODO: Implementar inclusión de gráficos
+  ): Promise<Blob> {
+    try {
+      // Filtrar cuentas del período
+      const cuentasPeriodo = servicioCalculosEstadisticas.filtrarPorPeriodo(cuentas, año, mes);
+      
+      // Calcular estadísticas
+      const estadisticas = servicioCalculosEstadisticas.calcularEstadisticasMensuales(cuentas, año, mes);
+      
+      // Crear elemento temporal para renderizar la plantilla
+      const elementoTemporal = await this.crearElementoReporteMensual(
+        cuentasPeriodo, 
+        estadisticas, 
+        _incluirGraficos
+      );
+      
+      // Generar PDF desde el elemento HTML
+      const pdf = await this.convertirElementoAPDF(
+        elementoTemporal,
+        `reporte-mensual-${año}-${mes.toString().padStart(2, '0')}`
+      );
+      
+      // Limpiar elemento temporal
+      document.body.removeChild(elementoTemporal);
+      
+      return pdf;
+      
+    } catch (error) {
+      console.error('Error al generar reporte mensual:', error);
+      throw new Error(`No se pudo generar el reporte mensual: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    }
+  }
+
+  /**
+   * Genera una planilla de cuentas a pagar en PDF
+   */
+  async generarPlanillaPagos(
+    cuentas: CuentaServicio[],
+    año: number,
+    mes: number
+  ): Promise<Blob> {
+    try {
+      // Filtrar solo cuentas pendientes del período
+      const cuentasPendientes = cuentas.filter(cuenta => 
+        cuenta.año === año && 
+        cuenta.mes === mes && 
+        !cuenta.pagada
+      );
+      
+      // Crear elemento temporal para renderizar la plantilla
+      const elementoTemporal = await this.crearElementoPlanillaPagos(
+        cuentasPendientes,
+        mes,
+        año
+      );
+      
+      // Generar PDF desde el elemento HTML
+      const pdf = await this.convertirElementoAPDF(
+        elementoTemporal,
+        `planilla-pagos-${año}-${mes.toString().padStart(2, '0')}`
+      );
+      
+      // Limpiar elemento temporal
+      document.body.removeChild(elementoTemporal);
+      
+      return pdf;
+      
+    } catch (error) {
+      console.error('Error al generar planilla de pagos:', error);
+      throw new Error(`No se pudo generar la planilla de pagos: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    }
+  }
+
+  /**
+   * Genera un reporte basado en la configuración proporcionada
+   */
+  async generarReporte(
+    cuentas: CuentaServicio[],
+    configuracion: ConfiguracionReporte
+  ): Promise<Blob> {
+    const { tipo, periodo, incluirGraficos } = configuracion;
+    
+    switch (tipo) {
+      case 'mensual':
+        if (!periodo.mes) {
+          throw new Error('El mes es requerido para reportes mensuales');
+        }
+        return this.generarReporteMensual(cuentas, periodo.año, periodo.mes, incluirGraficos);
+        
+      case 'planilla':
+        if (!periodo.mes) {
+          throw new Error('El mes es requerido para planillas de pagos');
+        }
+        return this.generarPlanillaPagos(cuentas, periodo.año, periodo.mes);
+        
+      case 'anual':
+        return this.generarReporteAnual(cuentas, periodo.año, incluirGraficos);
+        
+      default:
+        throw new Error(`Tipo de reporte no soportado: ${tipo}`);
+    }
+  }
+
+  /**
+   * Genera un reporte anual (implementación básica)
+   */
+  private async generarReporteAnual(
+    cuentas: CuentaServicio[],
+    año: number,
+    _incluirGraficos: boolean = true
+  ): Promise<Blob> {
+    // Por ahora, generar un reporte simple con estadísticas anuales
+    const estadisticasAnuales = servicioCalculosEstadisticas.calcularEstadisticasAnuales(cuentas, año);
+    
+    // Crear PDF básico con jsPDF directamente
+    const pdf = new jsPDF(ServicioGeneradorPDF.CONFIG_PDF);
+    
+    // Configurar metadatos
+    this.configurarMetadatosPDF(pdf, `Reporte Anual ${año}`, 'anual');
+    
+    // Título
+    pdf.setFontSize(20);
+    pdf.text(`Reporte Anual ${año}`, 105, 30, { align: 'center' });
+    
+    // Estadísticas básicas
+    pdf.setFontSize(12);
+    let y = 60;
+    
+    pdf.text(`Total Anual: $${estadisticasAnuales.totalAnual.toLocaleString('es-AR')}`, 20, y);
+    y += 10;
+    pdf.text(`Promedio Mensual: $${estadisticasAnuales.promedioMensual.toLocaleString('es-AR')}`, 20, y);
+    y += 10;
+    pdf.text(`Mes con Mayor Gasto: ${estadisticasAnuales.mesConMayorGasto.mes} ($${estadisticasAnuales.mesConMayorGasto.total.toLocaleString('es-AR')})`, 20, y);
+    y += 10;
+    pdf.text(`Mes con Menor Gasto: ${estadisticasAnuales.mesConMenorGasto.mes} ($${estadisticasAnuales.mesConMenorGasto.total.toLocaleString('es-AR')})`, 20, y);
+    
+    // Gastos por servicio
+    y += 20;
+    pdf.text('Gastos por Servicio:', 20, y);
+    y += 10;
+    
+    Object.entries(estadisticasAnuales.gastosPorServicio).forEach(([servicio, total]) => {
+      if (total > 0) {
+        pdf.text(`${servicio.charAt(0).toUpperCase() + servicio.slice(1)}: $${total.toLocaleString('es-AR')}`, 30, y);
+        y += 8;
+      }
+    });
+    
+    return new Blob([pdf.output('blob')], { type: 'application/pdf' });
+  }
+
+  /**
+   * Crea un elemento DOM temporal con la plantilla del reporte mensual
+   */
+  private async crearElementoReporteMensual(
+    cuentas: CuentaServicio[],
+    estadisticas: EstadisticasMensuales,
+    incluirGraficos: boolean
+  ): Promise<HTMLElement> {
+    // Crear elemento contenedor
+    const elemento = document.createElement('div');
+    elemento.style.position = 'absolute';
+    elemento.style.left = '-9999px';
+    elemento.style.top = '0';
+    elemento.style.width = '210mm';
+    elemento.style.backgroundColor = 'white';
+    
+    // Importar dinámicamente el componente React y renderizarlo
+    const { PlantillaReporteMensual } = await import('../componentes/reportes');
+    const React = await import('react');
+    const ReactDOM = await import('react-dom/client');
+    
+    // Crear root y renderizar
+    const root = ReactDOM.createRoot(elemento);
+    
+    return new Promise((resolve, reject) => {
+      try {
+        root.render(
+          React.createElement(PlantillaReporteMensual, {
+            cuentas,
+            estadisticas,
+            incluirGraficos
+          })
+        );
+        
+        // Esperar a que se complete el renderizado
+        setTimeout(() => {
+          document.body.appendChild(elemento);
+          resolve(elemento);
+        }, 100);
+        
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Crea un elemento DOM temporal con la plantilla de planilla de pagos
+   */
+  private async crearElementoPlanillaPagos(
+    cuentas: CuentaServicio[],
+    mes: number,
+    año: number
+  ): Promise<HTMLElement> {
+    // Crear elemento contenedor
+    const elemento = document.createElement('div');
+    elemento.style.position = 'absolute';
+    elemento.style.left = '-9999px';
+    elemento.style.top = '0';
+    elemento.style.width = '210mm';
+    elemento.style.backgroundColor = 'white';
+    
+    // Importar dinámicamente el componente React y renderizarlo
+    const { PlantillaPlanillaPagos } = await import('../componentes/reportes');
+    const React = await import('react');
+    const ReactDOM = await import('react-dom/client');
+    
+    // Crear root y renderizar
+    const root = ReactDOM.createRoot(elemento);
+    
+    return new Promise((resolve, reject) => {
+      try {
+        root.render(
+          React.createElement(PlantillaPlanillaPagos, {
+            cuentas,
+            mes,
+            año
+          })
+        );
+        
+        // Esperar a que se complete el renderizado
+        setTimeout(() => {
+          document.body.appendChild(elemento);
+          resolve(elemento);
+        }, 100);
+        
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Convierte un elemento HTML a PDF usando html2canvas y jsPDF
+   */
+  private async convertirElementoAPDF(
+    elemento: HTMLElement,
+    nombreArchivo: string
+  ): Promise<Blob> {
+    try {
+      // Generar canvas del elemento
+      const canvas = await html2canvas(elemento, ServicioGeneradorPDF.CONFIG_CANVAS);
+      
+      // Crear PDF
+      const pdf = new jsPDF(ServicioGeneradorPDF.CONFIG_PDF);
+      
+      // Configurar metadatos
+      this.configurarMetadatosPDF(pdf, nombreArchivo);
+      
+      // Calcular dimensiones
+      const imgWidth = 210; // A4 width en mm
+      const pageHeight = 297; // A4 height en mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      
+      let position = 0;
+      
+      // Agregar imagen al PDF
+      const imgData = canvas.toDataURL('image/png', 0.8);
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      // Agregar páginas adicionales si es necesario
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      
+      return new Blob([pdf.output('blob')], { type: 'application/pdf' });
+      
+    } catch (error) {
+      console.error('Error al convertir elemento a PDF:', error);
+      throw new Error(`Error en la conversión a PDF: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    }
+  }
+
+  /**
+   * Configura los metadatos del PDF
+   */
+  private configurarMetadatosPDF(
+    pdf: jsPDF,
+    titulo: string,
+    _tipo: string = 'reporte'
+  ): void {
+    
+    pdf.setProperties({
+      title: titulo,
+      subject: `${_tipo.charAt(0).toUpperCase() + _tipo.slice(1)} de Cuentas de Servicios`,
+      author: 'Sistema de Gestión de Cuentas de Servicios',
+      creator: 'Sistema de Gestión de Cuentas de Servicios',
+      keywords: 'cuentas, servicios, reporte, pdf'
+    });
+  }
+
+  /**
+   * Descarga un blob como archivo PDF
+   */
+  descargarPDF(blob: Blob, nombreArchivo: string): void {
+    try {
+      // Crear URL del blob
+      const url = URL.createObjectURL(blob);
+      
+      // Crear elemento de descarga temporal
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = `${nombreArchivo}.pdf`;
+      enlace.style.display = 'none';
+      
+      // Agregar al DOM, hacer clic y remover
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
+      
+      // Limpiar URL
+      URL.revokeObjectURL(url);
+      
+    } catch (error) {
+      console.error('Error al descargar PDF:', error);
+      throw new Error(`No se pudo descargar el archivo: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+    }
+  }
+
+  /**
+   * Genera y descarga un reporte en un solo paso
+   */
+  async generarYDescargarReporte(
+    cuentas: CuentaServicio[],
+    configuracion: ConfiguracionReporte
+  ): Promise<void> {
+    try {
+      // Generar el reporte
+      const blob = await this.generarReporte(cuentas, configuracion);
+      
+      // Crear nombre del archivo
+      const nombreArchivo = this.generarNombreArchivo(configuracion);
+      
+      // Descargar
+      this.descargarPDF(blob, nombreArchivo);
+      
+    } catch (error) {
+      console.error('Error al generar y descargar reporte:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Genera un nombre de archivo basado en la configuración del reporte
+   */
+  private generarNombreArchivo(configuracion: ConfiguracionReporte): string {
+    const { tipo, periodo } = configuracion;
+    const fechaGeneracion = format(new Date(), 'yyyy-MM-dd');
+    
+    switch (tipo) {
+      case 'mensual':
+        return `reporte-mensual-${periodo.año}-${periodo.mes?.toString().padStart(2, '0')}-${fechaGeneracion}`;
+        
+      case 'planilla':
+        return `planilla-pagos-${periodo.año}-${periodo.mes?.toString().padStart(2, '0')}-${fechaGeneracion}`;
+        
+      case 'anual':
+        return `reporte-anual-${periodo.año}-${fechaGeneracion}`;
+        
+      default:
+        return `reporte-${fechaGeneracion}`;
+    }
+  }
+
+  /**
+   * Valida que la configuración del reporte sea correcta
+   */
+  validarConfiguracion(configuracion: ConfiguracionReporte): { valido: boolean; errores: string[] } {
+    const errores: string[] = [];
+    
+    // Validar tipo
+    if (!['mensual', 'planilla', 'anual'].includes(configuracion.tipo)) {
+      errores.push('Tipo de reporte no válido');
+    }
+    
+    // Validar período
+    if (!configuracion.periodo.año || configuracion.periodo.año < 2020 || configuracion.periodo.año > 2050) {
+      errores.push('Año no válido');
+    }
+    
+    // Validar mes para reportes mensuales y planillas
+    if ((configuracion.tipo === 'mensual' || configuracion.tipo === 'planilla')) {
+      if (!configuracion.periodo.mes || configuracion.periodo.mes < 1 || configuracion.periodo.mes > 12) {
+        errores.push('Mes no válido para reporte mensual o planilla');
+      }
+    }
+    
+    return {
+      valido: errores.length === 0,
+      errores
+    };
+  }
+}
+
+// Instancia singleton del servicio
+export const servicioGeneradorPDF = new ServicioGeneradorPDF();

@@ -1,0 +1,197 @@
+/* Componente ConfirmacionEliminar - Estilos */
+
+.confirmacion-eliminar {
+  display: flex;
+  gap: var(--espacio-4);
+  align-items: flex-start;
+  text-align: left;
+}
+
+.confirmacion-eliminar__icono {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--color-error-light);
+}
+
+.confirmacion-eliminar--advertencia .confirmacion-eliminar__icono {
+  background-color: var(--color-advertencia-light);
+}
+
+.confirmacion-eliminar--peligro .confirmacion-eliminar__icono {
+  background-color: var(--color-error-light);
+}
+
+.confirmacion-eliminar__icono svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.confirmacion-eliminar__contenido {
+  flex: 1;
+  min-width: 0;
+}
+
+.confirmacion-eliminar__titulo {
+  font-size: var(--texto-lg);
+  font-weight: var(--peso-semibold);
+  color: var(--color-texto);
+  margin: 0 0 var(--espacio-2) 0;
+  line-height: 1.4;
+}
+
+.confirmacion-eliminar__mensaje {
+  font-size: var(--texto-base);
+  color: var(--color-texto-secundario);
+  margin: 0 0 var(--espacio-3) 0;
+  line-height: 1.5;
+}
+
+.confirmacion-eliminar__elemento {
+  padding: var(--espacio-2) var(--espacio-3);
+  background-color: var(--color-superficie-hover);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-base);
+  margin: 0 0 var(--espacio-3) 0;
+  font-family: var(--fuente-mono);
+  font-size: var(--texto-sm);
+  color: var(--color-texto);
+  word-break: break-all;
+}
+
+.confirmacion-eliminar__advertencia {
+  font-size: var(--texto-sm);
+  color: var(--color-error);
+  font-weight: var(--peso-medium);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.confirmacion-eliminar--advertencia .confirmacion-eliminar__advertencia {
+  color: var(--color-advertencia);
+}
+
+/* Botones específicos */
+.confirmacion-eliminar__boton-confirmar--eliminar {
+  background-color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.confirmacion-eliminar__boton-confirmar--eliminar:hover:not(:disabled) {
+  background-color: var(--color-error-hover);
+  border-color: var(--color-error-hover);
+}
+
+.confirmacion-eliminar__boton-confirmar--peligro {
+  background-color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.confirmacion-eliminar__boton-confirmar--peligro:hover:not(:disabled) {
+  background-color: var(--color-error-hover);
+  border-color: var(--color-error-hover);
+}
+
+.confirmacion-eliminar__boton-confirmar--advertencia {
+  background-color: var(--color-advertencia);
+  border-color: var(--color-advertencia);
+}
+
+.confirmacion-eliminar__boton-confirmar--advertencia:hover:not(:disabled) {
+  background-color: var(--color-advertencia-hover);
+  border-color: var(--color-advertencia-hover);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .confirmacion-eliminar {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--espacio-3);
+  }
+  
+  .confirmacion-eliminar__icono {
+    align-self: center;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .confirmacion-eliminar__icono svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .confirmacion-eliminar__titulo {
+    font-size: var(--texto-base);
+  }
+  
+  .confirmacion-eliminar__mensaje {
+    font-size: var(--texto-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .confirmacion-eliminar__elemento {
+    padding: var(--espacio-2);
+    font-size: var(--texto-xs);
+  }
+  
+  .confirmacion-eliminar__advertencia {
+    font-size: var(--texto-xs);
+  }
+}
+
+/* Tema oscuro */
+.tema-oscuro .confirmacion-eliminar__icono {
+  background-color: var(--color-error-light);
+}
+
+.tema-oscuro .confirmacion-eliminar--advertencia .confirmacion-eliminar__icono {
+  background-color: var(--color-advertencia-light);
+}
+
+.tema-oscuro .confirmacion-eliminar__elemento {
+  background-color: var(--color-superficie-hover);
+  border-color: var(--color-borde);
+}
+
+/* Estados de carga */
+.confirmacion-eliminar--cargando {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Animaciones */
+.confirmacion-eliminar__icono {
+  animation: confirmacion-aparecer var(--transicion-normal) ease-out;
+}
+
+@keyframes confirmacion-aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.confirmacion-eliminar__contenido {
+  animation: contenido-aparecer var(--transicion-normal) ease-out 0.1s both;
+}
+
+@keyframes contenido-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

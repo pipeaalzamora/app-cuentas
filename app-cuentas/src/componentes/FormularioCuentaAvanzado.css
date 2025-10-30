@@ -1,0 +1,235 @@
+.formulario-cuenta-avanzado {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.modo-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.formulario-cuenta {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.formulario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.formulario-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formulario-campo label {
+  font-weight: 500;
+  color: var(--color-texto);
+  font-size: 0.875rem;
+}
+
+.formulario-campo select,
+.formulario-campo input,
+.formulario-campo textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.formulario-campo select:focus,
+.formulario-campo input:focus,
+.formulario-campo textarea:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(var(--color-primario-rgb), 0.1);
+}
+
+.formulario-campo select:disabled,
+.formulario-campo input:disabled,
+.formulario-campo textarea:disabled {
+  background-color: var(--color-fondo-secundario);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.formulario-campo textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formulario-campo-completo {
+  grid-column: 1 / -1;
+}
+
+.formulario-checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.formulario-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.formulario-checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.monto-total {
+  background: var(--color-fondo-secundario);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--color-primario);
+}
+
+.monto-calculado {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primario);
+  margin: 0.5rem 0;
+}
+
+.monto-total small {
+  color: var(--color-texto-secundario);
+  font-size: 0.75rem;
+}
+
+.consumo-calculado {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-exito);
+  padding: 0.5rem;
+  background: var(--color-fondo-secundario);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.formulario-acciones {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-borde);
+}
+
+.error {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .formulario-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modo-selector {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .formulario-acciones {
+    flex-direction: column-reverse;
+  }
+  
+  .formulario-acciones .boton {
+    width: 100%;
+  }
+}
+
+/* Animaciones */
+.formulario-basico,
+.formulario-avanzado {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estados de validación */
+.formulario-campo.error input,
+.formulario-campo.error select,
+.formulario-campo.error textarea {
+  border-color: var(--color-error);
+}
+
+.formulario-campo.success input,
+.formulario-campo.success select,
+.formulario-campo.success textarea {
+  border-color: var(--color-exito);
+}
+
+/* Tarjetas en modo avanzado */
+.formulario-avanzado .tarjeta {
+  margin-bottom: 1.5rem;
+}
+
+.formulario-avanzado .tarjeta-header h3 {
+  margin: 0;
+  color: var(--color-texto);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Indicadores visuales */
+.campo-requerido::after {
+  content: " *";
+  color: var(--color-error);
+}
+
+.campo-calculado {
+  position: relative;
+}
+
+.campo-calculado::after {
+  content: "📊";
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+}
+
+/* Mejoras de accesibilidad */
+.formulario-campo:focus-within label {
+  color: var(--color-primario);
+}
+
+/* Tema oscuro */
+[data-theme="dark"] .formulario-campo select,
+[data-theme="dark"] .formulario-campo input,
+[data-theme="dark"] .formulario-campo textarea {
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+[data-theme="dark"] .monto-total {
+  background: rgba(var(--color-primario-rgb), 0.1);
+}
+
+[data-theme="dark"] .consumo-calculado {
+  background: rgba(var(--color-exito-rgb), 0.1);
+}

@@ -1,0 +1,102 @@
+/* Breadcrumbs - Navegación contextual */
+
+.breadcrumbs {
+  margin-bottom: var(--espacio-4);
+}
+
+.breadcrumbs-lista {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--espacio-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumbs-item {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.breadcrumbs-link {
+  font-size: var(--texto-sm);
+  color: var(--color-texto-secundario);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--espacio-1) var(--espacio-2);
+  border-radius: var(--radio-sm);
+  transition: all var(--transicion-rapida);
+  line-height: 1.4;
+}
+
+.breadcrumbs-link:hover:not(.activo) {
+  color: var(--color-primario);
+  background: var(--color-primario-light);
+}
+
+.breadcrumbs-link.activo {
+  color: var(--color-texto);
+  font-weight: var(--peso-medium);
+  cursor: default;
+}
+
+.breadcrumbs-separador {
+  color: var(--color-texto-muted);
+  font-size: var(--texto-sm);
+  user-select: none;
+  margin: 0 var(--espacio-1);
+}
+
+/* Estados de focus para accesibilidad */
+.breadcrumbs-link:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .breadcrumbs {
+    margin-bottom: var(--espacio-3);
+  }
+  
+  .breadcrumbs-lista {
+    gap: var(--espacio-1);
+  }
+  
+  .breadcrumbs-link {
+    font-size: var(--texto-xs);
+    padding: var(--espacio-1);
+  }
+  
+  .breadcrumbs-separador {
+    font-size: var(--texto-xs);
+    margin: 0;
+  }
+}
+
+/* Truncamiento para rutas muy largas */
+@media (max-width: 480px) {
+  .breadcrumbs-item:not(:last-child):not(:first-child) {
+    display: none;
+  }
+  
+  .breadcrumbs-item:nth-last-child(2)::before {
+    content: '...';
+    color: var(--color-texto-muted);
+    margin-right: var(--espacio-2);
+  }
+}
+
+/* Animación de entrada */
+.breadcrumbs {
+  animation: fadeIn var(--transicion-rapida) ease-out;
+}
+
+/* Tema oscuro */
+.tema-oscuro .breadcrumbs-link:hover:not(.activo) {
+  background: var(--color-primario-light);
+}

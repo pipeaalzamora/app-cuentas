@@ -1,0 +1,115 @@
+/* Estilos para el Alternador de Tema */
+
+.alternador-tema {
+  position: relative;
+  background: var(--color-superficie);
+  border: 2px solid var(--color-borde);
+  border-radius: var(--radio-full);
+  padding: var(--espacio-1);
+  cursor: pointer;
+  transition: all var(--transicion-normal);
+  width: 70px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sombra-base);
+}
+
+.alternador-tema:hover {
+  border-color: var(--color-primario);
+  box-shadow: var(--sombra-md);
+  transform: translateY(-1px);
+}
+
+.alternador-tema:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.alternador-tema__contenedor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--espacio-2);
+}
+
+.alternador-tema__icono {
+  font-size: 16px;
+  transition: all var(--transicion-normal);
+  opacity: 0.5;
+  transform: scale(0.8);
+  z-index: 2;
+}
+
+.alternador-tema__icono--activo {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.alternador-tema__indicador {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+  border-radius: var(--radio-full);
+  transition: all var(--transicion-normal);
+  box-shadow: var(--sombra-sm);
+  z-index: 1;
+}
+
+.alternador-tema__indicador--oscuro {
+  transform: translateX(32px);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* Tema oscuro */
+.tema-oscuro .alternador-tema {
+  background: var(--color-superficie);
+  border-color: var(--color-borde);
+}
+
+.tema-oscuro .alternador-tema:hover {
+  border-color: var(--color-primario);
+}
+
+/* Animaciones */
+@keyframes pulso {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.alternador-tema:active .alternador-tema__indicador {
+  animation: pulso 0.2s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .alternador-tema {
+    width: 60px;
+    height: 32px;
+  }
+  
+  .alternador-tema__icono {
+    font-size: 14px;
+  }
+  
+  .alternador-tema__indicador {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .alternador-tema__indicador--oscuro {
+    transform: translateX(26px);
+  }
+}

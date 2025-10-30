@@ -1,0 +1,294 @@
+/* Estilos para el componente ListaCuentas */
+
+.lista-cuentas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-6);
+}
+
+/* Filtros */
+.lista-cuentas__filtros {
+  width: 100%;
+}
+
+.lista-cuentas__filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-4);
+}
+
+.lista-cuentas__filtro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.lista-cuentas__filtro label {
+  font-size: var(--texto-sm);
+  font-weight: var(--peso-medium);
+  color: var(--color-texto-secundario);
+}
+
+.lista-cuentas__filtro select {
+  padding: var(--espacio-2) var(--espacio-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-base);
+  background-color: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: var(--texto-sm);
+  transition: border-color var(--transicion-rapida);
+}
+
+.lista-cuentas__filtro select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px var(--color-primario-light);
+}
+
+.lista-cuentas__filtros-acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+.lista-cuentas__contador {
+  font-size: var(--texto-sm);
+  color: var(--color-texto-secundario);
+  font-weight: var(--peso-medium);
+}
+
+/* Estados de carga y error */
+.lista-cuentas__cargando,
+.lista-cuentas__error {
+  text-align: center;
+  padding: var(--espacio-8);
+  color: var(--color-texto-secundario);
+}
+
+.lista-cuentas__error {
+  color: var(--color-error);
+}
+
+/* Contenedor de tabla */
+.lista-cuentas__tabla-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.lista-cuentas__tabla-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tabla */
+.lista-cuentas__tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--texto-sm);
+}
+
+.lista-cuentas__tabla th {
+  background-color: var(--color-superficie-hover);
+  padding: var(--espacio-3) var(--espacio-4);
+  text-align: left;
+  font-weight: var(--peso-semibold);
+  color: var(--color-texto-secundario);
+  border-bottom: 2px solid var(--color-borde);
+  white-space: nowrap;
+}
+
+.lista-cuentas__tabla td {
+  padding: var(--espacio-3) var(--espacio-4);
+  border-bottom: 1px solid var(--color-borde);
+  vertical-align: middle;
+}
+
+.lista-cuentas__fila:hover {
+  background-color: var(--color-superficie-hover);
+}
+
+/* Botones de header para ordenamiento */
+.lista-cuentas__header-boton {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  font-weight: var(--peso-semibold);
+  transition: color var(--transicion-rapida);
+}
+
+.lista-cuentas__header-boton:hover {
+  color: var(--color-primario);
+}
+
+.lista-cuentas__icono-ordenamiento {
+  font-size: var(--texto-xs);
+  opacity: 0.7;
+}
+
+/* Columnas específicas */
+.lista-cuentas__servicio {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.lista-cuentas__servicio-indicador {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radio-full);
+  flex-shrink: 0;
+}
+
+.lista-cuentas__servicio-texto {
+  font-weight: var(--peso-medium);
+}
+
+.lista-cuentas__monto {
+  font-weight: var(--peso-semibold);
+  color: var(--color-texto);
+  text-align: right;
+}
+
+.lista-cuentas__estado {
+  display: inline-block;
+  padding: var(--espacio-1) var(--espacio-3);
+  border-radius: var(--radio-full);
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lista-cuentas__estado--pagada {
+  background-color: var(--color-exito-light);
+  color: var(--color-exito);
+}
+
+.lista-cuentas__estado--pendiente {
+  background-color: var(--color-advertencia-light);
+  color: var(--color-advertencia);
+}
+
+.lista-cuentas__fecha-creacion {
+  color: var(--color-texto-muted);
+  font-size: var(--texto-xs);
+}
+
+.lista-cuentas__acciones {
+  display: flex;
+  gap: var(--espacio-2);
+  justify-content: flex-end;
+}
+
+/* Estado vacío */
+.lista-cuentas__vacia {
+  text-align: center;
+  padding: var(--espacio-12);
+  color: var(--color-texto-secundario);
+}
+
+.lista-cuentas__vacia p {
+  margin: 0;
+  font-size: var(--texto-base);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .lista-cuentas__filtros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .lista-cuentas__filtros-acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .lista-cuentas__contador {
+    text-align: center;
+  }
+  
+  /* En móviles, hacer la tabla más compacta */
+  .lista-cuentas__tabla th,
+  .lista-cuentas__tabla td {
+    padding: var(--espacio-2) var(--espacio-3);
+  }
+  
+  .lista-cuentas__tabla {
+    font-size: var(--texto-xs);
+  }
+  
+  /* Ocultar algunas columnas en móviles */
+  .lista-cuentas__tabla th:nth-child(6),
+  .lista-cuentas__tabla td:nth-child(6) {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  /* En pantallas muy pequeñas, ocultar más columnas */
+  .lista-cuentas__tabla th:nth-child(4),
+  .lista-cuentas__tabla td:nth-child(4),
+  .lista-cuentas__tabla th:nth-child(5),
+  .lista-cuentas__tabla td:nth-child(5) {
+    display: none;
+  }
+  
+  .lista-cuentas__acciones {
+    flex-direction: column;
+    gap: var(--espacio-1);
+  }
+}
+
+/* Tema oscuro */
+.tema-oscuro .lista-cuentas__filtro select {
+  background-color: var(--color-superficie);
+  border-color: var(--color-borde);
+  color: var(--color-texto);
+}
+
+.tema-oscuro .lista-cuentas__tabla th {
+  background-color: var(--color-superficie-hover);
+}
+
+.tema-oscuro .lista-cuentas__fila:hover {
+  background-color: var(--color-superficie-hover);
+}
+
+/* Animaciones */
+.lista-cuentas__fila {
+  transition: background-color var(--transicion-rapida);
+}
+
+.lista-cuentas__estado {
+  transition: all var(--transicion-rapida);
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .lista-cuentas__fila,
+  .lista-cuentas__estado,
+  .lista-cuentas__header-boton {
+    transition: none;
+  }
+}
+
+/* Focus visible para navegación por teclado */
+.lista-cuentas__header-boton:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+  border-radius: var(--radio-sm);
+}
+
+.lista-cuentas__filtro select:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}

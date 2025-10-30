@@ -1,0 +1,116 @@
+/* Bottom Navigation - Navegación inferior para móviles */
+
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-superficie);
+  border-top: 1px solid var(--color-borde);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: var(--z-fixed);
+  padding: env(safe-area-inset-bottom) 0 0 0;
+}
+
+.bottom-navigation-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--espacio-2) var(--espacio-4);
+  max-width: 100%;
+}
+
+.bottom-navigation-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espacio-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transicion-rapida);
+  border-radius: var(--radio-base);
+  min-width: 60px;
+  color: var(--color-texto-muted);
+}
+
+.bottom-navigation-item:hover {
+  background: var(--color-superficie-hover);
+  color: var(--color-texto-secundario);
+}
+
+.bottom-navigation-item.activo {
+  color: var(--color-primario);
+}
+
+.bottom-navigation-item.activo .bottom-navigation-icono {
+  transform: scale(1.1);
+}
+
+.bottom-navigation-icono {
+  font-size: var(--texto-xl);
+  margin-bottom: var(--espacio-1);
+  transition: transform var(--transicion-rapida);
+}
+
+.bottom-navigation-label {
+  font-size: var(--texto-xs);
+  font-weight: var(--peso-medium);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Estados de focus para accesibilidad */
+.bottom-navigation-item:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+
+/* Animación de entrada */
+.bottom-navigation {
+  animation: slideUpFromBottom var(--transicion-normal) ease-out;
+}
+
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive - Solo visible en móviles */
+@media (min-width: 769px) {
+  .bottom-navigation {
+    display: none;
+  }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .bottom-navigation-container {
+    padding: var(--espacio-1) var(--espacio-2);
+  }
+  
+  .bottom-navigation-item {
+    min-width: 50px;
+    padding: var(--espacio-1);
+  }
+  
+  .bottom-navigation-icono {
+    font-size: var(--texto-lg);
+  }
+  
+  .bottom-navigation-label {
+    font-size: 10px;
+  }
+}
+
+/* Tema oscuro */
+.tema-oscuro .bottom-navigation {
+  background: var(--color-superficie);
+  border-top-color: var(--color-borde);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+}

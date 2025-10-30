@@ -1,0 +1,501 @@
+/* Estilos específicos para la planilla de pagos */
+
+.plantilla-planilla-pagos {
+  font-family: 'Arial', sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  max-width: 210mm; /* A4 width */
+  margin: 0 auto;
+  padding: 20mm;
+  background: white;
+  box-sizing: border-box;
+}
+
+/* Encabezado */
+.planilla-header {
+  text-align: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 15px;
+}
+
+.planilla-header h1 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+}
+
+.planilla-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.planilla-info p {
+  margin: 0;
+}
+
+/* Resumen de totales */
+.resumen-totales {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.total-general {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.total-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.total-valor {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.totales-por-servicio {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.servicio-total {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.servicio-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.servicio-nombre {
+  font-size: 11px;
+  color: #64748b;
+  flex: 1;
+}
+
+.servicio-monto {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Lista de cuentas */
+.lista-cuentas {
+  margin-bottom: 30px;
+}
+
+.lista-cuentas h2 {
+  font-size: 16px;
+  color: #1e293b;
+  margin: 0 0 15px 0;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+
+.cuentas-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cuenta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  break-inside: avoid;
+}
+
+/* Checkbox personalizado */
+.checkbox-container {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cuenta-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-label {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 3px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+}
+
+.cuenta-checkbox:checked + .checkbox-label {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.cuenta-checkbox:checked + .checkbox-label::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Información de la cuenta */
+.cuenta-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cuenta-principal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.servicio-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.servicio-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.cuenta-monto {
+  font-size: 14px;
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.cuenta-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.fechas-principales {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fechas-adicionales {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.fecha-emision {
+  padding: 2px 6px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 4px;
+  font-weight: 500;
+  border: 1px solid #93c5fd;
+}
+
+.fecha-corte {
+  padding: 2px 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 4px;
+  font-weight: 500;
+  border: 1px solid #fcd34d;
+}
+
+.proxima-lectura {
+  padding: 2px 6px;
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 4px;
+  font-weight: 500;
+  border: 1px solid #6ee7b7;
+}
+
+.fecha-vencimiento {
+  font-weight: 500;
+}
+
+.dias-restantes {
+  padding: 2px 6px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+
+
+/* Calendario visual */
+.calendario-visual {
+  margin-bottom: 25px;
+}
+
+.calendario-visual h2 {
+  font-size: 16px;
+  color: #1e293b;
+  margin: 0 0 15px 0;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 5px;
+}
+
+.calendario-grid {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.calendario-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f1f5f9;
+}
+
+.dia-semana {
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: #374151;
+  border-right: 1px solid #e2e8f0;
+}
+
+.dia-semana:last-child {
+  border-right: none;
+}
+
+.calendario-dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.dia-vacio,
+.dia-calendario {
+  min-height: 35px;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px;
+}
+
+.dia-calendario:nth-child(7n) {
+  border-right: none;
+}
+
+.numero-dia {
+  font-size: 10px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.dia-calendario.con-cuentas {
+  background: #fef3c7;
+}
+
+.cuentas-dia {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 2px;
+  justify-content: center;
+}
+
+.cuenta-punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+
+/* Leyenda */
+.leyenda {
+  margin-bottom: 20px;
+}
+
+.leyenda h3 {
+  font-size: 14px;
+  color: #1e293b;
+  margin: 0 0 10px 0;
+}
+
+.leyenda-items {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.leyenda-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Resumen final */
+.resumen-final {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.resumen-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.resumen-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.resumen-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.resumen-valor {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  font-family: monospace;
+}
+
+/* Pie de página */
+.planilla-footer {
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.planilla-footer p {
+  margin: 3px 0;
+}
+
+/* Estilos para impresión */
+@media print {
+  .plantilla-planilla-pagos {
+    padding: 15mm;
+    font-size: 11px;
+  }
+  
+  .planilla-header h1 {
+    font-size: 18px;
+  }
+  
+  .cuenta-item {
+    page-break-inside: avoid;
+  }
+  
+  .calendario-visual {
+    page-break-inside: avoid;
+  }
+  
+  .checkbox-label {
+    border: 2px solid #000 !important;
+  }
+  
+  .cuenta-checkbox:checked + .checkbox-label {
+    background: #000 !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .plantilla-planilla-pagos {
+    padding: 15px;
+    font-size: 11px;
+  }
+  
+  .totales-por-servicio,
+  .resumen-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .planilla-info {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .cuenta-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .cuenta-acciones {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .calendario-dias {
+    font-size: 9px;
+  }
+  
+  .dia-calendario,
+  .dia-vacio {
+    min-height: 25px;
+  }
+}

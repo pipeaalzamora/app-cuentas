@@ -1,0 +1,155 @@
+/* Layout principal con navegación responsive */
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-fondo);
+}
+
+.layout-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left var(--transicion-normal) ease-in-out;
+}
+
+/* Ajustes para sidebar en desktop */
+@media (min-width: 769px) {
+  .layout-main {
+    margin-left: 280px;
+  }
+  
+  .layout.sidebar-colapsado .layout-main {
+    margin-left: 80px;
+  }
+}
+
+/* Header con breadcrumbs */
+.layout-header {
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
+  padding: var(--espacio-4) var(--espacio-6);
+  box-shadow: var(--sombra-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--espacio-4);
+}
+
+.layout-header__acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+/* Contenido principal */
+.layout-contenido {
+  flex: 1;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Espaciador para bottom navigation en móvil */
+.layout-bottom-spacer {
+  height: 80px;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .layout-main {
+    margin-left: 0;
+  }
+  
+  .layout-header {
+    padding: var(--espacio-3) var(--espacio-4);
+  }
+  
+  .layout-contenido {
+    padding-bottom: 0;
+  }
+}
+
+/* Estados de carga */
+.layout.cargando {
+  pointer-events: none;
+}
+
+.layout.cargando .layout-contenido {
+  opacity: 0.6;
+}
+
+/* Animaciones */
+.layout-main {
+  animation: fadeIn var(--transicion-normal) ease-out;
+}
+
+/* Tema oscuro */
+.tema-oscuro .layout-header {
+  background: var(--color-superficie);
+  border-bottom-color: var(--color-borde);
+}
+
+/* Overlay para móvil cuando hay modales */
+.layout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-modal-backdrop);
+  display: none;
+}
+
+.layout-overlay.activo {
+  display: block;
+}
+
+/* Ajustes para contenido con scroll */
+.layout-contenido {
+  position: relative;
+  overflow-y: auto;
+}
+
+/* Scrollbar personalizada para el contenido principal */
+.layout-contenido::-webkit-scrollbar {
+  width: 8px;
+}
+
+.layout-contenido::-webkit-scrollbar-track {
+  background: var(--color-fondo);
+}
+
+.layout-contenido::-webkit-scrollbar-thumb {
+  background: var(--color-borde);
+  border-radius: var(--radio-full);
+}
+
+.layout-contenido::-webkit-scrollbar-thumb:hover {
+  background: var(--color-borde-hover);
+}
+
+/* Estados de focus para accesibilidad */
+.layout:focus-within {
+  outline: none;
+}
+
+/* Ajustes para pantallas muy grandes */
+@media (min-width: 1400px) {
+  .layout-contenido {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+  .layout-header {
+    padding: var(--espacio-2) var(--espacio-4);
+  }
+  
+  .layout-bottom-spacer {
+    height: 60px;
+  }
+}

@@ -1,0 +1,285 @@
+/* Estilos para el componente GeneradorReportes */
+
+.generador-reportes {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.generador-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.generador-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-texto);
+  margin: 0 0 8px 0;
+}
+
+.generador-header p {
+  color: var(--color-secundario);
+  margin: 0;
+}
+
+.configuracion-reporte {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+/* Grupos de campos */
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-texto);
+}
+
+/* Tipos de reporte */
+.tipos-reporte {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.tipo-boton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid var(--color-borde);
+  border-radius: 8px;
+  background: var(--color-superficie);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.tipo-boton:hover {
+  border-color: var(--color-primario);
+  background: var(--color-primario-claro);
+}
+
+.tipo-boton.activo {
+  border-color: var(--color-primario);
+  background: var(--color-primario-claro);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.tipo-icono {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.tipo-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tipo-nombre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.tipo-descripcion {
+  font-size: 12px;
+  color: var(--color-secundario);
+}
+
+/* Período */
+.periodo-grupo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.periodo-select {
+  padding: 10px 12px;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.periodo-select:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Checkbox personalizado */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-texto);
+}
+
+.checkbox-container input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-borde);
+  border-radius: 4px;
+  background: var(--color-superficie);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-checkmark {
+  background: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.checkbox-container input[type="checkbox"]:checked + .checkbox-checkmark::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Vista previa */
+.vista-previa {
+  padding: 20px;
+  background: var(--color-fondo);
+  border-radius: 8px;
+  border: 1px solid var(--color-borde);
+  margin-bottom: 24px;
+}
+
+.vista-previa h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-texto);
+  margin: 0 0 12px 0;
+}
+
+.previa-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.previa-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.previa-label {
+  font-size: 13px;
+  color: var(--color-secundario);
+  font-weight: 500;
+}
+
+.previa-valor {
+  font-size: 13px;
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.previa-descripcion {
+  font-size: 13px;
+  color: var(--color-secundario);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Acciones */
+.acciones-reporte {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.boton-generar {
+  min-width: 200px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mensaje-sin-datos {
+  font-size: 13px;
+  color: var(--color-advertencia);
+  text-align: center;
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--color-advertencia-claro);
+  border-radius: 6px;
+  border: 1px solid var(--color-advertencia-borde);
+}
+
+/* Estados de carga */
+.boton-generar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tipos-reporte {
+    grid-template-columns: 1fr;
+  }
+  
+  .periodo-grupo {
+    grid-template-columns: 1fr;
+  }
+  
+  .previa-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .previa-item {
+    justify-content: space-between;
+  }
+  
+  .tipo-boton {
+    padding: 12px;
+  }
+  
+  .tipo-icono {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .generador-reportes {
+    padding: 0 16px;
+  }
+  
+  .generador-header h2 {
+    font-size: 20px;
+  }
+  
+  .configuracion-reporte {
+    gap: 20px;
+  }
+  
+  .vista-previa {
+    padding: 16px;
+  }
+}
