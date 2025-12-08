@@ -1,4 +1,4 @@
-import type { DesgloseSueldo, Gasto, ResumenDesglose, TipoGasto } from '../tipos/desglosador';
+import type { DesgloseSueldo, ResumenDesglose, TipoGasto } from '../tipos/desglosador';
 
 const STORAGE_KEY = 'desgloses-sueldo';
 
