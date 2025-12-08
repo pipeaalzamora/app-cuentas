@@ -9,6 +9,7 @@ import Dashboard from '../paginas/Dashboard';
 import Cuentas from '../paginas/Cuentas';
 import Estadisticas from '../paginas/Estadisticas';
 import Reportes from '../paginas/Reportes';
+import Desglosador from '../paginas/Desglosador';
 import NotFound from '../paginas/NotFound';
 import TestNavegacion from '../paginas/TestNavegacion';
 
@@ -35,7 +36,8 @@ const AppContent: React.FC = () => {
     const rutaLabels: Record<string, string> = {
       '/cuentas': 'Gestión de Cuentas',
       '/estadisticas': 'Estadísticas y Análisis',
-      '/reportes': 'Generación de Reportes'
+      '/reportes': 'Generación de Reportes',
+      '/desglosador': 'Desglosador de Sueldo'
     };
 
     if (path !== '/') {
@@ -67,6 +69,7 @@ const AppContent: React.FC = () => {
     if (path.startsWith('/cuentas')) return 'cuentas';
     if (path.startsWith('/estadisticas')) return 'estadisticas';
     if (path.startsWith('/reportes')) return 'reportes';
+    if (path.startsWith('/desglosador')) return 'desglosador';
     return 'dashboard';
   };
 
@@ -81,6 +84,7 @@ const AppContent: React.FC = () => {
           <Route path="/cuentas" element={<Cuentas />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/reportes" element={<Reportes />} />
+          <Route path="/desglosador" element={<Desglosador />} />
           <Route path="/test" element={<TestNavegacion />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

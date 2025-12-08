@@ -166,3 +166,4 @@ export * from './esquemas';
 export * from './eventos';
 export * from './prediccion';
 export * from './api';
+export * from './desglosador';

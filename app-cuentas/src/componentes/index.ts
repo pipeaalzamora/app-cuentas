@@ -17,6 +17,7 @@ export { default as PanelEstadisticas } from './PanelEstadisticas';
 export { PanelPredicciones } from './PanelPredicciones';
 export { default as PanelPrincipal } from './PanelPrincipal';
 export { GeneradorReportes } from './GeneradorReportes';
+export { default as DesglosadorSueldo } from './DesglosadorSueldo';
 
 // Exportaciones de componentes de gráficos
 export * from './graficos';
