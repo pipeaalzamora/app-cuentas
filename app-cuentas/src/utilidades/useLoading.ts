@@ -3,13 +3,13 @@ import { useState, useCallback } from 'react';
 export interface LoadingState {
   isLoading: boolean;
   error: string | null;
-  data: any;
+  data: unknown;
 }
 
 /**
  * Hook para manejar estados de carga de forma consistente
  */
-export function useLoading<T = any>(initialData?: T) {
+export function useLoading<T = unknown>(initialData?: T) {
   const [state, setState] = useState<LoadingState>({
     isLoading: false,
     error: null,
@@ -55,7 +55,7 @@ export function useLoading<T = any>(initialData?: T) {
     try {
       setLoading(true);
       const result = await asyncFunction();
-      setData(result as any);
+      setData(result as T);
       return result;
     } catch (error) {
       setError(error as Error);
@@ -124,7 +124,7 @@ export function useMultipleLoading() {
 /**
  * Hook para manejar estados de carga con timeout
  */
-export function useLoadingWithTimeout<T = any>(
+export function useLoadingWithTimeout<T = unknown>(
   timeoutMs: number = 30000,
   initialData?: T
 ) {

@@ -1,0 +1,250 @@
+.panel-predicciones {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.predicciones-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.predicciones-header h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--color-texto-principal);
+}
+
+.predicciones-descripcion {
+    color: var(--color-texto-secundario);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.predicciones-sin-datos {
+    text-align: center;
+    padding: 3rem;
+    background: var(--color-fondo-tarjeta);
+    border-radius: 8px;
+    color: var(--color-texto-secundario);
+}
+
+.prediccion-destacada {
+    background: var(--color-fondo-tarjeta);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prediccion-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-borde);
+}
+
+.prediccion-titulo h3 {
+    margin: 0;
+    color: var(--color-texto-principal);
+}
+
+.prediccion-confianza {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.prediccion-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.prediccion-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+}
+
+.prediccion-monto {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.prediccion-servicios {
+    display: grid;
+    gap: 1rem;
+}
+
+.prediccion-servicio-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--color-fondo);
+    border-radius: 8px;
+    border-left: 4px solid var(--color-primario);
+}
+
+.servicio-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.servicio-icono {
+    font-size: 1.5rem;
+}
+
+.servicio-nombre {
+    font-weight: 600;
+    color: var(--color-texto-principal);
+}
+
+.servicio-prediccion {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.servicio-monto {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--color-texto-principal);
+}
+
+.servicio-tendencia {
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.servicio-variacion {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+.predicciones-futuras {
+    margin-bottom: 2rem;
+}
+
+.predicciones-futuras h3 {
+    margin: 0 0 1rem 0;
+    color: var(--color-texto-principal);
+}
+
+.predicciones-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.prediccion-mes-card {
+    background: var(--color-fondo-tarjeta);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.prediccion-mes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.prediccion-mes-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--color-texto-principal);
+}
+
+.prediccion-mes-numero {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-primario);
+    color: white;
+    border-radius: 12px;
+}
+
+.prediccion-mes-total {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-texto-principal);
+    margin-bottom: 0.75rem;
+}
+
+.prediccion-mes-confianza {
+    height: 4px;
+    background: var(--color-borde);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.confianza-barra {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.predicciones-info {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.info-texto {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #856404;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .panel-predicciones {
+        padding: 1rem;
+    }
+
+    .prediccion-destacada {
+        padding: 1.5rem;
+    }
+
+    .prediccion-titulo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .prediccion-total {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+
+    .prediccion-monto {
+        font-size: 1.75rem;
+    }
+
+    .prediccion-servicio-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .servicio-prediccion {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .predicciones-lista {
+        grid-template-columns: 1fr;
+    }
+}

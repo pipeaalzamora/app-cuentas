@@ -14,6 +14,7 @@ export { default as FormularioCuenta } from './FormularioCuenta';
 export { default as FormularioCuentaAvanzado } from './FormularioCuentaAvanzado';
 export { default as ListaCuentas } from './ListaCuentas';
 export { default as PanelEstadisticas } from './PanelEstadisticas';
+export { PanelPredicciones } from './PanelPredicciones';
 export { default as PanelPrincipal } from './PanelPrincipal';
 export { GeneradorReportes } from './GeneradorReportes';
 

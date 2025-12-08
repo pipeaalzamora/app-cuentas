@@ -93,9 +93,10 @@ export const GraficoEvolucionMensual: React.FC<GraficoEvolucionMensualProps> = (
         mode: 'index' as const,
         intersect: false,
         callbacks: {
-          label: function(context: any) {
-            const valor = context.parsed.y;
-            return `${context.dataset.label}: $${valor.toLocaleString('es-AR', {
+          label: function(context: unknown) {
+            const ctx = context as { parsed: { y: number }; dataset: { label?: string } };
+            const valor = ctx.parsed.y;
+            return `${ctx.dataset.label}: $${valor.toLocaleString('es-AR', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2
             })}`;
@@ -122,7 +123,7 @@ export const GraficoEvolucionMensual: React.FC<GraficoEvolucionMensualProps> = (
         },
         beginAtZero: true,
         ticks: {
-          callback: function(value: any) {
+          callback: function(value: string | number) {
             return '$' + value.toLocaleString('es-AR');
           }
         }

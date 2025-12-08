@@ -3,14 +3,14 @@
  * Mantiene compatibilidad con el formato anterior
  */
 
-import type { CuentaServicio } from '../tipos';
+import type { CuentaServicio, TipoServicio } from '../tipos';
 
 /**
  * Convierte datos básicos a formato completo con valores por defecto
  */
 export function adaptarCuentaBasicaACompleta(
   datosBasicos: {
-    tipoServicio: string;
+    tipoServicio: TipoServicio;
     monto: number;
     fechaVencimiento: Date;
     mes: number;
@@ -22,7 +22,7 @@ export function adaptarCuentaBasicaACompleta(
   const hoy = new Date();
   
   return {
-    tipoServicio: datosBasicos.tipoServicio as any,
+    tipoServicio: datosBasicos.tipoServicio,
     monto: datosBasicos.monto,
     fechaVencimiento: datosBasicos.fechaVencimiento,
     mes: datosBasicos.mes,

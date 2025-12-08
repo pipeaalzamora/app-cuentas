@@ -318,7 +318,12 @@ export class ServicioCalculosEstadisticas {
       comparacion: number;
       diferencia: number;
       porcentajeCambio: number;
-    }> = {} as any;
+    }> = {
+      luz: { actual: 0, comparacion: 0, diferencia: 0, porcentajeCambio: 0 },
+      agua: { actual: 0, comparacion: 0, diferencia: 0, porcentajeCambio: 0 },
+      gas: { actual: 0, comparacion: 0, diferencia: 0, porcentajeCambio: 0 },
+      internet: { actual: 0, comparacion: 0, diferencia: 0, porcentajeCambio: 0 }
+    };
 
     (['luz', 'agua', 'gas', 'internet'] as TipoServicio[]).forEach(servicio => {
       const actual = gastosActual[servicio];

@@ -49,22 +49,32 @@ export class ServicioAlmacenamiento {
       
       // Convertir fechas de string a Date
       if (datosParseados.cuentas) {
-        datosParseados.cuentas = datosParseados.cuentas.map((cuenta: any) => ({
-          ...cuenta,
-          fechaVencimiento: new Date(cuenta.fechaVencimiento),
-          fechaCreacion: new Date(cuenta.fechaCreacion),
-          fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
-          // Nuevos campos de fecha (con valores por defecto para compatibilidad)
-          fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
-          fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
-          fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
-          proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
-          // Campos numéricos con valores por defecto
-          saldoAnterior: cuenta.saldoAnterior || 0,
-          consumoActual: cuenta.consumoActual || cuenta.monto || 0,
-          otrosCargos: cuenta.otrosCargos || 0,
-          descuentos: cuenta.descuentos || 0
-        }));
+        datosParseados.cuentas = datosParseados.cuentas.map((cuenta: Record<string, unknown>) => {
+          const fechaVencimiento = cuenta.fechaVencimiento as string | number | Date;
+          const fechaCreacion = cuenta.fechaCreacion as string | number | Date;
+          const fechaActualizacion = cuenta.fechaActualizacion as string | number | Date | undefined;
+          const fechaEmision = cuenta.fechaEmision as string | number | Date | undefined;
+          const fechaCorte = cuenta.fechaCorte as string | number | Date | undefined;
+          const fechaLectura = cuenta.fechaLectura as string | number | Date | undefined;
+          const proximaFechaLectura = cuenta.proximaFechaLectura as string | number | Date | undefined;
+          
+          return {
+            ...cuenta,
+            fechaVencimiento: new Date(fechaVencimiento),
+            fechaCreacion: new Date(fechaCreacion),
+            fechaActualizacion: fechaActualizacion ? new Date(fechaActualizacion) : undefined,
+            // Nuevos campos de fecha (con valores por defecto para compatibilidad)
+            fechaEmision: fechaEmision ? new Date(fechaEmision) : new Date(fechaCreacion || fechaVencimiento),
+            fechaCorte: fechaCorte ? new Date(fechaCorte) : new Date(fechaVencimiento),
+            fechaLectura: fechaLectura ? new Date(fechaLectura) : new Date(fechaVencimiento),
+            proximaFechaLectura: proximaFechaLectura ? new Date(proximaFechaLectura) : undefined,
+            // Campos numéricos con valores por defecto
+            saldoAnterior: cuenta.saldoAnterior || 0,
+            consumoActual: cuenta.consumoActual || cuenta.monto || 0,
+            otrosCargos: cuenta.otrosCargos || 0,
+            descuentos: cuenta.descuentos || 0
+          };
+        });
       }
 
       // Validar estructura de datos
@@ -128,7 +138,7 @@ export class ServicioAlmacenamiento {
    * Genera un ID único para una nueva cuenta
    */
   private generarId(): string {
-    return `cuenta_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `cuenta_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 
   /**
@@ -287,22 +297,32 @@ export class ServicioAlmacenamiento {
       
       // Convertir fechas si es necesario
       if (datosImportados.cuentas) {
-        datosImportados.cuentas = datosImportados.cuentas.map((cuenta: any) => ({
-          ...cuenta,
-          fechaVencimiento: new Date(cuenta.fechaVencimiento),
-          fechaCreacion: new Date(cuenta.fechaCreacion),
-          fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
-          // Nuevos campos de fecha con valores por defecto
-          fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
-          fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
-          fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
-          proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
-          // Campos numéricos con valores por defecto
-          saldoAnterior: cuenta.saldoAnterior || 0,
-          consumoActual: cuenta.consumoActual || cuenta.monto || 0,
-          otrosCargos: cuenta.otrosCargos || 0,
-          descuentos: cuenta.descuentos || 0
-        }));
+        datosImportados.cuentas = datosImportados.cuentas.map((cuenta: Record<string, unknown>) => {
+          const fechaVencimiento = cuenta.fechaVencimiento as string | number | Date;
+          const fechaCreacion = cuenta.fechaCreacion as string | number | Date;
+          const fechaActualizacion = cuenta.fechaActualizacion as string | number | Date | undefined;
+          const fechaEmision = cuenta.fechaEmision as string | number | Date | undefined;
+          const fechaCorte = cuenta.fechaCorte as string | number | Date | undefined;
+          const fechaLectura = cuenta.fechaLectura as string | number | Date | undefined;
+          const proximaFechaLectura = cuenta.proximaFechaLectura as string | number | Date | undefined;
+          
+          return {
+            ...cuenta,
+            fechaVencimiento: new Date(fechaVencimiento),
+            fechaCreacion: new Date(fechaCreacion),
+            fechaActualizacion: fechaActualizacion ? new Date(fechaActualizacion) : undefined,
+            // Nuevos campos de fecha con valores por defecto
+            fechaEmision: fechaEmision ? new Date(fechaEmision) : new Date(fechaCreacion || fechaVencimiento),
+            fechaCorte: fechaCorte ? new Date(fechaCorte) : new Date(fechaVencimiento),
+            fechaLectura: fechaLectura ? new Date(fechaLectura) : new Date(fechaVencimiento),
+            proximaFechaLectura: proximaFechaLectura ? new Date(proximaFechaLectura) : undefined,
+            // Campos numéricos con valores por defecto
+            saldoAnterior: cuenta.saldoAnterior || 0,
+            consumoActual: cuenta.consumoActual || cuenta.monto || 0,
+            otrosCargos: cuenta.otrosCargos || 0,
+            descuentos: cuenta.descuentos || 0
+          };
+        });
       }
 
       // Validar estructura

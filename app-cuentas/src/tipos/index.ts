@@ -161,3 +161,8 @@ export interface Notificacion {
 
 // Re-exportar esquemas de validación
 export * from './esquemas';
+
+// Re-exportar tipos adicionales
+export * from './eventos';
+export * from './prediccion';
+export * from './api';

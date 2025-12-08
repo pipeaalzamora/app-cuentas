@@ -101,7 +101,7 @@ export const GraficoDistribucionServicios: React.FC<GraficoDistribucionServicios
       },
       tooltip: {
         callbacks: {
-          label: function(context: any) {
+          label: function(context: { parsed: number; label?: string }) {
             const valor = context.parsed;
             const porcentaje = totalGastos > 0 ? ((valor / totalGastos) * 100).toFixed(1) : '0';
             return `${context.label}: $${valor.toLocaleString('es-AR', {

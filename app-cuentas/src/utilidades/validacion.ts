@@ -1,4 +1,4 @@
-import { ZodError, type ZodSchema } from 'zod';
+import { ZodError, type ZodType } from 'zod';
 
 // Tipo para resultado de validación
 export interface ResultadoValidacion<T> {
@@ -12,7 +12,7 @@ export interface ResultadoValidacion<T> {
  * Valida datos usando un esquema Zod y retorna un resultado estructurado
  */
 export function validarDatos<T>(
-  esquema: ZodSchema<T>,
+  esquema: ZodType<T>,
   datos: unknown
 ): ResultadoValidacion<T> {
   try {
@@ -48,7 +48,7 @@ export function validarDatos<T>(
  * Valida datos de forma segura y retorna solo los datos válidos o null
  */
 export function validarSeguro<T>(
-  esquema: ZodSchema<T>,
+  esquema: ZodType<T>,
   datos: unknown
 ): T | null {
   const resultado = validarDatos(esquema, datos);
@@ -104,7 +104,7 @@ export function validarMes(mes: number): boolean {
 /**
  * Valida la integridad de una cuenta de servicio
  */
-export function validarIntegridadCuenta(cuenta: any): { valida: boolean; errores: string[] } {
+export function validarIntegridadCuenta(cuenta: unknown): { valida: boolean; errores: string[] } {
   const errores: string[] = [];
 
   if (!cuenta || typeof cuenta !== 'object') {
@@ -112,36 +112,38 @@ export function validarIntegridadCuenta(cuenta: any): { valida: boolean; errores
     return { valida: false, errores };
   }
 
+  const cuentaObj = cuenta as Record<string, unknown>;
+
   // Validar ID
-  if (!cuenta.id || typeof cuenta.id !== 'string') {
+  if (!cuentaObj.id || typeof cuentaObj.id !== 'string') {
     errores.push('ID de cuenta inválido o faltante');
   }
 
   // Validar tipo de servicio
   const tiposValidos = ['luz', 'agua', 'gas', 'internet'];
-  if (!tiposValidos.includes(cuenta.tipoServicio)) {
-    errores.push(`Tipo de servicio inválido: ${cuenta.tipoServicio}`);
+  if (!tiposValidos.includes(cuentaObj.tipoServicio as string)) {
+    errores.push(`Tipo de servicio inválido: ${cuentaObj.tipoServicio}`);
   }
 
   // Validar monto
-  if (!validarMonto(cuenta.monto)) {
+  if (!validarMonto(cuentaObj.monto)) {
     errores.push('Monto inválido: debe ser un número positivo');
   }
 
   // Validar fechas
   try {
-    const fechaVencimiento = new Date(cuenta.fechaVencimiento);
+    const fechaVencimiento = new Date(cuentaObj.fechaVencimiento as string | Date);
     if (isNaN(fechaVencimiento.getTime())) {
       errores.push('Fecha de vencimiento inválida');
     }
 
-    const fechaCreacion = new Date(cuenta.fechaCreacion);
+    const fechaCreacion = new Date(cuentaObj.fechaCreacion as string | Date);
     if (isNaN(fechaCreacion.getTime())) {
       errores.push('Fecha de creación inválida');
     }
 
-    if (cuenta.fechaActualizacion) {
-      const fechaActualizacion = new Date(cuenta.fechaActualizacion);
+    if (cuentaObj.fechaActualizacion) {
+      const fechaActualizacion = new Date(cuentaObj.fechaActualizacion as string | Date);
       if (isNaN(fechaActualizacion.getTime())) {
         errores.push('Fecha de actualización inválida');
       }
@@ -151,16 +153,16 @@ export function validarIntegridadCuenta(cuenta: any): { valida: boolean; errores
   }
 
   // Validar mes y año
-  if (!validarMes(cuenta.mes)) {
-    errores.push(`Mes inválido: ${cuenta.mes}`);
+  if (!validarMes(cuentaObj.mes as number)) {
+    errores.push(`Mes inválido: ${cuentaObj.mes}`);
   }
 
-  if (!validarAño(cuenta.año)) {
-    errores.push(`Año inválido: ${cuenta.año}`);
+  if (!validarAño(cuentaObj.año as number)) {
+    errores.push(`Año inválido: ${cuentaObj.año}`);
   }
 
   // Validar estado de pago
-  if (typeof cuenta.pagada !== 'boolean') {
+  if (typeof cuentaObj.pagada !== 'boolean') {
     errores.push('Estado de pago debe ser verdadero o falso');
   }
 
@@ -173,7 +175,7 @@ export function validarIntegridadCuenta(cuenta: any): { valida: boolean; errores
 /**
  * Valida la integridad de un conjunto de cuentas
  */
-export function validarIntegridadCuentas(cuentas: any[]): { 
+export function validarIntegridadCuentas(cuentas: unknown[]): { 
   validas: number; 
   invalidas: number; 
   errores: Array<{ indice: number; errores: string[] }>;
@@ -203,11 +205,13 @@ export function validarIntegridadCuentas(cuentas: any[]): {
     }
 
     // Verificar duplicados de ID
-    if (cuenta.id) {
-      if (idsVistos.has(cuenta.id)) {
-        duplicados.push(cuenta.id);
+    const cuentaObj = cuenta as Record<string, unknown>;
+    if (cuentaObj.id) {
+      const id = cuentaObj.id as string;
+      if (idsVistos.has(id)) {
+        duplicados.push(id);
       } else {
-        idsVistos.add(cuenta.id);
+        idsVistos.add(id);
       }
     }
   });
@@ -223,8 +227,8 @@ export function validarIntegridadCuentas(cuentas: any[]): {
 /**
  * Sanitiza y repara datos de cuentas cuando sea posible
  */
-export function sanitizarCuentas(cuentas: any[]): { 
-  cuentasReparadas: any[]; 
+export function sanitizarCuentas(cuentas: unknown[]): { 
+  cuentasReparadas: unknown[]; 
   cuentasDescartadas: number;
   reparaciones: string[];
 } {
@@ -236,13 +240,19 @@ export function sanitizarCuentas(cuentas: any[]): {
     };
   }
 
-  const cuentasReparadas: any[] = [];
+  const cuentasReparadas: unknown[] = [];
   const reparaciones: string[] = [];
   let descartadas = 0;
 
   cuentas.forEach((cuenta, indice) => {
     try {
-      const cuentaReparada = { ...cuenta };
+      if (typeof cuenta !== 'object' || cuenta === null) {
+        descartadas++;
+        reparaciones.push(`Cuenta ${indice}: Descartada - no es un objeto válido`);
+        return;
+      }
+      
+      const cuentaReparada = { ...(cuenta as Record<string, unknown>) };
       let reparada = false;
 
       // Reparar ID faltante
@@ -255,13 +265,13 @@ export function sanitizarCuentas(cuentas: any[]): {
       // Reparar fechas
       try {
         if (cuentaReparada.fechaVencimiento) {
-          cuentaReparada.fechaVencimiento = new Date(cuentaReparada.fechaVencimiento);
+          cuentaReparada.fechaVencimiento = new Date(cuentaReparada.fechaVencimiento as string | number | Date);
         }
         if (cuentaReparada.fechaCreacion) {
-          cuentaReparada.fechaCreacion = new Date(cuentaReparada.fechaCreacion);
+          cuentaReparada.fechaCreacion = new Date(cuentaReparada.fechaCreacion as string | number | Date);
         }
         if (cuentaReparada.fechaActualizacion) {
-          cuentaReparada.fechaActualizacion = new Date(cuentaReparada.fechaActualizacion);
+          cuentaReparada.fechaActualizacion = new Date(cuentaReparada.fechaActualizacion as string | number | Date);
         }
       } catch (error) {
         reparaciones.push(`Cuenta ${indice}: Error al reparar fechas`);
@@ -299,7 +309,7 @@ export function sanitizarCuentas(cuentas: any[]): {
 /**
  * Valida la estructura del almacenamiento local
  */
-export function validarEstructuraAlmacenamiento(datos: any): { 
+export function validarEstructuraAlmacenamiento(datos: unknown): { 
   valida: boolean; 
   errores: string[];
   advertencias: string[];
@@ -312,28 +322,30 @@ export function validarEstructuraAlmacenamiento(datos: any): {
     return { valida: false, errores, advertencias };
   }
 
+  const datosObj = datos as Record<string, unknown>;
+
   // Validar estructura básica
-  if (!Object.prototype.hasOwnProperty.call(datos, 'cuentas')) {
+  if (!Object.prototype.hasOwnProperty.call(datosObj, 'cuentas')) {
     errores.push('Falta la propiedad "cuentas"');
-  } else if (!Array.isArray(datos.cuentas)) {
+  } else if (!Array.isArray(datosObj.cuentas)) {
     errores.push('La propiedad "cuentas" debe ser un array');
   }
 
-  if (!Object.prototype.hasOwnProperty.call(datos, 'configuracion')) {
+  if (!Object.prototype.hasOwnProperty.call(datosObj, 'configuracion')) {
     advertencias.push('Falta la configuración de usuario');
-  } else if (typeof datos.configuracion !== 'object') {
+  } else if (typeof datosObj.configuracion !== 'object') {
     errores.push('La configuración debe ser un objeto');
   }
 
-  if (!Object.prototype.hasOwnProperty.call(datos, 'version')) {
+  if (!Object.prototype.hasOwnProperty.call(datosObj, 'version')) {
     advertencias.push('Falta información de versión');
-  } else if (typeof datos.version !== 'string') {
+  } else if (typeof datosObj.version !== 'string') {
     errores.push('La versión debe ser una cadena de texto');
   }
 
   // Validar cuentas si existen
-  if (Array.isArray(datos.cuentas)) {
-    const validacionCuentas = validarIntegridadCuentas(datos.cuentas);
+  if (Array.isArray(datosObj.cuentas)) {
+    const validacionCuentas = validarIntegridadCuentas(datosObj.cuentas);
     
     if (validacionCuentas.invalidas > 0) {
       advertencias.push(`${validacionCuentas.invalidas} cuentas tienen errores de integridad`);

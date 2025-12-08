@@ -6,7 +6,7 @@ export interface ErrorInfo {
   timestamp: string;
   message: string;
   stack?: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   severity: 'low' | 'medium' | 'high' | 'critical';
 }
 
@@ -29,7 +29,7 @@ export class ManejadorErrores {
    */
   static registrarError(
     error: Error, 
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     severity: ErrorInfo['severity'] = 'medium'
   ): string {
     const errorInfo: ErrorInfo = {
@@ -151,13 +151,13 @@ export class ManejadorErrores {
   /**
    * Intenta reparar datos corruptos
    */
-  private static async repararDatos(datos: any): Promise<RecoveryResult> {
+  private static async repararDatos(datos: unknown): Promise<RecoveryResult> {
     const acciones: string[] = [];
     let perdidaDatos = false;
 
     try {
       // Estructura base
-      const datosReparados: any = {
+      const datosReparados: Record<string, unknown> = {
         version: '1.0.0',
         configuracion: {
           monedaDefault: '$',
@@ -167,11 +167,15 @@ export class ManejadorErrores {
         cuentas: []
       };
 
+      const datosObj = datos as Record<string, unknown>;
+      
       // Reparar configuración
-      if (datos.configuracion && typeof datos.configuracion === 'object') {
+      if (datosObj.configuracion && typeof datosObj.configuracion === 'object') {
+        const configBase = datosReparados.configuracion as Record<string, unknown>;
+        const configImportada = datosObj.configuracion as Record<string, unknown>;
         datosReparados.configuracion = {
-          ...datosReparados.configuracion,
-          ...datos.configuracion
+          ...configBase,
+          ...configImportada
         };
         acciones.push('Configuración reparada');
       } else {
@@ -180,8 +184,8 @@ export class ManejadorErrores {
       }
 
       // Reparar cuentas
-      if (Array.isArray(datos.cuentas)) {
-        const reparacion = sanitizarCuentas(datos.cuentas);
+      if (Array.isArray(datosObj.cuentas)) {
+        const reparacion = sanitizarCuentas(datosObj.cuentas);
         datosReparados.cuentas = reparacion.cuentasReparadas;
         
         acciones.push(`${reparacion.cuentasReparadas.length} cuentas recuperadas`);
@@ -336,7 +340,7 @@ export class ManejadorErrores {
  * Hook para manejar errores de forma consistente en componentes
  */
 export function useManejoErrores() {
-  const manejarError = (error: Error, context?: Record<string, any>) => {
+  const manejarError = (error: Error, context?: Record<string, unknown>) => {
     const errorId = ManejadorErrores.registrarError(error, context);
     console.error(`Error registrado [${errorId}]:`, error);
     return errorId;

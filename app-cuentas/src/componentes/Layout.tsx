@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BottomNavigation, Sidebar, Breadcrumbs } from './navegacion';
 import AlternadorTema from './AlternadorTema';
 import type { NavegacionItem, BreadcrumbItem } from './navegacion';
@@ -17,7 +17,6 @@ export const Layout: React.FC<LayoutProps> = ({
   breadcrumbs = []
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [sidebarColapsado, setSidebarColapsado] = useState(false);
   const [esMobile, setEsMobile] = useState(false);
 

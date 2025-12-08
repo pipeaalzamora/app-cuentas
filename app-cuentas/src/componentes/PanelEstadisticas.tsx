@@ -277,10 +277,27 @@ const PanelEstadisticas: React.FC = () => {
   );
 };
 
+// Interfaces para props de componentes memoizados
+interface EstadisticasPeriodo {
+  totalGastos: number;
+  promedioMensual: number;
+  comparativaAnterior: number;
+}
+
+interface ResumenCuentas {
+  totalCuentas: number;
+  cuentasPagadas: number;
+  cuentasPendientes: number;
+  servicioMasCaro?: {
+    servicio: TipoServicio;
+    total: number;
+  } | null;
+}
+
 // Componente memoizado para métricas principales
 const MetricasPrincipales = memo<{
-  estadisticas: any;
-  resumen: any;
+  estadisticas: EstadisticasPeriodo;
+  resumen: ResumenCuentas;
   formatearMoneda: (monto: number) => string;
   formatearPorcentaje: (porcentaje: number) => string;
   obtenerColorComparativa: (porcentaje: number) => string;
@@ -333,9 +350,17 @@ const MetricasPrincipales = memo<{
 
 MetricasPrincipales.displayName = 'MetricasPrincipales';
 
+interface RankingServicio {
+  servicio: TipoServicio;
+  total: number;
+  porcentaje: number;
+  cantidadCuentas: number;
+  promedioMonto: number;
+}
+
 // Componente memoizado para ranking de servicios
 const RankingServicios = memo<{
-  ranking: any[];
+  ranking: RankingServicio[];
   formatearMoneda: (monto: number) => string;
 }>(({ ranking, formatearMoneda }) => {
   const getIconoServicio = (servicio: TipoServicio): string => {

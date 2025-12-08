@@ -4,7 +4,7 @@ import Boton from './base/Boton';
 import Tarjeta from './base/Tarjeta';
 import ConfirmacionEliminar from './base/ConfirmacionEliminar';
 import { SkeletonTabla } from './base/Skeleton';
-import type { CuentaServicio, FiltrosCuentas, CampoOrdenamiento, DireccionOrdenamiento } from '../tipos';
+import type { CuentaServicio, FiltrosCuentas, CampoOrdenamiento, DireccionOrdenamiento, TipoServicio } from '../tipos';
 import { useDebounce } from '../utilidades/useDebounce';
 import { formatearPesosChilenos, formatearFechaChilena, formatearMesAñoChileno, obtenerNombreMes } from '../utilidades/formatoChileno';
 import './ListaCuentas.css';
@@ -49,8 +49,8 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
   // Aplicar ordenamiento a las cuentas filtradas
   const cuentasOrdenadas = useMemo(() => {
     return [...cuentasFiltradas].sort((a, b) => {
-      let valorA: any = a[ordenamiento.campo];
-      let valorB: any = b[ordenamiento.campo];
+      let valorA: string | number | boolean | Date = a[ordenamiento.campo];
+      let valorB: string | number | boolean | Date = b[ordenamiento.campo];
 
       // Convertir fechas a timestamps para comparación
       if (valorA instanceof Date) valorA = valorA.getTime();
@@ -69,10 +69,10 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
   }, [cuentasFiltradas, ordenamiento]);
 
   // Manejar cambios en filtros con debounce
-  const manejarCambioFiltro = useCallback((campo: keyof FiltrosCuentas, valor: any) => {
+  const manejarCambioFiltro = useCallback((campo: keyof FiltrosCuentas, valor: string | number | boolean | undefined) => {
     const nuevosFiltros = {
       ...filtrosLocales,
-      [campo]: valor === '' ? undefined : valor
+      [campo]: valor === '' || valor === undefined ? undefined : valor
     };
     setFiltrosLocales(nuevosFiltros);
   }, [filtrosLocales]);
@@ -222,7 +222,7 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
               <select
                 id="filtro-servicio"
                 value={filtrosLocales.tipoServicio || ''}
-                onChange={(e) => manejarCambioFiltro('tipoServicio', e.target.value || undefined)}
+                onChange={(e) => manejarCambioFiltro('tipoServicio', (e.target.value as TipoServicio) || undefined)}
               >
                 <option value="">Todos los servicios</option>
                 <option value="luz">Luz</option>

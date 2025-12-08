@@ -106,7 +106,7 @@ const FormularioCuenta: React.FC<FormularioCuentaProps> = ({
 
 
   // Validar campo individual
-  const validarCampo = (campo: keyof FormularioCuentaData, valor: any): string | undefined => {
+  const validarCampo = (campo: keyof FormularioCuentaData, valor: unknown): string | undefined => {
     try {
       const esquemaCampo = esquemaFormularioCuenta.pick({ [campo]: true });
       esquemaCampo.parse({ [campo]: valor });
@@ -159,7 +159,7 @@ const FormularioCuenta: React.FC<FormularioCuentaProps> = ({
   const manejarCambio = (campo: keyof FormularioCuentaData) => (
     evento: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    let valor: any;
+    let valor: string | number | boolean | Date;
 
     if (evento.target.type === 'checkbox') {
       valor = (evento.target as HTMLInputElement).checked;
