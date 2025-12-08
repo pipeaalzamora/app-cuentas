@@ -1,0 +1,17 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd app-cuentas
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: app-cuentas/dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - app-cuentas/node_modules/**/*
