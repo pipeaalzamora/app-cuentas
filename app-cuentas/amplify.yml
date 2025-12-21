@@ -9,7 +9,7 @@ frontend:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: app-cuentas/dist
+    baseDirectory: /
     files:
       - '**/*'
   cache:
