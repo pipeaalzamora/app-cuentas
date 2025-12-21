@@ -149,13 +149,60 @@ const DesglosadorSueldo: React.FC = () => {
     const desglose = todosDesgloses.find(d => d.mes === mes && d.año === año);
     if (desglose) {
       setDesgloseActual(desglose);
+    } else {
+      // Si no existe, crear uno nuevo para ese mes/año
+      const nuevoDesglose: DesgloseSueldo = {
+        id: crypto.randomUUID(),
+        sueldoInicial: desgloseActual?.sueldoInicial || 0,
+        gastos: [],
+        fechaCreacion: new Date(),
+        mes,
+        año,
+        nombre: `Desglose ${mes}/${año}`
+      };
+      servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
+      setDesgloseActual(nuevoDesglose);
+      cargarDesgloses();
     }
   };
 
-  const crearNuevoDesglose = () => {
-    setSueldoInicial('');
-    setNombreDesglose('');
-    setDesgloseActual(null);
+  const generarOpcionesMeses = () => {
+    const opciones: { mes: number; año: number; label: string; existe: boolean }[] = [];
+    const hoy = new Date();
+    const añoActual = hoy.getFullYear();
+    const mesActual = hoy.getMonth() + 1;
+    
+    const meses = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    
+    // Generar opciones desde diciembre 2025 hasta 3 meses en el futuro
+    const añoInicio = 2025;
+    const mesInicio = 12; // Diciembre
+    const añoFin = añoActual;
+    const mesFin = mesActual + 3; // 3 meses hacia adelante
+    
+    // Calcular el año final considerando los meses adicionales
+    const añoFinal = añoFin + Math.floor(mesFin / 12);
+    const mesFinal = mesFin % 12 || 12;
+    
+    for (let año = añoFinal; año >= añoInicio; año--) {
+      let mesMax = año === añoFinal ? mesFinal : 12;
+      let mesMin = año === añoInicio ? mesInicio : 1;
+      
+      for (let mes = mesMax; mes >= mesMin; mes--) {
+        const existe = todosDesgloses.some(d => d.mes === mes && d.año === año);
+        opciones.push({
+          mes,
+          año,
+          label: `${meses[mes - 1]} ${año}`,
+          existe
+        });
+      }
+    }
+    
+    return opciones;
   };
 
   const resumen = desgloseActual ? servicioDesglosadorSueldo.calcularResumen(desgloseActual) : null;
@@ -207,15 +254,15 @@ const DesglosadorSueldo: React.FC = () => {
                 }}
                 className="select-periodo"
               >
-                {todosDesgloses.map(d => (
-                  <option key={d.id} value={`${d.mes}-${d.año}`}>
-                    {d.nombre || `${d.mes}/${d.año}`}
+                {generarOpcionesMeses().map(opcion => (
+                  <option 
+                    key={`${opcion.mes}-${opcion.año}`} 
+                    value={`${opcion.mes}-${opcion.año}`}
+                  >
+                    {opcion.label} {opcion.existe ? '✓' : '(nuevo)'}
                   </option>
                 ))}
               </select>
-              <Boton onClick={crearNuevoDesglose} variante="outline" tamaño="sm">
-                + Nuevo Mes
-              </Boton>
             </div>
           </div>
           <div className="header-acciones">

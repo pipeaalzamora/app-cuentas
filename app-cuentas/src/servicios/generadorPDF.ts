@@ -556,7 +556,13 @@ export class ServicioGeneradorPDF {
       pdf.text(`Página ${i} de ${totalPages}`, 190, 290, { align: 'right' });
     }
     
-    const nombreArchivo = `desglose-sueldo-${desglose.mes}-${desglose.año}-${format(new Date(), 'yyyy-MM-dd')}`;
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    
+    const nombreMes = meses[desglose.mes - 1];
+    const nombreArchivo = `desglose-de-sueldo-${nombreMes}-${desglose.año}`;
     this.descargarPDF(new Blob([pdf.output('blob')], { type: 'application/pdf' }), nombreArchivo);
   }
 }
