@@ -565,6 +565,146 @@ export class ServicioGeneradorPDF {
     const nombreArchivo = `desglose-de-sueldo-${nombreMes}-${desglose.año}`;
     this.descargarPDF(new Blob([pdf.output('blob')], { type: 'application/pdf' }), nombreArchivo);
   }
+
+  /**
+   * Genera un reporte PDF del desglose de gastos del bebé
+   */
+  generarReporteDesgloseBebe(desglose: any, resumen: any): void {
+    const pdf = new jsPDF(ServicioGeneradorPDF.CONFIG_PDF);
+    
+    const formatearPesosChilenos = (monto: number): string => {
+      return new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(monto);
+    };
+
+    const nombresCategoria: Record<string, string> = {
+      alimentacion: 'Alimentación',
+      panales: 'Pañales',
+      ropa: 'Ropa',
+      salud: 'Salud',
+      muebles: 'Muebles',
+      juguetes: 'Juguetes',
+      guarderia: 'Guardería',
+      educacion: 'Educación',
+      higiene: 'Higiene',
+      otro: 'Otro'
+    };
+    
+    this.configurarMetadatosPDF(pdf, `Gastos del Bebé - ${desglose.nombre || 'Sin nombre'}`, 'desglose-bebe');
+    
+    // Título con emoji
+    pdf.setFontSize(18);
+    pdf.text('Gastos del Bebé', 105, 20, { align: 'center' });
+    
+    pdf.setFontSize(12);
+    pdf.text(desglose.nombre || 'Sin nombre', 105, 30, { align: 'center' });
+    pdf.text(`${desglose.mes}/${desglose.año}`, 105, 37, { align: 'center' });
+    
+    // Resumen
+    let y = 55;
+    pdf.setFontSize(14);
+    pdf.text('Resumen', 20, y);
+    
+    y += 10;
+    pdf.setFontSize(11);
+    pdf.text(`Presupuesto Mensual: ${formatearPesosChilenos(resumen.presupuestoMensual)}`, 20, y);
+    
+    y += 8;
+    pdf.text(`Total Gastos: ${formatearPesosChilenos(resumen.totalGastos)}`, 20, y);
+    
+    y += 8;
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`Saldo Restante: ${formatearPesosChilenos(resumen.saldoRestante)}`, 20, y);
+    pdf.setFont('helvetica', 'normal');
+    
+    y += 8;
+    pdf.setFontSize(11);
+    pdf.text(`Porcentaje Gastado: ${resumen.porcentajeGastado.toFixed(1)}%`, 20, y);
+    
+    // Gastos por categoría
+    y += 15;
+    pdf.setFontSize(14);
+    pdf.text('Gastos por Categoria', 20, y);
+    
+    y += 10;
+    pdf.setFontSize(11);
+    Object.entries(resumen.gastosPorTipo).forEach(([tipo, monto]: [string, any]) => {
+      if (monto > 0) {
+        pdf.text(`${nombresCategoria[tipo]}: ${formatearPesosChilenos(monto)}`, 25, y);
+        y += 7;
+      }
+    });
+    
+    // Detalle de gastos
+    y += 10;
+    pdf.setFontSize(14);
+    pdf.text('Detalle de Gastos', 20, y);
+    
+    y += 10;
+    pdf.setFontSize(10);
+    
+    desglose.gastos.forEach((gasto: any, index: number) => {
+      if (y > 260) {
+        pdf.addPage();
+        y = 20;
+      }
+      
+      const fecha = format(gasto.fecha, 'dd/MM/yyyy');
+      const montoTotal = gasto.monto * gasto.cantidad;
+      
+      pdf.text(`${index + 1}. ${gasto.descripcion}`, 20, y);
+      pdf.text(nombresCategoria[gasto.tipo], 120, y);
+      
+      if (gasto.cantidad > 1) {
+        pdf.text(`${formatearPesosChilenos(gasto.monto)} x ${gasto.cantidad}`, 160, y);
+      }
+      
+      y += 5;
+      pdf.setFontSize(9);
+      pdf.text(fecha, 25, y);
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(formatearPesosChilenos(montoTotal), 160, y);
+      pdf.setFont('helvetica', 'normal');
+      
+      if (gasto.notas) {
+        y += 5;
+        pdf.setFontSize(9);
+        pdf.text(`Nota: ${gasto.notas}`, 25, y);
+        pdf.setFontSize(10);
+      }
+      
+      y += 8;
+    });
+    
+    // Pie de página
+    const totalPages = pdf.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(9);
+      pdf.text(
+        `Generado el ${format(new Date(), 'dd/MM/yyyy HH:mm')}`,
+        105,
+        290,
+        { align: 'center' }
+      );
+      pdf.text(`Página ${i} de ${totalPages}`, 190, 290, { align: 'right' });
+    }
+    
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    
+    const nombreMes = meses[desglose.mes - 1];
+    const nombreArchivo = `gastos-bebe-${nombreMes}-${desglose.año}`;
+    this.descargarPDF(new Blob([pdf.output('blob')], { type: 'application/pdf' }), nombreArchivo);
+  }
 }
 
 // Instancia singleton del servicio

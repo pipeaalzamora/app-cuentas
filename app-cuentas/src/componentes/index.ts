@@ -18,6 +18,7 @@ export { PanelPredicciones } from './PanelPredicciones';
 export { default as PanelPrincipal } from './PanelPrincipal';
 export { GeneradorReportes } from './GeneradorReportes';
 export { default as DesglosadorSueldo } from './DesglosadorSueldo';
+export { default as DesglosadorBebe } from './DesglosadorBebe';
 
 // Exportaciones de componentes de gráficos
 export * from './graficos';

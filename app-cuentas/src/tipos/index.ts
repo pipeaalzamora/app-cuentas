@@ -167,3 +167,4 @@ export * from './eventos';
 export * from './prediccion';
 export * from './api';
 export * from './desglosador';
+export * from './desglosadorBebe';
