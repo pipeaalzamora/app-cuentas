@@ -216,3 +216,34 @@
         margin-top: 0;
     }
 }
+
+
+/* Enlace del producto */
+.gasto-enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: var(--texto-sm);
+    color: var(--color-primario);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-primario-light);
+    border-radius: var(--radio-sm);
+    transition: all 0.2s ease;
+}
+
+.gasto-enlace:hover {
+    background: var(--color-primario);
+    color: white;
+    text-decoration: none;
+}
+
+.tema-oscuro .gasto-enlace {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+}
+
+.tema-oscuro .gasto-enlace:hover {
+    background: #60a5fa;
+    color: #1e293b;
+}

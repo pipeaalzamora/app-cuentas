@@ -39,6 +39,7 @@ const DesglosadorBebe: React.FC = () => {
   const [cantidad, setCantidad] = useState('1');
   const [tipo, setTipo] = useState<TipoGastoBebe>('otro');
   const [notas, setNotas] = useState('');
+  const [enlaceProducto, setEnlaceProducto] = useState('');
 
   useEffect(() => {
     cargarDesgloses();
@@ -98,7 +99,8 @@ const DesglosadorBebe: React.FC = () => {
       cantidad: cantidadNum,
       tipo,
       fecha: new Date(),
-      notas: notas || undefined
+      notas: notas || undefined,
+      enlaceProducto: enlaceProducto || undefined
     };
 
     const desgloseActualizado = {
@@ -115,6 +117,7 @@ const DesglosadorBebe: React.FC = () => {
     setCantidad('1');
     setTipo('otro');
     setNotas('');
+    setEnlaceProducto('');
     setMostrarFormGasto(false);
   };
 
@@ -380,6 +383,16 @@ const DesglosadorBebe: React.FC = () => {
                       </span>
                     )}
                     {gasto.notas && <span className="gasto-notas">📝 {gasto.notas}</span>}
+                    {gasto.enlaceProducto && (
+                      <a 
+                        href={gasto.enlaceProducto} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="gasto-enlace"
+                      >
+                        🔗 Ver producto
+                      </a>
+                    )}
                     <span className="gasto-fecha">
                       {gasto.fecha.toLocaleDateString()}
                     </span>
@@ -462,6 +475,13 @@ const DesglosadorBebe: React.FC = () => {
                 value={notas}
                 onChange={(e) => setNotas(e.target.value)}
                 placeholder="Notas adicionales (opcional)"
+              />
+              <Input
+                type="url"
+                value={enlaceProducto}
+                onChange={(e) => setEnlaceProducto(e.target.value)}
+                placeholder="https://www.ejemplo.com/producto"
+                etiqueta="Link del producto (opcional)"
               />
             </div>
           </Modal.Body>

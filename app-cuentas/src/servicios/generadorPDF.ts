@@ -678,6 +678,15 @@ export class ServicioGeneradorPDF {
         pdf.text(`Nota: ${gasto.notas}`, 25, y);
         pdf.setFontSize(10);
       }
+
+      if (gasto.enlaceProducto) {
+        y += 5;
+        pdf.setFontSize(9);
+        pdf.setTextColor(37, 99, 235);
+        pdf.textWithLink('Ver producto', 25, y, { url: gasto.enlaceProducto });
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFontSize(10);
+      }
       
       y += 8;
     });

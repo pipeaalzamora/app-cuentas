@@ -20,6 +20,7 @@ export interface GastoBebe {
   tipo: TipoGastoBebe;
   fecha: Date;
   notas?: string;
+  enlaceProducto?: string;
 }
 
 export interface DesgloseBebe {
