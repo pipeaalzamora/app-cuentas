@@ -32,6 +32,7 @@ const DesglosadorSueldo: React.FC = () => {
   const [mostrarFormGasto, setMostrarFormGasto] = useState(false);
   const [mostrarEditarSueldo, setMostrarEditarSueldo] = useState(false);
   const [nuevoSueldo, setNuevoSueldo] = useState<string>('');
+  const [gastoEditando, setGastoEditando] = useState<string | null>(null);
   
   // Form gasto
   const [descripcion, setDescripcion] = useState('');
@@ -118,6 +119,49 @@ const DesglosadorSueldo: React.FC = () => {
 
     servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
     setDesgloseActual(desgloseActualizado);
+  };
+
+  const iniciarEdicionGasto = (gasto: Gasto) => {
+    setGastoEditando(gasto.id);
+    setDescripcion(gasto.descripcion);
+    setMonto(formatearNumeroConPuntos(gasto.monto.toString()));
+    setTipo(gasto.tipo);
+    setMostrarFormGasto(true);
+  };
+
+  const actualizarGasto = () => {
+    if (!desgloseActual || !gastoEditando || !descripcion || !monto) return;
+
+    const montoLimpio = limpiarNumero(monto);
+    const montoNum = parseFloat(montoLimpio);
+    if (isNaN(montoNum) || montoNum <= 0) return;
+
+    const desgloseActualizado = {
+      ...desgloseActual,
+      gastos: desgloseActual.gastos.map(g => 
+        g.id === gastoEditando 
+          ? { ...g, descripcion, monto: montoNum, tipo }
+          : g
+      )
+    };
+
+    servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
+    setDesgloseActual(desgloseActualizado);
+    
+    // Reset form
+    setDescripcion('');
+    setMonto('');
+    setTipo('otro');
+    setGastoEditando(null);
+    setMostrarFormGasto(false);
+  };
+
+  const cancelarEdicion = () => {
+    setDescripcion('');
+    setMonto('');
+    setTipo('otro');
+    setGastoEditando(null);
+    setMostrarFormGasto(false);
   };
 
   const generarPDF = () => {
@@ -333,9 +377,18 @@ const DesglosadorSueldo: React.FC = () => {
                   <div className="gasto-acciones">
                     <span className="gasto-monto">-{formatearPesosChilenos(gasto.monto)}</span>
                     <button 
+                      className="btn-editar"
+                      onClick={() => iniciarEdicionGasto(gasto)}
+                      aria-label="Editar gasto"
+                      title="Editar"
+                    >
+                      ✏️
+                    </button>
+                    <button 
                       className="btn-eliminar"
                       onClick={() => eliminarGasto(gasto.id)}
                       aria-label="Eliminar gasto"
+                      title="Eliminar"
                     >
                       ×
                     </button>
@@ -350,8 +403,8 @@ const DesglosadorSueldo: React.FC = () => {
       {mostrarFormGasto && (
         <Modal
           abierto={mostrarFormGasto}
-          titulo="Agregar Gasto"
-          onCerrar={() => setMostrarFormGasto(false)}
+          titulo={gastoEditando ? "Editar Gasto" : "Agregar Gasto"}
+          onCerrar={cancelarEdicion}
         >
           <Modal.Body>
             <div className="form-gasto">
@@ -385,11 +438,11 @@ const DesglosadorSueldo: React.FC = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Boton onClick={() => setMostrarFormGasto(false)} variante="outline">
+            <Boton onClick={cancelarEdicion} variante="outline">
               Cancelar
             </Boton>
-            <Boton onClick={agregarGasto} variante="primary">
-              Agregar
+            <Boton onClick={gastoEditando ? actualizarGasto : agregarGasto} variante="primary">
+              {gastoEditando ? "Actualizar" : "Agregar"}
             </Boton>
           </Modal.Footer>
         </Modal>

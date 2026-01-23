@@ -247,3 +247,36 @@
     background: #60a5fa;
     color: #1e293b;
 }
+
+/* Botones de acción */
+.btn-editar {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: var(--color-info-light);
+    color: var(--color-info);
+    border-radius: var(--radio-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    line-height: 1;
+    transition: all var(--transicion-rapida);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-editar:hover {
+    background: var(--color-info);
+    color: var(--color-texto-invertido);
+    transform: scale(1.1);
+}
+
+.tema-oscuro .btn-editar {
+    background: rgba(2, 132, 199, 0.2);
+    color: #38bdf8;
+}
+
+.tema-oscuro .btn-editar:hover {
+    background: var(--color-info);
+    color: var(--color-texto-invertido);
+}

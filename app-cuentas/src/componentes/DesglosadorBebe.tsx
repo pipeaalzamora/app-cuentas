@@ -32,6 +32,7 @@ const DesglosadorBebe: React.FC = () => {
   const [mostrarFormGasto, setMostrarFormGasto] = useState(false);
   const [mostrarEditarPresupuesto, setMostrarEditarPresupuesto] = useState(false);
   const [nuevoPresupuesto, setNuevoPresupuesto] = useState<string>('');
+  const [gastoEditando, setGastoEditando] = useState<string | null>(null);
   
   // Form gasto
   const [descripcion, setDescripcion] = useState('');
@@ -131,6 +132,69 @@ const DesglosadorBebe: React.FC = () => {
 
     servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
     setDesgloseActual(desgloseActualizado);
+  };
+
+  const iniciarEdicionGasto = (gasto: GastoBebe) => {
+    setGastoEditando(gasto.id);
+    setDescripcion(gasto.descripcion);
+    setMonto(formatearNumeroConPuntos(gasto.monto.toString()));
+    setCantidad(gasto.cantidad.toString());
+    setTipo(gasto.tipo);
+    setNotas(gasto.notas || '');
+    setEnlaceProducto(gasto.enlaceProducto || '');
+    setMostrarFormGasto(true);
+  };
+
+  const actualizarGasto = () => {
+    if (!desgloseActual || !gastoEditando || !descripcion || !monto || !cantidad) return;
+
+    const montoLimpio = limpiarNumero(monto);
+    const montoNum = parseFloat(montoLimpio);
+    const cantidadNum = parseInt(cantidad);
+    
+    if (isNaN(montoNum) || montoNum <= 0) return;
+    if (isNaN(cantidadNum) || cantidadNum <= 0) return;
+
+    const desgloseActualizado = {
+      ...desgloseActual,
+      gastos: desgloseActual.gastos.map(g => 
+        g.id === gastoEditando 
+          ? { 
+              ...g, 
+              descripcion, 
+              monto: montoNum, 
+              cantidad: cantidadNum, 
+              tipo,
+              notas: notas || undefined,
+              enlaceProducto: enlaceProducto || undefined
+            }
+          : g
+      )
+    };
+
+    servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
+    setDesgloseActual(desgloseActualizado);
+    
+    // Reset form
+    setDescripcion('');
+    setMonto('');
+    setCantidad('1');
+    setTipo('otro');
+    setNotas('');
+    setEnlaceProducto('');
+    setGastoEditando(null);
+    setMostrarFormGasto(false);
+  };
+
+  const cancelarEdicion = () => {
+    setDescripcion('');
+    setMonto('');
+    setCantidad('1');
+    setTipo('otro');
+    setNotas('');
+    setEnlaceProducto('');
+    setGastoEditando(null);
+    setMostrarFormGasto(false);
   };
 
   const editarPresupuesto = () => {
@@ -400,9 +464,18 @@ const DesglosadorBebe: React.FC = () => {
                   <div className="gasto-acciones">
                     <span className="gasto-monto">-{formatearPesosChilenos(gasto.monto * gasto.cantidad)}</span>
                     <button 
+                      className="btn-editar"
+                      onClick={() => iniciarEdicionGasto(gasto)}
+                      aria-label="Editar gasto"
+                      title="Editar"
+                    >
+                      ✏️
+                    </button>
+                    <button 
                       className="btn-eliminar"
                       onClick={() => eliminarGasto(gasto.id)}
                       aria-label="Eliminar gasto"
+                      title="Eliminar"
                     >
                       ×
                     </button>
@@ -417,8 +490,8 @@ const DesglosadorBebe: React.FC = () => {
       {mostrarFormGasto && (
         <Modal
           abierto={mostrarFormGasto}
-          titulo="Agregar Gasto del Bebé"
-          onCerrar={() => setMostrarFormGasto(false)}
+          titulo={gastoEditando ? "Editar Gasto del Bebé" : "Agregar Gasto del Bebé"}
+          onCerrar={cancelarEdicion}
         >
           <Modal.Body>
             <div className="form-gasto">
@@ -486,11 +559,11 @@ const DesglosadorBebe: React.FC = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Boton onClick={() => setMostrarFormGasto(false)} variante="outline">
+            <Boton onClick={cancelarEdicion} variante="outline">
               Cancelar
             </Boton>
-            <Boton onClick={agregarGasto} variante="primary">
-              Agregar
+            <Boton onClick={gastoEditando ? actualizarGasto : agregarGasto} variante="primary">
+              {gastoEditando ? "Actualizar" : "Agregar"}
             </Boton>
           </Modal.Footer>
         </Modal>
