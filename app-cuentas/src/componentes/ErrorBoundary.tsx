@@ -91,14 +91,13 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   private verificarIntegridadDatos(): void {
-    try {
-      const resultado = servicioAlmacenamiento.verificarIntegridad();
+    servicioAlmacenamiento.verificarIntegridad().then(resultado => {
       if (!resultado.valido) {
         console.warn('Problemas de integridad detectados:', resultado.errores);
       }
-    } catch (error) {
+    }).catch(error => {
       console.error('Error al verificar integridad de datos:', error);
-    }
+    });
   }
 
   private obtenerMensajeEspecifico(): { titulo: string; descripcion: string; sugerencias: string[] } {
@@ -174,14 +173,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private manejarLimpiarDatos = (): void => {
     if (window.confirm('¿Estás seguro de que quieres limpiar todos los datos? Esta acción no se puede deshacer.')) {
-      try {
-        servicioAlmacenamiento.limpiarDatos();
+      servicioAlmacenamiento.limpiarDatos().then(() => {
         localStorage.removeItem('app-errors');
         window.location.reload();
-      } catch (error) {
+      }).catch(error => {
         console.error('Error al limpiar datos:', error);
         alert('No se pudieron limpiar los datos. Intenta recargar la página.');
-      }
+      });
     }
   };
 

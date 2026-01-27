@@ -159,7 +159,7 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
       dispatch({ tipo: 'ESTABLECER_CARGANDO', payload: true });
       
       // Verificar integridad de datos antes de cargar
-      const integridad = servicioAlmacenamiento.verificarIntegridad();
+      const integridad = await servicioAlmacenamiento.verificarIntegridad();
       
       if (!integridad.valido) {
         console.warn('Problemas de integridad detectados:', integridad.errores);
@@ -184,7 +184,7 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
         }
       }
 
-      const cuentas = servicioAlmacenamiento.obtenerCuentas();
+      const cuentas = await servicioAlmacenamiento.obtenerCuentas();
       
       // Validar integridad de las cuentas cargadas
       const validacionCuentas = validarIntegridadCuentas(cuentas);
@@ -216,7 +216,7 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
   // Agregar nueva cuenta
   const agregarCuenta = async (datosCuenta: Omit<CuentaServicio, 'id' | 'fechaCreacion' | 'fechaActualizacion'>): Promise<CuentaServicio> => {
     try {
-      const nuevaCuenta = servicioAlmacenamiento.guardarCuenta(datosCuenta);
+      const nuevaCuenta = await servicioAlmacenamiento.guardarCuenta(datosCuenta);
       dispatch({ tipo: 'AGREGAR_CUENTA', payload: nuevaCuenta });
       return nuevaCuenta;
     } catch (error) {
@@ -229,7 +229,7 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
   // Actualizar cuenta existente
   const actualizarCuenta = async (id: string, datosActualizados: Partial<Omit<CuentaServicio, 'id' | 'fechaCreacion'>>): Promise<CuentaServicio> => {
     try {
-      const cuentaActualizada = servicioAlmacenamiento.actualizarCuenta(id, datosActualizados);
+      const cuentaActualizada = await servicioAlmacenamiento.actualizarCuenta(id, datosActualizados);
       dispatch({ tipo: 'ACTUALIZAR_CUENTA', payload: { id, cuenta: cuentaActualizada } });
       return cuentaActualizada;
     } catch (error) {
@@ -242,7 +242,7 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
   // Eliminar cuenta
   const eliminarCuenta = async (id: string): Promise<boolean> => {
     try {
-      const eliminada = servicioAlmacenamiento.eliminarCuenta(id);
+      const eliminada = await servicioAlmacenamiento.eliminarCuenta(id);
       if (eliminada) {
         dispatch({ tipo: 'ELIMINAR_CUENTA', payload: id });
       }
@@ -257,7 +257,7 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
   // Eliminar múltiples cuentas
   const eliminarCuentas = async (ids: string[]): Promise<number> => {
     try {
-      const cuentasEliminadas = servicioAlmacenamiento.eliminarCuentas(ids);
+      const cuentasEliminadas = await servicioAlmacenamiento.eliminarCuentas(ids);
       if (cuentasEliminadas > 0) {
         dispatch({ tipo: 'ELIMINAR_CUENTAS', payload: ids });
       }

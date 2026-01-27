@@ -84,7 +84,7 @@ class ServicioIntegracionAPI {
       const datosImportados = await this.llamarAPIProveedor(proveedor, request);
       
       // Convertir datos importados a cuentas
-      const resultado = this.procesarDatosImportados(datosImportados, proveedor);
+      const resultado = await this.procesarDatosImportados(datosImportados, proveedor);
       
       // Actualizar estado de sincronización
       this.estadoSincronizacion.ultimaSincronizacion = new Date();
@@ -184,10 +184,10 @@ class ServicioIntegracionAPI {
   /**
    * Procesa datos importados y los convierte a cuentas
    */
-  private procesarDatosImportados(
+  private async procesarDatosImportados(
     datosImportados: DatosImportadosAPI[],
     proveedor: ConfiguracionProveedor
-  ): ResultadoImportacion {
+  ): Promise<ResultadoImportacion> {
     const cuentasImportadas: CuentaServicio[] = [];
     const errores: ErrorImportacion[] = [];
     let exitosas = 0;
@@ -196,7 +196,7 @@ class ServicioIntegracionAPI {
     for (const dato of datosImportados) {
       try {
         const cuenta = this.convertirACuenta(dato, proveedor);
-        const cuentaGuardada = servicioAlmacenamiento.guardarCuenta(cuenta);
+        const cuentaGuardada = await servicioAlmacenamiento.guardarCuenta(cuenta);
         cuentasImportadas.push(cuentaGuardada);
         exitosas++;
       } catch (error) {

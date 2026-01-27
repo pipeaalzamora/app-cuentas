@@ -1,39 +1,48 @@
 import type { DesgloseSueldo, ResumenDesglose, TipoGasto } from '../tipos/desglosador';
-
-const STORAGE_KEY = 'desgloses-sueldo';
+import { desgloseSueldoAPI } from './desgloseSueldoAPI';
 
 class ServicioDesglosadorSueldo {
-  obtenerDesgloses(): DesgloseSueldo[] {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (!data) return [];
-    
-    const desgloses = JSON.parse(data);
-    return desgloses.map((d: any) => ({
-      ...d,
-      fechaCreacion: new Date(d.fechaCreacion),
-      gastos: d.gastos.map((g: any) => ({
-        ...g,
-        fecha: new Date(g.fecha)
-      }))
-    }));
-  }
-
-  guardarDesglose(desglose: DesgloseSueldo): void {
-    const desgloses = this.obtenerDesgloses();
-    const index = desgloses.findIndex(d => d.id === desglose.id);
-    
-    if (index >= 0) {
-      desgloses[index] = desglose;
-    } else {
-      desgloses.push(desglose);
+  async obtenerDesgloses(): Promise<DesgloseSueldo[]> {
+    try {
+      const desgloses = await desgloseSueldoAPI.obtenerTodos();
+      return desgloses.map((d: any) => ({
+        ...d,
+        fechaCreacion: new Date(d.fechaCreacion),
+        gastos: d.gastos.map((g: any) => ({
+          ...g,
+          fecha: new Date(g.fecha)
+        }))
+      }));
+    } catch (error) {
+      console.error('Error al obtener desgloses:', error);
+      return [];
     }
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(desgloses));
   }
 
-  eliminarDesglose(id: string): void {
-    const desgloses = this.obtenerDesgloses().filter(d => d.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(desgloses));
+  async guardarDesglose(desglose: DesgloseSueldo): Promise<DesgloseSueldo> {
+    try {
+      // Verificar si ya existe
+      const desgloses = await this.obtenerDesgloses();
+      const existe = desgloses.some(d => d.id === desglose.id);
+      
+      if (existe) {
+        return await desgloseSueldoAPI.actualizar(desglose.id, desglose);
+      } else {
+        return await desgloseSueldoAPI.crear(desglose);
+      }
+    } catch (error) {
+      console.error('Error al guardar desglose:', error);
+      throw error;
+    }
+  }
+
+  async eliminarDesglose(id: string): Promise<void> {
+    try {
+      await desgloseSueldoAPI.eliminar(id);
+    } catch (error) {
+      console.error('Error al eliminar desglose:', error);
+      throw error;
+    }
   }
 
   calcularResumen(desglose: DesgloseSueldo): ResumenDesglose {

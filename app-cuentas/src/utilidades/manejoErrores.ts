@@ -88,7 +88,7 @@ export class ManejadorErrores {
   static async recuperarAlmacenamiento(): Promise<RecoveryResult> {
     try {
       // Verificar integridad actual
-      const integridad = servicioAlmacenamiento.verificarIntegridad();
+      const integridad = await servicioAlmacenamiento.verificarIntegridad();
       
       if (integridad.valido) {
         return {
@@ -225,9 +225,9 @@ export class ManejadorErrores {
   /**
    * Crea un respaldo de emergencia de los datos
    */
-  static crearRespaldoEmergencia(): { success: boolean; data?: string; message: string } {
+  static async crearRespaldoEmergencia(): Promise<{ success: boolean; data?: string; message: string }> {
     try {
-      const datos = servicioAlmacenamiento.exportarDatos();
+      const datos = await servicioAlmacenamiento.exportarDatos();
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const nombreArchivo = `respaldo-emergencia-${timestamp}.json`;
 
@@ -262,12 +262,12 @@ export class ManejadorErrores {
   /**
    * Verifica el estado general de la aplicación
    */
-  static verificarEstadoAplicacion(): {
+  static async verificarEstadoAplicacion(): Promise<{
     healthy: boolean;
     issues: string[];
     warnings: string[];
     recommendations: string[];
-  } {
+  }> {
     const issues: string[] = [];
     const warnings: string[] = [];
     const recommendations: string[] = [];
@@ -286,7 +286,7 @@ export class ManejadorErrores {
       }
 
       // Verificar integridad de datos
-      const integridad = servicioAlmacenamiento.verificarIntegridad();
+      const integridad = await servicioAlmacenamiento.verificarIntegridad();
       if (!integridad.valido) {
         issues.push('Problemas de integridad en los datos');
         recommendations.push('Ejecutar reparación de datos');

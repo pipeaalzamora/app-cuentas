@@ -43,23 +43,27 @@ const DesglosadorSueldo: React.FC = () => {
     cargarDesgloses();
   }, []);
 
-  const cargarDesgloses = () => {
-    const desgloses = servicioDesglosadorSueldo.obtenerDesgloses();
-    setTodosDesgloses(desgloses);
-    
-    const hoy = new Date();
-    const desgloseMesActual = desgloses.find(
-      d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
-    );
-    
-    if (desgloseMesActual) {
-      setDesgloseActual(desgloseMesActual);
-      setSueldoInicial(desgloseMesActual.sueldoInicial.toString());
-      setNombreDesglose(desgloseMesActual.nombre || '');
+  const cargarDesgloses = async () => {
+    try {
+      const desgloses = await servicioDesglosadorSueldo.obtenerDesgloses();
+      setTodosDesgloses(desgloses);
+      
+      const hoy = new Date();
+      const desgloseMesActual = desgloses.find(
+        d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
+      );
+      
+      if (desgloseMesActual) {
+        setDesgloseActual(desgloseMesActual);
+        setSueldoInicial(desgloseMesActual.sueldoInicial.toString());
+        setNombreDesglose(desgloseMesActual.nombre || '');
+      }
+    } catch (error) {
+      console.error('Error al cargar desgloses:', error);
     }
   };
 
-  const iniciarDesglose = () => {
+  const iniciarDesglose = async () => {
     const sueldoLimpio = limpiarNumero(sueldoInicial);
     const sueldo = parseFloat(sueldoLimpio);
     if (isNaN(sueldo) || sueldo <= 0) return;
@@ -75,11 +79,15 @@ const DesglosadorSueldo: React.FC = () => {
       nombre: nombreDesglose || `Desglose ${hoy.getMonth() + 1}/${hoy.getFullYear()}`
     };
 
-    servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
-    setDesgloseActual(nuevoDesglose);
+    try {
+      await servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
+      setDesgloseActual(nuevoDesglose);
+    } catch (error) {
+      console.error('Error al iniciar desglose:', error);
+    }
   };
 
-  const agregarGasto = () => {
+  const agregarGasto = async () => {
     if (!desgloseActual || !descripcion || !monto) return;
 
     const montoLimpio = limpiarNumero(monto);
@@ -99,17 +107,21 @@ const DesglosadorSueldo: React.FC = () => {
       gastos: [...desgloseActual.gastos, nuevoGasto]
     };
 
-    servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
-    
-    // Reset form
-    setDescripcion('');
-    setMonto('');
-    setTipo('otro');
-    setMostrarFormGasto(false);
+    try {
+      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+      
+      // Reset form
+      setDescripcion('');
+      setMonto('');
+      setTipo('otro');
+      setMostrarFormGasto(false);
+    } catch (error) {
+      console.error('Error al agregar gasto:', error);
+    }
   };
 
-  const eliminarGasto = (id: string) => {
+  const eliminarGasto = async (id: string) => {
     if (!desgloseActual) return;
 
     const desgloseActualizado = {
@@ -117,8 +129,12 @@ const DesglosadorSueldo: React.FC = () => {
       gastos: desgloseActual.gastos.filter(g => g.id !== id)
     };
 
-    servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
+    try {
+      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+    } catch (error) {
+      console.error('Error al eliminar gasto:', error);
+    }
   };
 
   const iniciarEdicionGasto = (gasto: Gasto) => {
@@ -129,7 +145,7 @@ const DesglosadorSueldo: React.FC = () => {
     setMostrarFormGasto(true);
   };
 
-  const actualizarGasto = () => {
+  const actualizarGasto = async () => {
     if (!desgloseActual || !gastoEditando || !descripcion || !monto) return;
 
     const montoLimpio = limpiarNumero(monto);
@@ -145,15 +161,19 @@ const DesglosadorSueldo: React.FC = () => {
       )
     };
 
-    servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
-    
-    // Reset form
-    setDescripcion('');
-    setMonto('');
-    setTipo('otro');
-    setGastoEditando(null);
-    setMostrarFormGasto(false);
+    try {
+      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+      
+      // Reset form
+      setDescripcion('');
+      setMonto('');
+      setTipo('otro');
+      setGastoEditando(null);
+      setMostrarFormGasto(false);
+    } catch (error) {
+      console.error('Error al actualizar gasto:', error);
+    }
   };
 
   const cancelarEdicion = () => {
@@ -171,7 +191,7 @@ const DesglosadorSueldo: React.FC = () => {
     servicioGeneradorPDF.generarReporteDesglose(desgloseActual, resumen);
   };
 
-  const editarSueldo = () => {
+  const editarSueldo = async () => {
     if (!desgloseActual) return;
     
     const sueldoLimpio = limpiarNumero(nuevoSueldo);
@@ -183,13 +203,17 @@ const DesglosadorSueldo: React.FC = () => {
       sueldoInicial: sueldo
     };
 
-    servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
-    setMostrarEditarSueldo(false);
-    setNuevoSueldo('');
+    try {
+      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+      setMostrarEditarSueldo(false);
+      setNuevoSueldo('');
+    } catch (error) {
+      console.error('Error al editar sueldo:', error);
+    }
   };
 
-  const cambiarDesglose = (mes: number, año: number) => {
+  const cambiarDesglose = async (mes: number, año: number) => {
     const desglose = todosDesgloses.find(d => d.mes === mes && d.año === año);
     if (desglose) {
       setDesgloseActual(desglose);
@@ -204,9 +228,13 @@ const DesglosadorSueldo: React.FC = () => {
         año,
         nombre: `Desglose ${mes}/${año}`
       };
-      servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
-      setDesgloseActual(nuevoDesglose);
-      cargarDesgloses();
+      try {
+        await servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
+        setDesgloseActual(nuevoDesglose);
+        await cargarDesgloses();
+      } catch (error) {
+        console.error('Error al cambiar desglose:', error);
+      }
     }
   };
 

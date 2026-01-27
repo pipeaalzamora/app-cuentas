@@ -46,23 +46,27 @@ const DesglosadorBebe: React.FC = () => {
     cargarDesgloses();
   }, []);
 
-  const cargarDesgloses = () => {
-    const desgloses = servicioDesglosadorBebe.obtenerDesgloses();
-    setTodosDesgloses(desgloses);
-    
-    const hoy = new Date();
-    const desgloseMesActual = desgloses.find(
-      d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
-    );
-    
-    if (desgloseMesActual) {
-      setDesgloseActual(desgloseMesActual);
-      setPresupuesto(desgloseMesActual.presupuestoMensual.toString());
-      setNombreDesglose(desgloseMesActual.nombre || '');
+  const cargarDesgloses = async () => {
+    try {
+      const desgloses = await servicioDesglosadorBebe.obtenerDesgloses();
+      setTodosDesgloses(desgloses);
+      
+      const hoy = new Date();
+      const desgloseMesActual = desgloses.find(
+        d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
+      );
+      
+      if (desgloseMesActual) {
+        setDesgloseActual(desgloseMesActual);
+        setPresupuesto(desgloseMesActual.presupuestoMensual.toString());
+        setNombreDesglose(desgloseMesActual.nombre || '');
+      }
+    } catch (error) {
+      console.error('Error al cargar desgloses bebé:', error);
     }
   };
 
-  const iniciarDesglose = () => {
+  const iniciarDesglose = async () => {
     const presupuestoLimpio = limpiarNumero(presupuesto);
     const presupuestoNum = parseFloat(presupuestoLimpio);
     if (isNaN(presupuestoNum) || presupuestoNum <= 0) return;
@@ -78,12 +82,16 @@ const DesglosadorBebe: React.FC = () => {
       nombre: nombreDesglose || `Gastos Bebé ${hoy.getMonth() + 1}/${hoy.getFullYear()}`
     };
 
-    servicioDesglosadorBebe.guardarDesglose(nuevoDesglose);
-    setDesgloseActual(nuevoDesglose);
-    cargarDesgloses();
+    try {
+      await servicioDesglosadorBebe.guardarDesglose(nuevoDesglose);
+      setDesgloseActual(nuevoDesglose);
+      await cargarDesgloses();
+    } catch (error) {
+      console.error('Error al iniciar desglose bebé:', error);
+    }
   };
 
-  const agregarGasto = () => {
+  const agregarGasto = async () => {
     if (!desgloseActual || !descripcion || !monto || !cantidad) return;
 
     const montoLimpio = limpiarNumero(monto);
@@ -109,20 +117,24 @@ const DesglosadorBebe: React.FC = () => {
       gastos: [...desgloseActual.gastos, nuevoGasto]
     };
 
-    servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
-    
-    // Reset form
-    setDescripcion('');
-    setMonto('');
-    setCantidad('1');
-    setTipo('otro');
-    setNotas('');
-    setEnlaceProducto('');
-    setMostrarFormGasto(false);
+    try {
+      await servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+      
+      // Reset form
+      setDescripcion('');
+      setMonto('');
+      setCantidad('1');
+      setTipo('otro');
+      setNotas('');
+      setEnlaceProducto('');
+      setMostrarFormGasto(false);
+    } catch (error) {
+      console.error('Error al agregar gasto bebé:', error);
+    }
   };
 
-  const eliminarGasto = (id: string) => {
+  const eliminarGasto = async (id: string) => {
     if (!desgloseActual) return;
 
     const desgloseActualizado = {
@@ -130,8 +142,12 @@ const DesglosadorBebe: React.FC = () => {
       gastos: desgloseActual.gastos.filter(g => g.id !== id)
     };
 
-    servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
+    try {
+      await servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+    } catch (error) {
+      console.error('Error al eliminar gasto bebé:', error);
+    }
   };
 
   const iniciarEdicionGasto = (gasto: GastoBebe) => {
@@ -145,7 +161,7 @@ const DesglosadorBebe: React.FC = () => {
     setMostrarFormGasto(true);
   };
 
-  const actualizarGasto = () => {
+  const actualizarGasto = async () => {
     if (!desgloseActual || !gastoEditando || !descripcion || !monto || !cantidad) return;
 
     const montoLimpio = limpiarNumero(monto);
@@ -172,18 +188,22 @@ const DesglosadorBebe: React.FC = () => {
       )
     };
 
-    servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
-    
-    // Reset form
-    setDescripcion('');
-    setMonto('');
-    setCantidad('1');
-    setTipo('otro');
-    setNotas('');
-    setEnlaceProducto('');
-    setGastoEditando(null);
-    setMostrarFormGasto(false);
+    try {
+      await servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+      
+      // Reset form
+      setDescripcion('');
+      setMonto('');
+      setCantidad('1');
+      setTipo('otro');
+      setNotas('');
+      setEnlaceProducto('');
+      setGastoEditando(null);
+      setMostrarFormGasto(false);
+    } catch (error) {
+      console.error('Error al actualizar gasto bebé:', error);
+    }
   };
 
   const cancelarEdicion = () => {
@@ -197,7 +217,7 @@ const DesglosadorBebe: React.FC = () => {
     setMostrarFormGasto(false);
   };
 
-  const editarPresupuesto = () => {
+  const editarPresupuesto = async () => {
     if (!desgloseActual) return;
     
     const presupuestoLimpio = limpiarNumero(nuevoPresupuesto);
@@ -209,13 +229,17 @@ const DesglosadorBebe: React.FC = () => {
       presupuestoMensual: presupuestoNum
     };
 
-    servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
-    setDesgloseActual(desgloseActualizado);
-    setMostrarEditarPresupuesto(false);
-    setNuevoPresupuesto('');
+    try {
+      await servicioDesglosadorBebe.guardarDesglose(desgloseActualizado);
+      setDesgloseActual(desgloseActualizado);
+      setMostrarEditarPresupuesto(false);
+      setNuevoPresupuesto('');
+    } catch (error) {
+      console.error('Error al editar presupuesto:', error);
+    }
   };
 
-  const cambiarDesglose = (mes: number, año: number) => {
+  const cambiarDesglose = async (mes: number, año: number) => {
     const desglose = todosDesgloses.find(d => d.mes === mes && d.año === año);
     if (desglose) {
       setDesgloseActual(desglose);
@@ -229,9 +253,13 @@ const DesglosadorBebe: React.FC = () => {
         año,
         nombre: `Gastos Bebé ${mes}/${año}`
       };
-      servicioDesglosadorBebe.guardarDesglose(nuevoDesglose);
-      setDesgloseActual(nuevoDesglose);
-      cargarDesgloses();
+      try {
+        await servicioDesglosadorBebe.guardarDesglose(nuevoDesglose);
+        setDesgloseActual(nuevoDesglose);
+        await cargarDesgloses();
+      } catch (error) {
+        console.error('Error al cambiar desglose bebé:', error);
+      }
     }
   };
 

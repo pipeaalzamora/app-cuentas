@@ -1,39 +1,48 @@
 import type { DesgloseBebe, ResumenDesgloseBebe, TipoGastoBebe } from '../tipos/desglosadorBebe';
-
-const STORAGE_KEY = 'desgloses-bebe';
+import { desgloseBebeAPI } from './desgloseBebeAPI';
 
 class ServicioDesglosadorBebe {
-  obtenerDesgloses(): DesgloseBebe[] {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (!data) return [];
-    
-    const desgloses = JSON.parse(data);
-    return desgloses.map((d: any) => ({
-      ...d,
-      fechaCreacion: new Date(d.fechaCreacion),
-      gastos: d.gastos.map((g: any) => ({
-        ...g,
-        fecha: new Date(g.fecha)
-      }))
-    }));
-  }
-
-  guardarDesglose(desglose: DesgloseBebe): void {
-    const desgloses = this.obtenerDesgloses();
-    const index = desgloses.findIndex(d => d.id === desglose.id);
-    
-    if (index >= 0) {
-      desgloses[index] = desglose;
-    } else {
-      desgloses.push(desglose);
+  async obtenerDesgloses(): Promise<DesgloseBebe[]> {
+    try {
+      const desgloses = await desgloseBebeAPI.obtenerTodos();
+      return desgloses.map((d: any) => ({
+        ...d,
+        fechaCreacion: new Date(d.fechaCreacion),
+        gastos: d.gastos.map((g: any) => ({
+          ...g,
+          fecha: new Date(g.fecha)
+        }))
+      }));
+    } catch (error) {
+      console.error('Error al obtener desgloses bebé:', error);
+      return [];
     }
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(desgloses));
   }
 
-  eliminarDesglose(id: string): void {
-    const desgloses = this.obtenerDesgloses().filter(d => d.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(desgloses));
+  async guardarDesglose(desglose: DesgloseBebe): Promise<DesgloseBebe> {
+    try {
+      // Verificar si ya existe
+      const desgloses = await this.obtenerDesgloses();
+      const existe = desgloses.some(d => d.id === desglose.id);
+      
+      if (existe) {
+        return await desgloseBebeAPI.actualizar(desglose.id, desglose);
+      } else {
+        return await desgloseBebeAPI.crear(desglose);
+      }
+    } catch (error) {
+      console.error('Error al guardar desglose bebé:', error);
+      throw error;
+    }
+  }
+
+  async eliminarDesglose(id: string): Promise<void> {
+    try {
+      await desgloseBebeAPI.eliminar(id);
+    } catch (error) {
+      console.error('Error al eliminar desglose bebé:', error);
+      throw error;
+    }
   }
 
   calcularResumen(desglose: DesgloseBebe): ResumenDesgloseBebe {

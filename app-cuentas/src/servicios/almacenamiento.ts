@@ -9,13 +9,13 @@ import {
   esquemaCuentaServicio,
   esquemaConfiguracionUsuario 
 } from '../tipos/esquemas';
+import { cuentasAPI } from './cuentasAPI';
 
 /**
- * Servicio para manejar el almacenamiento local de cuentas de servicios
- * Implementa persistencia en localStorage con validación de datos
+ * Servicio para manejar el almacenamiento de cuentas de servicios
+ * Implementa persistencia en base de datos mediante API
  */
 export class ServicioAlmacenamiento {
-  private static readonly CLAVE_ALMACENAMIENTO = 'gestor-cuentas-servicios';
   private static readonly VERSION_ACTUAL = '1.0.0';
 
   /**
@@ -28,309 +28,249 @@ export class ServicioAlmacenamiento {
   };
 
   /**
-   * Obtiene todos los datos del almacenamiento local
-   */
-  private obtenerDatosCompletos(): AlmacenamientoLocal {
-    try {
-      const datosString = localStorage.getItem(ServicioAlmacenamiento.CLAVE_ALMACENAMIENTO);
-      
-      if (!datosString) {
-        // Primera vez - crear estructura inicial
-        const datosIniciales: AlmacenamientoLocal = {
-          cuentas: [],
-          configuracion: ServicioAlmacenamiento.CONFIGURACION_DEFAULT,
-          version: ServicioAlmacenamiento.VERSION_ACTUAL
-        };
-        this.guardarDatosCompletos(datosIniciales);
-        return datosIniciales;
-      }
-
-      const datosParseados = JSON.parse(datosString);
-      
-      // Convertir fechas de string a Date
-      if (datosParseados.cuentas) {
-        datosParseados.cuentas = datosParseados.cuentas.map((cuenta: Record<string, unknown>) => {
-          const fechaVencimiento = cuenta.fechaVencimiento as string | number | Date;
-          const fechaCreacion = cuenta.fechaCreacion as string | number | Date;
-          const fechaActualizacion = cuenta.fechaActualizacion as string | number | Date | undefined;
-          const fechaEmision = cuenta.fechaEmision as string | number | Date | undefined;
-          const fechaCorte = cuenta.fechaCorte as string | number | Date | undefined;
-          const fechaLectura = cuenta.fechaLectura as string | number | Date | undefined;
-          const proximaFechaLectura = cuenta.proximaFechaLectura as string | number | Date | undefined;
-          
-          return {
-            ...cuenta,
-            fechaVencimiento: new Date(fechaVencimiento),
-            fechaCreacion: new Date(fechaCreacion),
-            fechaActualizacion: fechaActualizacion ? new Date(fechaActualizacion) : undefined,
-            // Nuevos campos de fecha (con valores por defecto para compatibilidad)
-            fechaEmision: fechaEmision ? new Date(fechaEmision) : new Date(fechaCreacion || fechaVencimiento),
-            fechaCorte: fechaCorte ? new Date(fechaCorte) : new Date(fechaVencimiento),
-            fechaLectura: fechaLectura ? new Date(fechaLectura) : new Date(fechaVencimiento),
-            proximaFechaLectura: proximaFechaLectura ? new Date(proximaFechaLectura) : undefined,
-            // Campos numéricos con valores por defecto
-            saldoAnterior: cuenta.saldoAnterior || 0,
-            consumoActual: cuenta.consumoActual || cuenta.monto || 0,
-            otrosCargos: cuenta.otrosCargos || 0,
-            descuentos: cuenta.descuentos || 0
-          };
-        });
-      }
-
-      // Validar estructura de datos
-      const datosValidados = esquemaAlmacenamientoLocal.parse(datosParseados);
-      
-      // Migrar versión si es necesario
-      return this.migrarVersion(datosValidados);
-      
-    } catch (error) {
-      console.error('Error al obtener datos del almacenamiento:', error);
-      
-      // En caso de error, crear estructura limpia
-      const datosLimpios: AlmacenamientoLocal = {
-        cuentas: [],
-        configuracion: ServicioAlmacenamiento.CONFIGURACION_DEFAULT,
-        version: ServicioAlmacenamiento.VERSION_ACTUAL
-      };
-      
-      this.guardarDatosCompletos(datosLimpios);
-      return datosLimpios;
-    }
-  }
-
-  /**
-   * Guarda todos los datos en el almacenamiento local
-   */
-  private guardarDatosCompletos(datos: AlmacenamientoLocal): void {
-    try {
-      // Validar antes de guardar
-      const datosValidados = esquemaAlmacenamientoLocal.parse(datos);
-      
-      const datosString = JSON.stringify(datosValidados, null, 2);
-      localStorage.setItem(ServicioAlmacenamiento.CLAVE_ALMACENAMIENTO, datosString);
-    } catch (error) {
-      console.error('Error al guardar datos en almacenamiento:', error);
-      throw new Error('No se pudieron guardar los datos. Verifique que el navegador permita almacenamiento local.');
-    }
-  }
-
-  /**
-   * Migra datos de versiones anteriores si es necesario
-   */
-  private migrarVersion(datos: AlmacenamientoLocal): AlmacenamientoLocal {
-    if (datos.version === ServicioAlmacenamiento.VERSION_ACTUAL) {
-      return datos;
-    }
-
-    // Aquí se implementarían migraciones futuras
-    console.log(`Migrando datos de versión ${datos.version} a ${ServicioAlmacenamiento.VERSION_ACTUAL}`);
-    
-    const datosMigrados: AlmacenamientoLocal = {
-      ...datos,
-      version: ServicioAlmacenamiento.VERSION_ACTUAL
-    };
-
-    this.guardarDatosCompletos(datosMigrados);
-    return datosMigrados;
-  }
-
-  /**
-   * Genera un ID único para una nueva cuenta
-   */
-  private generarId(): string {
-    return `cuenta_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-  }
-
-  /**
    * Guarda una nueva cuenta de servicio
    */
-  guardarCuenta(datosCuenta: Omit<CuentaServicio, 'id' | 'fechaCreacion' | 'fechaActualizacion'>): CuentaServicio {
-    const datos = this.obtenerDatosCompletos();
-    
-    const nuevaCuenta: CuentaServicio = {
-      ...datosCuenta,
-      id: this.generarId(),
-      fechaCreacion: new Date(),
-      fechaActualizacion: undefined
-    };
+  async guardarCuenta(datosCuenta: Omit<CuentaServicio, 'id' | 'fechaCreacion' | 'fechaActualizacion'>): Promise<CuentaServicio> {
+    try {
+      const nuevaCuenta: CuentaServicio = {
+        ...datosCuenta,
+        id: this.generarId(),
+        fechaCreacion: new Date(),
+        fechaActualizacion: undefined
+      };
 
-    // Validar la nueva cuenta
-    const cuentaValidada = esquemaCuentaServicio.parse(nuevaCuenta);
-    
-    datos.cuentas.push(cuentaValidada);
-    this.guardarDatosCompletos(datos);
-    
-    return cuentaValidada;
+      // Validar la nueva cuenta
+      const cuentaValidada = esquemaCuentaServicio.parse(nuevaCuenta);
+      
+      const cuentaGuardada = await cuentasAPI.crear(cuentaValidada);
+      return cuentaGuardada;
+    } catch (error) {
+      console.error('Error al guardar cuenta:', error);
+      throw error;
+    }
   }
 
   /**
    * Actualiza una cuenta existente
    */
-  actualizarCuenta(id: string, datosActualizados: Partial<Omit<CuentaServicio, 'id' | 'fechaCreacion'>>): CuentaServicio {
-    const datos = this.obtenerDatosCompletos();
-    
-    const indice = datos.cuentas.findIndex(cuenta => cuenta.id === id);
-    if (indice === -1) {
-      throw new Error(`No se encontró la cuenta con ID: ${id}`);
+  async actualizarCuenta(id: string, datosActualizados: Partial<Omit<CuentaServicio, 'id' | 'fechaCreacion'>>): Promise<CuentaServicio> {
+    try {
+      const cuentaActualizada: Partial<CuentaServicio> = {
+        ...datosActualizados,
+        fechaActualizacion: new Date()
+      };
+
+      const cuentaGuardada = await cuentasAPI.actualizar(id, cuentaActualizada);
+      
+      // Validar la cuenta actualizada
+      const cuentaValidada = esquemaCuentaServicio.parse(cuentaGuardada);
+      return cuentaValidada;
+    } catch (error) {
+      console.error('Error al actualizar cuenta:', error);
+      throw error;
     }
-
-    const cuentaActualizada: CuentaServicio = {
-      ...datos.cuentas[indice],
-      ...datosActualizados,
-      fechaActualizacion: new Date()
-    };
-
-    // Validar la cuenta actualizada
-    const cuentaValidada = esquemaCuentaServicio.parse(cuentaActualizada);
-    
-    datos.cuentas[indice] = cuentaValidada;
-    this.guardarDatosCompletos(datos);
-    
-    return cuentaValidada;
   }
 
   /**
    * Obtiene todas las cuentas con filtros opcionales
    */
-  obtenerCuentas(filtros?: FiltrosCuentas): CuentaServicio[] {
-    const datos = this.obtenerDatosCompletos();
-    let cuentas = datos.cuentas;
+  async obtenerCuentas(filtros?: FiltrosCuentas): Promise<CuentaServicio[]> {
+    try {
+      const cuentas = await cuentasAPI.obtenerTodas();
+      
+      // Convertir fechas de string a Date
+      const cuentasConFechas = cuentas.map((cuenta: any) => ({
+        ...cuenta,
+        fechaVencimiento: new Date(cuenta.fechaVencimiento),
+        fechaCreacion: new Date(cuenta.fechaCreacion),
+        fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
+        fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
+        fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
+        fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
+        proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
+        saldoAnterior: cuenta.saldoAnterior || 0,
+        consumoActual: cuenta.consumoActual || cuenta.monto || 0,
+        otrosCargos: cuenta.otrosCargos || 0,
+        descuentos: cuenta.descuentos || 0
+      }));
 
-    if (filtros) {
-      cuentas = cuentas.filter(cuenta => {
-        if (filtros.mes !== undefined && cuenta.mes !== filtros.mes) return false;
-        if (filtros.año !== undefined && cuenta.año !== filtros.año) return false;
-        if (filtros.tipoServicio !== undefined && cuenta.tipoServicio !== filtros.tipoServicio) return false;
-        if (filtros.pagada !== undefined && cuenta.pagada !== filtros.pagada) return false;
-        return true;
-      });
+      // Aplicar filtros si existen
+      if (filtros) {
+        return cuentasConFechas.filter((cuenta: CuentaServicio) => {
+          if (filtros.mes !== undefined && cuenta.mes !== filtros.mes) return false;
+          if (filtros.año !== undefined && cuenta.año !== filtros.año) return false;
+          if (filtros.tipoServicio !== undefined && cuenta.tipoServicio !== filtros.tipoServicio) return false;
+          if (filtros.pagada !== undefined && cuenta.pagada !== filtros.pagada) return false;
+          return true;
+        });
+      }
+
+      return cuentasConFechas;
+    } catch (error) {
+      console.error('Error al obtener cuentas:', error);
+      return [];
     }
-
-    return cuentas;
   }
 
   /**
    * Obtiene una cuenta específica por ID
    */
-  obtenerCuentaPorId(id: string): CuentaServicio | null {
-    const datos = this.obtenerDatosCompletos();
-    return datos.cuentas.find(cuenta => cuenta.id === id) || null;
+  async obtenerCuentaPorId(id: string): Promise<CuentaServicio | null> {
+    try {
+      const cuenta = await cuentasAPI.obtenerPorId(id);
+      
+      // Convertir fechas
+      return {
+        ...cuenta,
+        fechaVencimiento: new Date(cuenta.fechaVencimiento),
+        fechaCreacion: new Date(cuenta.fechaCreacion),
+        fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
+        fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
+        fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
+        fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
+        proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
+      };
+    } catch (error) {
+      console.error('Error al obtener cuenta por ID:', error);
+      return null;
+    }
   }
 
   /**
    * Elimina una cuenta por ID
    */
-  eliminarCuenta(id: string): boolean {
-    const datos = this.obtenerDatosCompletos();
-    
-    const indiceInicial = datos.cuentas.length;
-    datos.cuentas = datos.cuentas.filter(cuenta => cuenta.id !== id);
-    
-    if (datos.cuentas.length === indiceInicial) {
-      return false; // No se encontró la cuenta
+  async eliminarCuenta(id: string): Promise<boolean> {
+    try {
+      await cuentasAPI.eliminar(id);
+      return true;
+    } catch (error) {
+      console.error('Error al eliminar cuenta:', error);
+      return false;
     }
-
-    this.guardarDatosCompletos(datos);
-    return true;
   }
 
   /**
    * Elimina múltiples cuentas por IDs
    */
-  eliminarCuentas(ids: string[]): number {
-    const datos = this.obtenerDatosCompletos();
-    
-    const cuentasIniciales = datos.cuentas.length;
-    datos.cuentas = datos.cuentas.filter(cuenta => !ids.includes(cuenta.id));
-    
-    const cuentasEliminadas = cuentasIniciales - datos.cuentas.length;
-    
-    if (cuentasEliminadas > 0) {
-      this.guardarDatosCompletos(datos);
+  async eliminarCuentas(ids: string[]): Promise<number> {
+    try {
+      let eliminadas = 0;
+      for (const id of ids) {
+        try {
+          await cuentasAPI.eliminar(id);
+          eliminadas++;
+        } catch (error) {
+          console.error(`Error al eliminar cuenta ${id}:`, error);
+        }
+      }
+      return eliminadas;
+    } catch (error) {
+      console.error('Error al eliminar cuentas:', error);
+      return 0;
     }
-    
-    return cuentasEliminadas;
   }
 
   /**
-   * Obtiene la configuración del usuario
+   * Obtiene la configuración del usuario (localStorage por ahora)
    */
   obtenerConfiguracion(): ConfiguracionUsuario {
-    const datos = this.obtenerDatosCompletos();
-    return datos.configuracion;
+    try {
+      const configString = localStorage.getItem('configuracion-usuario');
+      if (!configString) {
+        return ServicioAlmacenamiento.CONFIGURACION_DEFAULT;
+      }
+      
+      const config = JSON.parse(configString);
+      return esquemaConfiguracionUsuario.parse(config);
+    } catch (error) {
+      console.error('Error al obtener configuración:', error);
+      return ServicioAlmacenamiento.CONFIGURACION_DEFAULT;
+    }
   }
 
   /**
-   * Actualiza la configuración del usuario
+   * Actualiza la configuración del usuario (localStorage por ahora)
    */
   actualizarConfiguracion(nuevaConfiguracion: Partial<ConfiguracionUsuario>): ConfiguracionUsuario {
-    const datos = this.obtenerDatosCompletos();
-    
-    const configuracionActualizada = {
-      ...datos.configuracion,
-      ...nuevaConfiguracion
-    };
+    try {
+      const configActual = this.obtenerConfiguracion();
+      const configuracionActualizada = {
+        ...configActual,
+        ...nuevaConfiguracion
+      };
 
-    // Validar la configuración
-    const configuracionValidada = esquemaConfiguracionUsuario.parse(configuracionActualizada);
-    
-    datos.configuracion = configuracionValidada;
-    this.guardarDatosCompletos(datos);
-    
-    return configuracionValidada;
+      // Validar la configuración
+      const configuracionValidada = esquemaConfiguracionUsuario.parse(configuracionActualizada);
+      
+      localStorage.setItem('configuracion-usuario', JSON.stringify(configuracionValidada));
+      return configuracionValidada;
+    } catch (error) {
+      console.error('Error al actualizar configuración:', error);
+      throw error;
+    }
   }
 
   /**
    * Exporta todos los datos como JSON para respaldo
    */
-  exportarDatos(): string {
-    const datos = this.obtenerDatosCompletos();
-    return JSON.stringify(datos, null, 2);
+  async exportarDatos(): Promise<string> {
+    try {
+      const cuentas = await this.obtenerCuentas();
+      const configuracion = this.obtenerConfiguracion();
+      
+      const datos: AlmacenamientoLocal = {
+        cuentas,
+        configuracion,
+        version: ServicioAlmacenamiento.VERSION_ACTUAL
+      };
+      
+      return JSON.stringify(datos, null, 2);
+    } catch (error) {
+      console.error('Error al exportar datos:', error);
+      throw error;
+    }
   }
 
   /**
    * Importa datos desde un JSON de respaldo
    */
-  importarDatos(datosJson: string, sobrescribir: boolean = false): { exito: boolean; mensaje: string; cuentasImportadas?: number } {
+  async importarDatos(datosJson: string, sobrescribir: boolean = false): Promise<{ exito: boolean; mensaje: string; cuentasImportadas?: number }> {
     try {
       const datosImportados = JSON.parse(datosJson);
       
       // Convertir fechas si es necesario
       if (datosImportados.cuentas) {
-        datosImportados.cuentas = datosImportados.cuentas.map((cuenta: Record<string, unknown>) => {
-          const fechaVencimiento = cuenta.fechaVencimiento as string | number | Date;
-          const fechaCreacion = cuenta.fechaCreacion as string | number | Date;
-          const fechaActualizacion = cuenta.fechaActualizacion as string | number | Date | undefined;
-          const fechaEmision = cuenta.fechaEmision as string | number | Date | undefined;
-          const fechaCorte = cuenta.fechaCorte as string | number | Date | undefined;
-          const fechaLectura = cuenta.fechaLectura as string | number | Date | undefined;
-          const proximaFechaLectura = cuenta.proximaFechaLectura as string | number | Date | undefined;
-          
-          return {
-            ...cuenta,
-            fechaVencimiento: new Date(fechaVencimiento),
-            fechaCreacion: new Date(fechaCreacion),
-            fechaActualizacion: fechaActualizacion ? new Date(fechaActualizacion) : undefined,
-            // Nuevos campos de fecha con valores por defecto
-            fechaEmision: fechaEmision ? new Date(fechaEmision) : new Date(fechaCreacion || fechaVencimiento),
-            fechaCorte: fechaCorte ? new Date(fechaCorte) : new Date(fechaVencimiento),
-            fechaLectura: fechaLectura ? new Date(fechaLectura) : new Date(fechaVencimiento),
-            proximaFechaLectura: proximaFechaLectura ? new Date(proximaFechaLectura) : undefined,
-            // Campos numéricos con valores por defecto
-            saldoAnterior: cuenta.saldoAnterior || 0,
-            consumoActual: cuenta.consumoActual || cuenta.monto || 0,
-            otrosCargos: cuenta.otrosCargos || 0,
-            descuentos: cuenta.descuentos || 0
-          };
-        });
+        datosImportados.cuentas = datosImportados.cuentas.map((cuenta: any) => ({
+          ...cuenta,
+          fechaVencimiento: new Date(cuenta.fechaVencimiento),
+          fechaCreacion: new Date(cuenta.fechaCreacion),
+          fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
+          fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
+          fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
+          fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
+          proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
+          saldoAnterior: cuenta.saldoAnterior || 0,
+          consumoActual: cuenta.consumoActual || cuenta.monto || 0,
+          otrosCargos: cuenta.otrosCargos || 0,
+          descuentos: cuenta.descuentos || 0
+        }));
       }
 
       // Validar estructura
       const datosValidados = esquemaAlmacenamientoLocal.parse(datosImportados);
       
       if (sobrescribir) {
-        // Reemplazar todos los datos
-        this.guardarDatosCompletos(datosValidados);
+        // Eliminar todas las cuentas existentes
+        const cuentasExistentes = await this.obtenerCuentas();
+        for (const cuenta of cuentasExistentes) {
+          await this.eliminarCuenta(cuenta.id);
+        }
+        
+        // Importar nuevas cuentas
+        for (const cuenta of datosValidados.cuentas) {
+          await cuentasAPI.crear(cuenta);
+        }
+        
         return {
           exito: true,
           mensaje: `Datos importados exitosamente. ${datosValidados.cuentas.length} cuentas cargadas.`,
@@ -338,20 +278,13 @@ export class ServicioAlmacenamiento {
         };
       } else {
         // Fusionar con datos existentes
-        const datosActuales = this.obtenerDatosCompletos();
-        
-        // Evitar duplicados por ID
-        const idsExistentes = new Set(datosActuales.cuentas.map(c => c.id));
+        const cuentasExistentes = await this.obtenerCuentas();
+        const idsExistentes = new Set(cuentasExistentes.map(c => c.id));
         const cuentasNuevas = datosValidados.cuentas.filter(c => !idsExistentes.has(c.id));
         
-        datosActuales.cuentas.push(...cuentasNuevas);
-        
-        // Mantener configuración actual, solo actualizar si no existe
-        if (!datosActuales.configuracion) {
-          datosActuales.configuracion = datosValidados.configuracion;
+        for (const cuenta of cuentasNuevas) {
+          await cuentasAPI.crear(cuenta);
         }
-        
-        this.guardarDatosCompletos(datosActuales);
         
         return {
           exito: true,
@@ -372,22 +305,35 @@ export class ServicioAlmacenamiento {
   /**
    * Limpia todos los datos del almacenamiento
    */
-  limpiarDatos(): void {
-    const datosLimpios: AlmacenamientoLocal = {
-      cuentas: [],
-      configuracion: ServicioAlmacenamiento.CONFIGURACION_DEFAULT,
-      version: ServicioAlmacenamiento.VERSION_ACTUAL
-    };
-    
-    this.guardarDatosCompletos(datosLimpios);
+  async limpiarDatos(): Promise<void> {
+    try {
+      const cuentas = await this.obtenerCuentas();
+      for (const cuenta of cuentas) {
+        await this.eliminarCuenta(cuenta.id);
+      }
+      
+      // Limpiar configuración
+      localStorage.removeItem('configuracion-usuario');
+    } catch (error) {
+      console.error('Error al limpiar datos:', error);
+      throw error;
+    }
   }
 
   /**
    * Verifica la integridad de los datos almacenados
    */
-  verificarIntegridad(): { valido: boolean; errores: string[] } {
+  async verificarIntegridad(): Promise<{ valido: boolean; errores: string[] }> {
     try {
-      const datos = this.obtenerDatosCompletos();
+      const cuentas = await this.obtenerCuentas();
+      const configuracion = this.obtenerConfiguracion();
+      
+      const datos: AlmacenamientoLocal = {
+        cuentas,
+        configuracion,
+        version: ServicioAlmacenamiento.VERSION_ACTUAL
+      };
+      
       esquemaAlmacenamientoLocal.parse(datos);
       
       return {
@@ -407,30 +353,48 @@ export class ServicioAlmacenamiento {
   /**
    * Obtiene estadísticas básicas del almacenamiento
    */
-  obtenerEstadisticas(): {
+  async obtenerEstadisticas(): Promise<{
     totalCuentas: number;
     cuentasPagadas: number;
     cuentasPendientes: number;
     serviciosUnicos: number;
     rangoFechas: { inicio?: Date; fin?: Date };
-  } {
-    const cuentas = this.obtenerCuentas();
-    
-    const cuentasPagadas = cuentas.filter(c => c.pagada).length;
-    const serviciosUnicos = new Set(cuentas.map(c => c.tipoServicio)).size;
-    
-    const fechas = cuentas.map(c => c.fechaVencimiento).sort((a, b) => a.getTime() - b.getTime());
-    
-    return {
-      totalCuentas: cuentas.length,
-      cuentasPagadas,
-      cuentasPendientes: cuentas.length - cuentasPagadas,
-      serviciosUnicos,
-      rangoFechas: {
-        inicio: fechas[0],
-        fin: fechas[fechas.length - 1]
-      }
-    };
+  }> {
+    try {
+      const cuentas = await this.obtenerCuentas();
+      
+      const cuentasPagadas = cuentas.filter(c => c.pagada).length;
+      const serviciosUnicos = new Set(cuentas.map(c => c.tipoServicio)).size;
+      
+      const fechas = cuentas.map(c => c.fechaVencimiento).sort((a, b) => a.getTime() - b.getTime());
+      
+      return {
+        totalCuentas: cuentas.length,
+        cuentasPagadas,
+        cuentasPendientes: cuentas.length - cuentasPagadas,
+        serviciosUnicos,
+        rangoFechas: {
+          inicio: fechas[0],
+          fin: fechas[fechas.length - 1]
+        }
+      };
+    } catch (error) {
+      console.error('Error al obtener estadísticas:', error);
+      return {
+        totalCuentas: 0,
+        cuentasPagadas: 0,
+        cuentasPendientes: 0,
+        serviciosUnicos: 0,
+        rangoFechas: {}
+      };
+    }
+  }
+
+  /**
+   * Genera un ID único para una nueva cuenta
+   */
+  private generarId(): string {
+    return `cuenta_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
 }
 
