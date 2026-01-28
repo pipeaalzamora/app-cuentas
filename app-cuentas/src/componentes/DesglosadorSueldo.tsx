@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { DesgloseSueldo, Gasto, TipoGasto } from '../tipos/desglosador';
 import { servicioDesglosadorSueldo } from '../servicios/desglosadorSueldo';
+import { desgloseSueldoAPI } from '../servicios/desgloseSueldoAPI';
 import { servicioGeneradorPDF } from '../servicios/generadorPDF';
 import { Boton, Input, Tarjeta, Modal } from './index';
 import './DesglosadorSueldo.css';
@@ -48,15 +49,26 @@ const DesglosadorSueldo: React.FC = () => {
       const desgloses = await servicioDesglosadorSueldo.obtenerDesgloses();
       setTodosDesgloses(desgloses);
       
-      const hoy = new Date();
-      const desgloseMesActual = desgloses.find(
-        d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
-      );
+      // Intentar cargar el último desglose visto desde localStorage
+      const ultimoDesgloseId = localStorage.getItem('ultimoDesgloseSueldoId');
+      let desgloseAMostrar = null;
       
-      if (desgloseMesActual) {
-        setDesgloseActual(desgloseMesActual);
-        setSueldoInicial(desgloseMesActual.sueldoInicial.toString());
-        setNombreDesglose(desgloseMesActual.nombre || '');
+      if (ultimoDesgloseId) {
+        desgloseAMostrar = desgloses.find(d => d.id === ultimoDesgloseId);
+      }
+      
+      // Si no hay último desglose guardado, buscar el del mes actual
+      if (!desgloseAMostrar) {
+        const hoy = new Date();
+        desgloseAMostrar = desgloses.find(
+          d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
+        );
+      }
+      
+      if (desgloseAMostrar) {
+        setDesgloseActual(desgloseAMostrar);
+        setSueldoInicial(desgloseAMostrar.sueldoInicial.toString());
+        setNombreDesglose(desgloseAMostrar.nombre || '');
       }
     } catch (error) {
       console.error('Error al cargar desgloses:', error);
@@ -69,19 +81,17 @@ const DesglosadorSueldo: React.FC = () => {
     if (isNaN(sueldo) || sueldo <= 0) return;
 
     const hoy = new Date();
-    const nuevoDesglose: DesgloseSueldo = {
-      id: crypto.randomUUID(),
+    const nuevoDesglose = {
       sueldoInicial: sueldo,
-      gastos: [],
-      fechaCreacion: hoy,
       mes: hoy.getMonth() + 1,
       año: hoy.getFullYear(),
       nombre: nombreDesglose || `Desglose ${hoy.getMonth() + 1}/${hoy.getFullYear()}`
     };
 
     try {
-      await servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
-      setDesgloseActual(nuevoDesglose);
+      const creado = await desgloseSueldoAPI.crear(nuevoDesglose);
+      setDesgloseActual(creado);
+      localStorage.setItem('ultimoDesgloseSueldoId', creado.id);
     } catch (error) {
       console.error('Error al iniciar desglose:', error);
     }
@@ -94,22 +104,17 @@ const DesglosadorSueldo: React.FC = () => {
     const montoNum = parseFloat(montoLimpio);
     if (isNaN(montoNum) || montoNum <= 0) return;
 
-    const nuevoGasto: Gasto = {
-      id: crypto.randomUUID(),
+    const nuevoGasto = {
       descripcion,
       monto: montoNum,
-      tipo,
-      fecha: new Date()
-    };
-
-    const desgloseActualizado = {
-      ...desgloseActual,
-      gastos: [...desgloseActual.gastos, nuevoGasto]
+      tipo
     };
 
     try {
-      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-      setDesgloseActual(desgloseActualizado);
+      await desgloseSueldoAPI.agregarGasto(desgloseActual.id, nuevoGasto);
+      
+      // Recargar el desglose actualizado
+      await cargarDesgloses();
       
       // Reset form
       setDescripcion('');
@@ -121,17 +126,14 @@ const DesglosadorSueldo: React.FC = () => {
     }
   };
 
-  const eliminarGasto = async (id: string) => {
+  const eliminarGasto = async (gastoId: string) => {
     if (!desgloseActual) return;
 
-    const desgloseActualizado = {
-      ...desgloseActual,
-      gastos: desgloseActual.gastos.filter(g => g.id !== id)
-    };
-
     try {
-      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-      setDesgloseActual(desgloseActualizado);
+      await desgloseSueldoAPI.eliminarGasto(desgloseActual.id, gastoId);
+      
+      // Recargar el desglose actualizado
+      await cargarDesgloses();
     } catch (error) {
       console.error('Error al eliminar gasto:', error);
     }
@@ -152,18 +154,20 @@ const DesglosadorSueldo: React.FC = () => {
     const montoNum = parseFloat(montoLimpio);
     if (isNaN(montoNum) || montoNum <= 0) return;
 
-    const desgloseActualizado = {
-      ...desgloseActual,
-      gastos: desgloseActual.gastos.map(g => 
-        g.id === gastoEditando 
-          ? { ...g, descripcion, monto: montoNum, tipo }
-          : g
-      )
-    };
-
     try {
-      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-      setDesgloseActual(desgloseActualizado);
+      // Primero eliminar el gasto viejo
+      await desgloseSueldoAPI.eliminarGasto(desgloseActual.id, gastoEditando);
+      
+      // Luego agregar el gasto actualizado
+      const gastoActualizado = {
+        descripcion,
+        monto: montoNum,
+        tipo
+      };
+      await desgloseSueldoAPI.agregarGasto(desgloseActual.id, gastoActualizado);
+      
+      // Recargar el desglose
+      await cargarDesgloses();
       
       // Reset form
       setDescripcion('');
@@ -199,13 +203,15 @@ const DesglosadorSueldo: React.FC = () => {
     if (isNaN(sueldo) || sueldo <= 0) return;
 
     const desgloseActualizado = {
-      ...desgloseActual,
-      sueldoInicial: sueldo
+      sueldoInicial: sueldo,
+      mes: desgloseActual.mes,
+      año: desgloseActual.año,
+      nombre: desgloseActual.nombre
     };
 
     try {
-      await servicioDesglosadorSueldo.guardarDesglose(desgloseActualizado);
-      setDesgloseActual(desgloseActualizado);
+      await desgloseSueldoAPI.actualizar(desgloseActual.id, desgloseActualizado);
+      await cargarDesgloses();
       setMostrarEditarSueldo(false);
       setNuevoSueldo('');
     } catch (error) {
@@ -217,20 +223,19 @@ const DesglosadorSueldo: React.FC = () => {
     const desglose = todosDesgloses.find(d => d.mes === mes && d.año === año);
     if (desglose) {
       setDesgloseActual(desglose);
+      localStorage.setItem('ultimoDesgloseSueldoId', desglose.id);
     } else {
       // Si no existe, crear uno nuevo para ese mes/año
-      const nuevoDesglose: DesgloseSueldo = {
-        id: crypto.randomUUID(),
+      const nuevoDesglose = {
         sueldoInicial: desgloseActual?.sueldoInicial || 0,
-        gastos: [],
-        fechaCreacion: new Date(),
         mes,
         año,
         nombre: `Desglose ${mes}/${año}`
       };
       try {
-        await servicioDesglosadorSueldo.guardarDesglose(nuevoDesglose);
-        setDesgloseActual(nuevoDesglose);
+        const creado = await desgloseSueldoAPI.crear(nuevoDesglose);
+        setDesgloseActual(creado);
+        localStorage.setItem('ultimoDesgloseSueldoId', creado.id);
         await cargarDesgloses();
       } catch (error) {
         console.error('Error al cambiar desglose:', error);

@@ -7,11 +7,12 @@ class ServicioDesglosadorBebe {
       const desgloses = await desgloseBebeAPI.obtenerTodos();
       return desgloses.map((d: any) => ({
         ...d,
+        id: d.id || d._id, // Asegurar que el ID esté presente
         fechaCreacion: new Date(d.fechaCreacion),
-        gastos: d.gastos.map((g: any) => ({
+        gastos: d.gastos?.map((g: any) => ({
           ...g,
           fecha: new Date(g.fecha)
-        }))
+        })) || []
       }));
     } catch (error) {
       console.error('Error al obtener desgloses bebé:', error);
