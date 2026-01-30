@@ -714,6 +714,100 @@ export class ServicioGeneradorPDF {
     const nombreArchivo = `gastos-bebe-${nombreMes}-${desglose.año}`;
     this.descargarPDF(new Blob([pdf.output('blob')], { type: 'application/pdf' }), nombreArchivo);
   }
+
+  /**
+   * Genera un reporte PDF de la calculadora de gastos
+   */
+  generarReporteCalculadora(calculadora: any, resumen: any): void {
+    const pdf = new jsPDF(ServicioGeneradorPDF.CONFIG_PDF);
+    
+    const formatearPesosChilenos = (monto: number): string => {
+      return new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(monto);
+    };
+    
+    this.configurarMetadatosPDF(pdf, 'Calculadora de Gastos', 'calculadora-gastos');
+    
+    // Título
+    pdf.setFontSize(18);
+    pdf.text('Calculadora de Gastos', 105, 20, { align: 'center' });
+    
+    pdf.setFontSize(12);
+    pdf.text(`Generado el ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, 105, 30, { align: 'center' });
+    
+    // Resumen
+    let y = 50;
+    pdf.setFontSize(14);
+    pdf.text('Resumen', 20, y);
+    
+    y += 10;
+    pdf.setFontSize(12);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(`Total: ${formatearPesosChilenos(resumen.totalGastos)}`, 20, y);
+    pdf.setFont('helvetica', 'normal');
+    
+    y += 8;
+    pdf.setFontSize(11);
+    pdf.text(`Cantidad de gastos: ${resumen.cantidadGastos}`, 20, y);
+    
+    // Detalle de gastos
+    y += 20;
+    pdf.setFontSize(14);
+    pdf.text('Detalle de Gastos', 20, y);
+    
+    y += 10;
+    pdf.setFontSize(10);
+    
+    calculadora.gastos.forEach((gasto: any, index: number) => {
+      if (y > 260) {
+        pdf.addPage();
+        y = 20;
+      }
+      
+      const fecha = format(gasto.fecha, 'dd/MM/yyyy HH:mm');
+      const montoTotal = gasto.monto * gasto.cantidad;
+      
+      pdf.text(`${index + 1}. ${gasto.titulo}`, 20, y);
+      
+      if (gasto.cantidad > 1) {
+        y += 5;
+        pdf.setFontSize(9);
+        pdf.text(`${formatearPesosChilenos(gasto.monto)} x ${gasto.cantidad}`, 25, y);
+        pdf.setFontSize(10);
+      }
+      
+      y += 5;
+      pdf.setFontSize(9);
+      pdf.text(fecha, 25, y);
+      pdf.setFontSize(10);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(formatearPesosChilenos(montoTotal), 160, y);
+      pdf.setFont('helvetica', 'normal');
+      
+      y += 10;
+    });
+    
+    // Pie de página
+    const totalPages = pdf.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(9);
+      pdf.text(
+        `Generado el ${format(new Date(), 'dd/MM/yyyy HH:mm')}`,
+        105,
+        290,
+        { align: 'center' }
+      );
+      pdf.text(`Página ${i} de ${totalPages}`, 190, 290, { align: 'right' });
+    }
+    
+    const nombreArchivo = `calculadora-gastos-${format(new Date(), 'yyyy-MM-dd')}`;
+    this.descargarPDF(new Blob([pdf.output('blob')], { type: 'application/pdf' }), nombreArchivo);
+  }
 }
 
 // Instancia singleton del servicio

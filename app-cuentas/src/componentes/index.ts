@@ -19,6 +19,7 @@ export { default as PanelPrincipal } from './PanelPrincipal';
 export { GeneradorReportes } from './GeneradorReportes';
 export { default as DesglosadorSueldo } from './DesglosadorSueldo';
 export { default as DesglosadorBebe } from './DesglosadorBebe';
+export { default as CalculadoraGastos } from './CalculadoraGastos';
 
 // Exportaciones de componentes de gráficos
 export * from './graficos';

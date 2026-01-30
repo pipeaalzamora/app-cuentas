@@ -75,6 +75,12 @@ export const Layout: React.FC<LayoutProps> = ({
       activo: seccionActual === 'desglosador-bebe'
     },
     {
+      id: 'gastos',
+      label: 'Gastos',
+      icono: '🧮',
+      activo: seccionActual === 'gastos'
+    },
+    {
       id: 'estadisticas',
       label: 'Estadísticas',
       icono: '📊',
