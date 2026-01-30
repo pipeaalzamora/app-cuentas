@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { CalculadoraGastos as CalculadoraGastosType, GastoCalculadora } from '../tipos/calculadoraGastos';
+import type { CalculadoraGastos as CalculadoraGastosType } from '../tipos/calculadoraGastos';
 import { servicioCalculadoraGastos } from '../servicios/calculadoraGastos';
 import { calculadoraGastosAPI } from '../servicios/calculadoraGastosAPI';
 import { servicioGeneradorPDF } from '../servicios/generadorPDF';
