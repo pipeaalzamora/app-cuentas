@@ -33,10 +33,10 @@ export const PlantillaReporteMensual: React.FC<
 
   // Agrupar cuentas por servicio
   const cuentasPorServicio = cuentas.reduce((acc, cuenta) => {
-    if (!acc[cuenta.tipoServicio]) {
-      acc[cuenta.tipoServicio] = [];
+    if (!acc[cuenta.servicio]) {
+      acc[cuenta.servicio] = [];
     }
-    acc[cuenta.tipoServicio].push(cuenta);
+    acc[cuenta.servicio].push(cuenta);
     return acc;
   }, {} as Record<TipoServicio, CuentaServicio[]>);
 
@@ -123,9 +123,9 @@ export const PlantillaReporteMensual: React.FC<
       <section className="detalle-servicios">
         <h2>Detalle por Servicio</h2>
         {Object.entries(estadisticas.gastosPorServicio).map(
-          ([servicio, total]) => {
-            const tipoServicio = servicio as TipoServicio;
-            const cuentasServicio = cuentasPorServicio[tipoServicio] || [];
+          ([servicioKey, total]) => {
+            const servicio = servicioKey as TipoServicio;
+            const cuentasServicio = cuentasPorServicio[servicio] || [];
             const porcentaje =
               estadisticas.totalGastos > 0
                 ? (total / estadisticas.totalGastos) * 100
@@ -136,7 +136,7 @@ export const PlantillaReporteMensual: React.FC<
             return (
               <div key={servicio} className="servicio-detalle">
                 <div className="servicio-header">
-                  <h3>{NOMBRES_SERVICIOS[tipoServicio]}</h3>
+                  <h3>{NOMBRES_SERVICIOS[servicio]}</h3>
                   <div className="servicio-totales">
                     <span className="servicio-total">
                       ${total.toLocaleString("es-AR")}
@@ -161,11 +161,11 @@ export const PlantillaReporteMensual: React.FC<
                   <tbody>
                     {cuentasServicio
                       .sort(
-                        (a, b) =>
+                        (a: CuentaServicio, b: CuentaServicio) =>
                           a.fechaVencimiento.getTime() -
                           b.fechaVencimiento.getTime()
                       )
-                      .map((cuenta) => (
+                      .map((cuenta: CuentaServicio) => (
                         <tr
                           key={cuenta.id}
                           className={cuenta.pagada ? "pagada" : "pendiente"}

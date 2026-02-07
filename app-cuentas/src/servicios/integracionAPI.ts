@@ -227,7 +227,7 @@ class ServicioIntegracionAPI {
     const fechaVencimiento = new Date(dato.fechaVencimiento);
     
     return {
-      tipoServicio: proveedor.tipoServicio,
+      servicio: proveedor.servicio,
       monto: dato.monto,
       fechaVencimiento,
       mes: fechaVencimiento.getMonth(),

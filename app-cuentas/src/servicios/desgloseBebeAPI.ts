@@ -31,6 +31,12 @@ export const desgloseBebeAPI = {
     return response.data;
   },
 
+  // Eliminar todos los desgloses
+  eliminarTodos: async () => {
+    const response = await api.delete('/desglose-bebe');
+    return response.data;
+  },
+
   // Agregar un gasto
   agregarGasto: async (id: string, gasto: { 
     descripcion: string; 

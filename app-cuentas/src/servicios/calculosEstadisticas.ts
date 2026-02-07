@@ -28,7 +28,7 @@ export class ServicioCalculosEstadisticas {
     };
 
     cuentas.forEach(cuenta => {
-      gastos[cuenta.tipoServicio] += cuenta.monto;
+      gastos[cuenta.servicio] += cuenta.monto;
     });
 
     return gastos;
@@ -365,7 +365,7 @@ export class ServicioCalculosEstadisticas {
 
     const ranking = (['luz', 'agua', 'gas', 'internet'] as TipoServicio[])
       .map(servicio => {
-        const cuentasServicio = cuentas.filter(c => c.tipoServicio === servicio);
+        const cuentasServicio = cuentas.filter(c => c.servicio === servicio);
         const total = gastosPorServicio[servicio];
         const porcentaje = totalGeneral > 0 ? (total / totalGeneral) * 100 : 0;
         const cantidadCuentas = cuentasServicio.length;

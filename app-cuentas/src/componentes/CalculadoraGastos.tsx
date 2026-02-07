@@ -4,6 +4,7 @@ import { servicioCalculadoraGastos } from '../servicios/calculadoraGastos';
 import { calculadoraGastosAPI } from '../servicios/calculadoraGastosAPI';
 import { servicioGeneradorPDF } from '../servicios/generadorPDF';
 import { Boton, Input, Tarjeta, Modal } from './index';
+import { usePeriodo } from '../contextos/PeriodoContext';
 import './CalculadoraGastos.css';
 
 const formatearPesosChilenos = (monto: number): string => {
@@ -26,6 +27,7 @@ const limpiarNumero = (valor: string): string => {
 };
 
 const CalculadoraGastos: React.FC = () => {
+  const { mes: mesGlobal, año: añoGlobal } = usePeriodo();
   const [calculadora, setCalculadora] = useState<CalculadoraGastosType | null>(null);
   const [mostrarFormGasto, setMostrarFormGasto] = useState(false);
   const [mostrarConfirmacionEliminarTodos, setMostrarConfirmacionEliminarTodos] = useState(false);
@@ -34,6 +36,11 @@ const CalculadoraGastos: React.FC = () => {
   const [titulo, setTitulo] = useState('');
   const [monto, setMonto] = useState('');
   const [cantidad, setCantidad] = useState('1');
+
+  const nombresMeses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
 
   useEffect(() => {
     cargarCalculadora();
@@ -128,7 +135,12 @@ const CalculadoraGastos: React.FC = () => {
         <div className="calculadora-header">
           <div className="header-info">
             <h2>🧮 Calculadora de Gastos</h2>
-            <p className="calculadora-descripcion">Registra tus gastos de forma simple</p>
+            <p className="calculadora-descripcion">
+              Registra tus gastos de forma simple - Periodo: {nombresMeses[mesGlobal - 1]} {añoGlobal}
+            </p>
+            <p className="calculadora-nota" style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.5rem' }}>
+              Los gastos se sincronizan automáticamente con el sueldo del mes actual
+            </p>
           </div>
           <div className="header-acciones">
             {calculadora.gastos.length > 0 && (

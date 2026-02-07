@@ -75,7 +75,7 @@ export function convertirCompletaACuentaServicio(
   );
 
   return {
-    tipoServicio: datosCompletos.tipoServicio,
+    servicio: datosCompletos.servicio,
     saldoAnterior: datosCompletos.saldoAnterior,
     consumoActual: datosCompletos.consumoActual,
     otrosCargos: datosCompletos.otrosCargos,
@@ -102,14 +102,14 @@ export function convertirCompletaACuentaServicio(
 /**
  * Obtiene la unidad de medida por defecto según el tipo de servicio
  */
-export function obtenerUnidadMedidaPorDefecto(tipoServicio: string): string {
+export function obtenerUnidadMedidaPorDefecto(servicio: string): string {
   const unidades: Record<string, string> = {
     luz: 'kWh',
     agua: 'm³',
     gas: 'm³',
     internet: 'Mbps'
   };
-  return unidades[tipoServicio] || '';
+  return unidades[servicio] || '';
 }
 
 /**

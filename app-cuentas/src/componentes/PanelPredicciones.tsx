@@ -121,10 +121,10 @@ export const PanelPredicciones: React.FC = () => {
 
         <div className="prediccion-servicios">
           {prediccionProximoMes.prediccionesPorServicio.map(pred => (
-            <div key={pred.tipoServicio} className="prediccion-servicio-item">
+            <div key={pred.servicio} className="prediccion-servicio-item">
               <div className="servicio-info">
-                <span className="servicio-icono">{obtenerIconoServicio(pred.tipoServicio)}</span>
-                <span className="servicio-nombre">{pred.tipoServicio.toUpperCase()}</span>
+                <span className="servicio-icono">{obtenerIconoServicio(pred.servicio)}</span>
+                <span className="servicio-nombre">{pred.servicio.toUpperCase()}</span>
               </div>
               
               <div className="servicio-prediccion">

@@ -31,6 +31,12 @@ export const desgloseSueldoAPI = {
     return response.data;
   },
 
+  // Eliminar todos los desgloses
+  eliminarTodos: async () => {
+    const response = await api.delete('/desglose-sueldo');
+    return response.data;
+  },
+
   // Agregar un gasto
   agregarGasto: async (id: string, gasto: { descripcion: string; monto: number; tipo: string }) => {
     const response = await api.post(`/desglose-sueldo/${id}/gastos`, gasto);

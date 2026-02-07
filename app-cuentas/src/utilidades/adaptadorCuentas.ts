@@ -10,7 +10,7 @@ import type { CuentaServicio, TipoServicio } from '../tipos';
  */
 export function adaptarCuentaBasicaACompleta(
   datosBasicos: {
-    tipoServicio: TipoServicio;
+    servicio: TipoServicio;
     monto: number;
     fechaVencimiento: Date;
     mes: number;
@@ -22,7 +22,7 @@ export function adaptarCuentaBasicaACompleta(
   const hoy = new Date();
   
   return {
-    tipoServicio: datosBasicos.tipoServicio,
+    servicio: datosBasicos.servicio,
     monto: datosBasicos.monto,
     fechaVencimiento: datosBasicos.fechaVencimiento,
     mes: datosBasicos.mes,

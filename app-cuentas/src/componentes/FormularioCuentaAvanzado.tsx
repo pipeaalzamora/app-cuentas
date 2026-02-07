@@ -16,7 +16,7 @@ interface Props {
 }
 
 interface FormularioCuentaData {
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   monto: number;
   fechaVencimiento: Date;
   fechaEmision: Date;
@@ -27,7 +27,7 @@ interface FormularioCuentaData {
 }
 
 interface ErroresFormulario {
-  tipoServicio?: string;
+  servicio?: string;
   monto?: string;
   fechaVencimiento?: string;
   fechaEmision?: string;
@@ -79,7 +79,7 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
 
     if (cuentaInicial) {
       return {
-        tipoServicio: cuentaInicial.tipoServicio,
+        servicio: cuentaInicial.servicio,
         monto: cuentaInicial.monto,
         fechaVencimiento: cuentaInicial.fechaVencimiento,
         fechaEmision: cuentaInicial.fechaEmision || fechaEmision,
@@ -91,7 +91,7 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
     }
 
     return {
-      tipoServicio: 'luz',
+      servicio: 'luz',
       monto: 0,
       fechaVencimiento,
       fechaEmision,
@@ -273,14 +273,14 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
           <div className="formulario-cuenta__fila">
             {/* Tipo de Servicio */}
             <div className="formulario-cuenta__campo">
-              <label htmlFor="tipoServicio" className="formulario-cuenta__etiqueta">
+              <label htmlFor="servicio" className="formulario-cuenta__etiqueta">
                 Tipo de Servicio *
               </label>
               <select
-                id="tipoServicio"
-                value={datosFormulario.tipoServicio}
-                onChange={manejarCambio('tipoServicio')}
-                className={`formulario-cuenta__select ${errores.tipoServicio ? 'formulario-cuenta__select--error' : ''}`}
+                id="servicio"
+                value={datosFormulario.servicio}
+                onChange={manejarCambio('servicio')}
+                className={`formulario-cuenta__select ${errores.servicio ? 'formulario-cuenta__select--error' : ''}`}
                 disabled={enviando}
               >
                 {TIPOS_SERVICIO.map(tipo => (
@@ -289,9 +289,9 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
                   </option>
                 ))}
               </select>
-              {errores.tipoServicio && (
+              {errores.servicio && (
                 <span className="formulario-cuenta__error" role="alert">
-                  {errores.tipoServicio}
+                  {errores.servicio}
                 </span>
               )}
             </div>

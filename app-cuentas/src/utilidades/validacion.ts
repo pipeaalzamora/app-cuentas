@@ -121,8 +121,8 @@ export function validarIntegridadCuenta(cuenta: unknown): { valida: boolean; err
 
   // Validar tipo de servicio
   const tiposValidos = ['luz', 'agua', 'gas', 'internet'];
-  if (!tiposValidos.includes(cuentaObj.tipoServicio as string)) {
-    errores.push(`Tipo de servicio inválido: ${cuentaObj.tipoServicio}`);
+  if (!tiposValidos.includes(cuentaObj.servicio as string)) {
+    errores.push(`Tipo de servicio inválido: ${cuentaObj.servicio}`);
   }
 
   // Validar monto

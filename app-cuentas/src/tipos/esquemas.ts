@@ -6,7 +6,7 @@ export const esquemaTipoServicio = z.enum(['luz', 'agua', 'gas', 'internet']);
 // Esquema para validación de CuentaServicio (expandido con campos opcionales)
 export const esquemaCuentaServicio = z.object({
   id: z.string().min(1, 'ID es requerido'),
-  tipoServicio: esquemaTipoServicio,
+  servicio: esquemaTipoServicio,
   
   // Montos y saldos (opcionales para compatibilidad)
   saldoAnterior: z.number().min(0, 'El saldo anterior no puede ser negativo').default(0).optional(),
@@ -50,7 +50,7 @@ export const esquemaCuentaServicio = z.object({
 
 // Esquema para formulario básico (modo simple)
 export const esquemaFormularioCuentaBasica = z.object({
-  tipoServicio: esquemaTipoServicio,
+  servicio: esquemaTipoServicio,
   monto: z.number()
     .positive('El monto debe ser mayor a cero')
     .max(99999999, 'El monto no puede exceder 99,999,999'),
@@ -68,7 +68,7 @@ export const esquemaFormularioCuentaBasica = z.object({
 
 // Esquema para formulario completo (modo avanzado)
 export const esquemaFormularioCuentaCompleta = z.object({
-  tipoServicio: esquemaTipoServicio,
+  servicio: esquemaTipoServicio,
   
   // Montos y saldos
   saldoAnterior: z.number().min(0, 'El saldo anterior no puede ser negativo').default(0),
@@ -168,7 +168,7 @@ export const esquemaFiltrosCuentas = z.object({
     .min(2020, 'El año debe ser mayor a 2020')
     .max(2050, 'El año debe ser menor a 2050')
     .optional(),
-  tipoServicio: esquemaTipoServicio.optional(),
+  servicio: esquemaTipoServicio.optional(),
   pagada: z.boolean().optional()
 });
 

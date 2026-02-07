@@ -121,14 +121,14 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
   };
 
   // Obtener color por tipo de servicio
-  const obtenerColorServicio = (tipoServicio: string) => {
+  const obtenerColorServicio = (servicio: string) => {
     const colores = {
       luz: 'var(--color-luz)',
       agua: 'var(--color-agua)',
       gas: 'var(--color-gas)',
       internet: 'var(--color-internet)'
     };
-    return colores[tipoServicio as keyof typeof colores] || 'var(--color-secundario)';
+    return colores[servicio as keyof typeof colores] || 'var(--color-secundario)';
   };
 
   // Formatear monto en pesos chilenos
@@ -221,8 +221,8 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
               <label htmlFor="filtro-servicio">Servicio:</label>
               <select
                 id="filtro-servicio"
-                value={filtrosLocales.tipoServicio || ''}
-                onChange={(e) => manejarCambioFiltro('tipoServicio', (e.target.value as TipoServicio) || undefined)}
+                value={filtrosLocales.servicio || ''}
+                onChange={(e) => manejarCambioFiltro('servicio', (e.target.value as TipoServicio) || undefined)}
               >
                 <option value="">Todos los servicios</option>
                 <option value="luz">Luz</option>
@@ -277,9 +277,9 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
                     <th>
                       <button
                         className="lista-cuentas__header-boton"
-                        onClick={() => manejarOrdenamiento('tipoServicio')}
+                        onClick={() => manejarOrdenamiento('servicio')}
                       >
-                        Servicio {obtenerIconoOrdenamiento('tipoServicio')}
+                        Servicio {obtenerIconoOrdenamiento('servicio')}
                       </button>
                     </th>
                     <th>
@@ -334,7 +334,7 @@ const ListaCuentas: React.FC<ListaCuentasProps> = ({ onEditarCuenta }) => {
         <ConfirmacionEliminar
           abierto={true}
           titulo="Eliminar cuenta"
-          mensaje={`¿Estás seguro de que deseas eliminar la cuenta de ${cuentaAEliminar.tipoServicio} de ${formatearMonto(cuentaAEliminar.monto)}?`}
+          mensaje={`¿Estás seguro de que deseas eliminar la cuenta de ${cuentaAEliminar.servicio} de ${formatearMonto(cuentaAEliminar.monto)}?`}
           onConfirmar={manejarEliminarCuenta}
           onCerrar={() => setCuentaAEliminar(null)}
           tipo="eliminar"
@@ -357,10 +357,10 @@ const FilaCuenta = memo<{
       <div className="lista-cuentas__servicio">
         <span
           className="lista-cuentas__servicio-indicador"
-          style={{ backgroundColor: obtenerColorServicio(cuenta.tipoServicio) }}
+          style={{ backgroundColor: obtenerColorServicio(cuenta.servicio) }}
         />
         <span className="lista-cuentas__servicio-texto">
-          {cuenta.tipoServicio.charAt(0).toUpperCase() + cuenta.tipoServicio.slice(1)}
+          {cuenta.servicio.charAt(0).toUpperCase() + cuenta.servicio.slice(1)}
         </span>
       </div>
     </td>

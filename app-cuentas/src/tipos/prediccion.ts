@@ -4,7 +4,7 @@ import type { TipoServicio } from './index';
 
 // Predicción individual por servicio
 export interface PrediccionServicio {
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   montoPredicho: number;
   confianza: number; // 0-1, donde 1 es máxima confianza
   tendencia: 'ascendente' | 'descendente' | 'estable';
@@ -25,7 +25,7 @@ export interface PrediccionMensual {
 export interface DatosHistoricos {
   mes: number;
   año: number;
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   monto: number;
 }
 

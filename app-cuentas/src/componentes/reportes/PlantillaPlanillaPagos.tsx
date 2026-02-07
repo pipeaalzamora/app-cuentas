@@ -47,7 +47,7 @@ export const PlantillaPlanillaPagos: React.FC<PlantillaPlanillaPagosProps> = ({
   // Calcular totales
   const totalPendiente = cuentasOrdenadas.reduce((sum, cuenta) => sum + cuenta.monto, 0);
   const totalPorServicio = cuentasOrdenadas.reduce((acc, cuenta) => {
-    acc[cuenta.tipoServicio] = (acc[cuenta.tipoServicio] || 0) + cuenta.monto;
+    acc[cuenta.servicio] = (acc[cuenta.servicio] || 0) + cuenta.monto;
     return acc;
   }, {} as Record<TipoServicio, number>);
 
@@ -118,9 +118,9 @@ export const PlantillaPlanillaPagos: React.FC<PlantillaPlanillaPagosProps> = ({
                   <div className="servicio-info">
                     <div 
                       className="servicio-indicator"
-                      style={{ backgroundColor: COLORES_SERVICIOS[cuenta.tipoServicio] }}
+                      style={{ backgroundColor: COLORES_SERVICIOS[cuenta.servicio] }}
                     ></div>
-                    <span className="servicio-nombre">{NOMBRES_SERVICIOS[cuenta.tipoServicio]}</span>
+                    <span className="servicio-nombre">{NOMBRES_SERVICIOS[cuenta.servicio]}</span>
                   </div>
                   <span className="cuenta-monto">${cuenta.monto.toLocaleString('es-AR')}</span>
                 </div>
@@ -206,8 +206,8 @@ export const PlantillaPlanillaPagos: React.FC<PlantillaPlanillaPagosProps> = ({
                         <div 
                           key={cuenta.id}
                           className="cuenta-punto"
-                          style={{ backgroundColor: COLORES_SERVICIOS[cuenta.tipoServicio] }}
-                          title={`${NOMBRES_SERVICIOS[cuenta.tipoServicio]}: $${cuenta.monto.toLocaleString('es-AR')}`}
+                          style={{ backgroundColor: COLORES_SERVICIOS[cuenta.servicio] }}
+                          title={`${NOMBRES_SERVICIOS[cuenta.servicio]}: $${cuenta.monto.toLocaleString('es-AR')}`}
                         ></div>
                       ))}
                     </div>

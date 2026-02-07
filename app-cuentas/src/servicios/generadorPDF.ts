@@ -491,7 +491,16 @@ export class ServicioGeneradorPDF {
     pdf.text(`Sueldo Inicial: ${formatearPesosChilenos(resumen.sueldoInicial)}`, 20, y);
     
     y += 8;
-    pdf.text(`Total Gastos: ${formatearPesosChilenos(resumen.totalGastos)}`, 20, y);
+    pdf.text(`Total Gastos Propios: ${formatearPesosChilenos(resumen.totalGastos)}`, 20, y);
+    
+    y += 8;
+    pdf.text(`Total Gastos Bebe: ${formatearPesosChilenos(resumen.totalGastosBebe)}`, 20, y);
+    
+    y += 8;
+    pdf.text(`Total Gastos Generales: ${formatearPesosChilenos(resumen.totalGastosGenerales)}`, 20, y);
+    
+    y += 8;
+    pdf.text(`Total Descuentos: ${formatearPesosChilenos(resumen.totalDescuentos)}`, 20, y);
     
     y += 8;
     pdf.setFontSize(12);
@@ -506,7 +515,7 @@ export class ServicioGeneradorPDF {
     // Gastos por tipo
     y += 15;
     pdf.setFontSize(14);
-    pdf.text('Gastos por Tipo', 20, y);
+    pdf.text('Gastos Propios por Tipo', 20, y);
     
     y += 10;
     pdf.setFontSize(11);
@@ -517,30 +526,117 @@ export class ServicioGeneradorPDF {
       }
     });
     
-    // Detalle de gastos
-    y += 10;
-    pdf.setFontSize(14);
-    pdf.text('Detalle de Gastos', 20, y);
+    // Detalle de gastos propios
+    if (desglose.gastos && desglose.gastos.length > 0) {
+      y += 10;
+      pdf.setFontSize(14);
+      pdf.text('Detalle de Gastos Propios', 20, y);
+      
+      y += 10;
+      pdf.setFontSize(10);
+      
+      desglose.gastos.forEach((gasto, index) => {
+        if (y > 270) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        const fecha = format(gasto.fecha, 'dd/MM/yyyy');
+        pdf.text(`${index + 1}. ${gasto.descripcion}`, 20, y);
+        pdf.text(formatearPesosChilenos(gasto.monto), 150, y);
+        pdf.text(gasto.tipo, 180, y);
+        y += 5;
+        pdf.setFontSize(9);
+        pdf.text(fecha, 25, y);
+        pdf.setFontSize(10);
+        y += 8;
+      });
+    }
     
-    y += 10;
-    pdf.setFontSize(10);
-    
-    desglose.gastos.forEach((gasto, index) => {
-      if (y > 270) {
+    // Detalle de gastos del bebé
+    if (desglose.gastosBebe && desglose.gastosBebe.length > 0) {
+      y += 10;
+      if (y > 250) {
         pdf.addPage();
         y = 20;
       }
       
-      const fecha = format(gasto.fecha, 'dd/MM/yyyy');
-      pdf.text(`${index + 1}. ${gasto.descripcion}`, 20, y);
-      pdf.text(formatearPesosChilenos(gasto.monto), 150, y);
-      pdf.text(gasto.tipo, 180, y);
-      y += 5;
-      pdf.setFontSize(9);
-      pdf.text(fecha, 25, y);
+      pdf.setFontSize(14);
+      pdf.text('Gastos del Bebe', 20, y);
+      
+      y += 10;
       pdf.setFontSize(10);
-      y += 8;
-    });
+      
+      desglose.gastosBebe.forEach((gasto, index) => {
+        if (y > 270) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        const fecha = format(gasto.fecha, 'dd/MM/yyyy');
+        const montoTotal = gasto.monto * gasto.cantidad;
+        
+        pdf.text(`${index + 1}. ${gasto.descripcion}`, 20, y);
+        pdf.text(gasto.tipo, 120, y);
+        
+        if (gasto.cantidad > 1) {
+          pdf.text(`${formatearPesosChilenos(gasto.monto)} x ${gasto.cantidad}`, 150, y);
+        } else {
+          pdf.text(formatearPesosChilenos(montoTotal), 150, y);
+        }
+        
+        y += 5;
+        pdf.setFontSize(9);
+        pdf.text(fecha, 25, y);
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(formatearPesosChilenos(montoTotal), 180, y);
+        pdf.setFont('helvetica', 'normal');
+        y += 8;
+      });
+    }
+    
+    // Detalle de gastos generales
+    if (desglose.gastosGenerales && desglose.gastosGenerales.length > 0) {
+      y += 10;
+      if (y > 250) {
+        pdf.addPage();
+        y = 20;
+      }
+      
+      pdf.setFontSize(14);
+      pdf.text('Gastos Generales', 20, y);
+      
+      y += 10;
+      pdf.setFontSize(10);
+      
+      desglose.gastosGenerales.forEach((gasto, index) => {
+        if (y > 270) {
+          pdf.addPage();
+          y = 20;
+        }
+        
+        const fecha = format(gasto.fecha, 'dd/MM/yyyy');
+        const montoTotal = gasto.monto * gasto.cantidad;
+        
+        pdf.text(`${index + 1}. ${gasto.titulo}`, 20, y);
+        
+        if (gasto.cantidad > 1) {
+          pdf.text(`${formatearPesosChilenos(gasto.monto)} x ${gasto.cantidad}`, 150, y);
+        } else {
+          pdf.text(formatearPesosChilenos(montoTotal), 150, y);
+        }
+        
+        y += 5;
+        pdf.setFontSize(9);
+        pdf.text(fecha, 25, y);
+        pdf.setFontSize(10);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(formatearPesosChilenos(montoTotal), 180, y);
+        pdf.setFont('helvetica', 'normal');
+        y += 8;
+      });
+    }
     
     // Pie de página
     const totalPages = pdf.getNumberOfPages();

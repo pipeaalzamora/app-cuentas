@@ -4,6 +4,7 @@ import { servicioDesglosadorBebe } from '../servicios/desglosadorBebe';
 import { desgloseBebeAPI } from '../servicios/desgloseBebeAPI';
 import { servicioGeneradorPDF } from '../servicios/generadorPDF';
 import { Boton, Input, Tarjeta, Modal } from './index';
+import { usePeriodo } from '../contextos/PeriodoContext';
 import './DesglosadorBebe.css';
 
 const formatearPesosChilenos = (monto: number): string => {
@@ -26,12 +27,14 @@ const limpiarNumero = (valor: string): string => {
 };
 
 const DesglosadorBebe: React.FC = () => {
+  const { mes: mesGlobal, año: añoGlobal, cambiarPeriodo } = usePeriodo();
   const [desgloseActual, setDesgloseActual] = useState<DesgloseBebe | null>(null);
   const [todosDesgloses, setTodosDesgloses] = useState<DesgloseBebe[]>([]);
   const [presupuesto, setPresupuesto] = useState<string>('');
   const [nombreDesglose, setNombreDesglose] = useState<string>('');
   const [mostrarFormGasto, setMostrarFormGasto] = useState(false);
   const [mostrarEditarPresupuesto, setMostrarEditarPresupuesto] = useState(false);
+  const [mostrarConfirmacionEliminarTodos, setMostrarConfirmacionEliminarTodos] = useState(false);
   const [nuevoPresupuesto, setNuevoPresupuesto] = useState<string>('');
   const [gastoEditando, setGastoEditando] = useState<string | null>(null);
   
@@ -47,34 +50,35 @@ const DesglosadorBebe: React.FC = () => {
     cargarDesgloses();
   }, []);
 
+  useEffect(() => {
+    // Cuando cambia el periodo global, cargar el desglose correspondiente
+    if (todosDesgloses.length > 0) {
+      cargarDesglosePorPeriodo(mesGlobal, añoGlobal);
+    }
+  }, [mesGlobal, añoGlobal, todosDesgloses.length]);
+
   const cargarDesgloses = async () => {
     try {
       const desgloses = await servicioDesglosadorBebe.obtenerDesgloses();
       setTodosDesgloses(desgloses);
       
-      // Intentar cargar el último desglose visto desde localStorage
-      const ultimoDesgloseId = localStorage.getItem('ultimoDesgloseBebeId');
-      let desgloseAMostrar = null;
-      
-      if (ultimoDesgloseId) {
-        desgloseAMostrar = desgloses.find(d => d.id === ultimoDesgloseId);
-      }
-      
-      // Si no hay último desglose guardado, buscar el del mes actual
-      if (!desgloseAMostrar) {
-        const hoy = new Date();
-        desgloseAMostrar = desgloses.find(
-          d => d.mes === hoy.getMonth() + 1 && d.año === hoy.getFullYear()
-        );
-      }
-      
-      if (desgloseAMostrar) {
-        setDesgloseActual(desgloseAMostrar);
-        setPresupuesto(desgloseAMostrar.presupuestoMensual.toString());
-        setNombreDesglose(desgloseAMostrar.nombre || '');
-      }
+      // Cargar el desglose del periodo global
+      cargarDesglosePorPeriodo(mesGlobal, añoGlobal, desgloses);
     } catch (error) {
       console.error('Error al cargar desgloses bebé:', error);
+    }
+  };
+
+  const cargarDesglosePorPeriodo = (mes: number, año: number, desgloses?: DesgloseBebe[]) => {
+    const listaDesgloses = desgloses || todosDesgloses;
+    const desglose = listaDesgloses.find(d => d.mes === mes && d.año === año);
+    
+    if (desglose) {
+      setDesgloseActual(desglose);
+      setPresupuesto(desglose.presupuestoMensual.toString());
+      setNombreDesglose(desglose.nombre || '');
+    } else {
+      setDesgloseActual(null);
     }
   };
 
@@ -83,18 +87,16 @@ const DesglosadorBebe: React.FC = () => {
     const presupuestoNum = parseFloat(presupuestoLimpio);
     if (isNaN(presupuestoNum) || presupuestoNum <= 0) return;
 
-    const hoy = new Date();
     const nuevoDesglose = {
       presupuestoMensual: presupuestoNum,
-      mes: hoy.getMonth() + 1,
-      año: hoy.getFullYear(),
-      nombre: nombreDesglose || `Gastos Bebé ${hoy.getMonth() + 1}/${hoy.getFullYear()}`
+      mes: mesGlobal,
+      año: añoGlobal,
+      nombre: nombreDesglose || `Gastos Bebé ${mesGlobal}/${añoGlobal}`
     };
 
     try {
       const creado = await desgloseBebeAPI.crear(nuevoDesglose);
       setDesgloseActual(creado);
-      localStorage.setItem('ultimoDesgloseBebeId', creado.id);
       await cargarDesgloses();
     } catch (error) {
       console.error('Error al iniciar desglose bebé:', error);
@@ -240,11 +242,24 @@ const DesglosadorBebe: React.FC = () => {
     }
   };
 
+  const eliminarTodosDesgloses = async () => {
+    try {
+      await desgloseBebeAPI.eliminarTodos();
+      setTodosDesgloses([]);
+      setDesgloseActual(null);
+      setMostrarConfirmacionEliminarTodos(false);
+    } catch (error) {
+      console.error('Error al eliminar todos los desgloses:', error);
+    }
+  };
+
   const cambiarDesglose = async (mes: number, año: number) => {
+    // Actualizar el periodo global
+    cambiarPeriodo(mes, año);
+    
     const desglose = todosDesgloses.find(d => d.mes === mes && d.año === año);
     if (desglose) {
       setDesgloseActual(desglose);
-      localStorage.setItem('ultimoDesgloseBebeId', desglose.id);
     } else {
       const nuevoDesglose = {
         presupuestoMensual: desgloseActual?.presupuestoMensual || 0,
@@ -255,7 +270,6 @@ const DesglosadorBebe: React.FC = () => {
       try {
         const creado = await desgloseBebeAPI.crear(nuevoDesglose);
         setDesgloseActual(creado);
-        localStorage.setItem('ultimoDesgloseBebeId', creado.id);
         await cargarDesgloses();
       } catch (error) {
         console.error('Error al cambiar desglose bebé:', error);
@@ -408,6 +422,13 @@ const DesglosadorBebe: React.FC = () => {
           </div>
           <div className="header-acciones">
             <Boton 
+              onClick={() => setMostrarConfirmacionEliminarTodos(true)} 
+              variante="outline"
+              style={{ color: '#dc2626' }}
+            >
+              Eliminar Todos
+            </Boton>
+            <Boton 
               onClick={() => {
                 setNuevoPresupuesto(formatearNumeroConPuntos(desgloseActual.presupuestoMensual.toString()));
                 setMostrarEditarPresupuesto(true);
@@ -424,11 +445,11 @@ const DesglosadorBebe: React.FC = () => {
 
         <div className="resumen-sueldo">
           <div className="resumen-item">
-            <span className="label">Presupuesto:</span>
+            <span className="label">Sueldo:</span>
             <span className="valor positivo">{formatearPesosChilenos(resumen?.presupuestoMensual || 0)}</span>
           </div>
           <div className="resumen-item">
-            <span className="label">Total Gastos:</span>
+            <span className="label">Presupuesto/Gasto:</span>
             <span className="valor negativo">-{formatearPesosChilenos(resumen?.totalGastos || 0)}</span>
           </div>
           <div className="resumen-item destacado">
@@ -623,6 +644,29 @@ const DesglosadorBebe: React.FC = () => {
             </Boton>
             <Boton onClick={editarPresupuesto} variante="primary">
               Guardar
+            </Boton>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {mostrarConfirmacionEliminarTodos && (
+        <Modal
+          abierto={mostrarConfirmacionEliminarTodos}
+          titulo="Eliminar Todos los Gastos del Bebé"
+          onCerrar={() => setMostrarConfirmacionEliminarTodos(false)}
+        >
+          <Modal.Body>
+            <p>¿Estás seguro de que deseas eliminar TODOS los desgloses de gastos del bebé?</p>
+            <p style={{ color: '#dc2626', marginTop: '1rem' }}>
+              Esta acción no se puede deshacer y eliminará todos tus registros de gastos del bebé.
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Boton onClick={() => setMostrarConfirmacionEliminarTodos(false)} variante="outline">
+              Cancelar
+            </Boton>
+            <Boton onClick={eliminarTodosDesgloses} variante="primary" style={{ backgroundColor: '#dc2626' }}>
+              Eliminar Todos
             </Boton>
           </Modal.Footer>
         </Modal>

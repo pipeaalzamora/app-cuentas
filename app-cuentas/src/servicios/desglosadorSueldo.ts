@@ -7,9 +7,17 @@ class ServicioDesglosadorSueldo {
       const desgloses = await desgloseSueldoAPI.obtenerTodos();
       return desgloses.map((d: any) => ({
         ...d,
-        id: d.id || d._id, // Asegurar que el ID esté presente
+        id: d.id || d._id,
         fechaCreacion: new Date(d.fechaCreacion),
         gastos: d.gastos?.map((g: any) => ({
+          ...g,
+          fecha: new Date(g.fecha)
+        })) || [],
+        gastosBebe: d.gastosBebe?.map((g: any) => ({
+          ...g,
+          fecha: new Date(g.fecha)
+        })) || [],
+        gastosGenerales: d.gastosGenerales?.map((g: any) => ({
           ...g,
           fecha: new Date(g.fecha)
         })) || []
@@ -48,7 +56,17 @@ class ServicioDesglosadorSueldo {
 
   calcularResumen(desglose: DesgloseSueldo): ResumenDesglose {
     const totalGastos = desglose.gastos.reduce((sum, g) => sum + g.monto, 0);
-    const saldoRestante = desglose.sueldoInicial - totalGastos;
+    
+    const totalGastosBebe = (desglose.gastosBebe || []).reduce(
+      (sum, g) => sum + (g.monto * g.cantidad), 0
+    );
+    
+    const totalGastosGenerales = (desglose.gastosGenerales || []).reduce(
+      (sum, g) => sum + (g.monto * g.cantidad), 0
+    );
+    
+    const totalDescuentos = totalGastos + totalGastosBebe + totalGastosGenerales;
+    const saldoRestante = desglose.sueldoInicial - totalDescuentos;
     
     const gastosPorTipo: Record<TipoGasto, number> = {
       pago: 0,
@@ -66,9 +84,12 @@ class ServicioDesglosadorSueldo {
     return {
       sueldoInicial: desglose.sueldoInicial,
       totalGastos,
+      totalGastosBebe,
+      totalGastosGenerales,
+      totalDescuentos,
       saldoRestante,
       gastosPorTipo,
-      porcentajeGastado: desglose.sueldoInicial > 0 ? (totalGastos / desglose.sueldoInicial) * 100 : 0
+      porcentajeGastado: desglose.sueldoInicial > 0 ? (totalDescuentos / desglose.sueldoInicial) * 100 : 0
     };
   }
 }

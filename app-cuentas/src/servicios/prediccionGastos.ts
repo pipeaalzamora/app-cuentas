@@ -122,16 +122,16 @@ class ServicioPrediccionGastos {
    * Predice gasto para un servicio específico
    */
   private predecirServicio(
-    tipoServicio: TipoServicio,
+    servicio: TipoServicio,
     datosHistoricos: DatosHistoricos[],
     mesFuturo: number,
     config: ConfiguracionPrediccion
   ): PrediccionServicio {
-    const datosServicio = datosHistoricos.filter(d => d.tipoServicio === tipoServicio);
+    const datosServicio = datosHistoricos.filter(d => d.servicio === servicio);
 
     if (datosServicio.length === 0) {
       return {
-        tipoServicio,
+        servicio,
         montoPredicho: 0,
         confianza: 0,
         tendencia: 'estable',
@@ -172,7 +172,7 @@ class ServicioPrediccionGastos {
     const variacionPorcentual = ((montoPredicho - estadisticas.promedio) / estadisticas.promedio) * 100;
 
     return {
-      tipoServicio,
+      servicio,
       montoPredicho: Math.round(montoPredicho * 100) / 100,
       confianza,
       tendencia,
@@ -199,7 +199,7 @@ class ServicioPrediccionGastos {
       .map(cuenta => ({
         mes: cuenta.mes,
         año: cuenta.año,
-        tipoServicio: cuenta.tipoServicio,
+        servicio: cuenta.servicio,
         monto: cuenta.monto
       }));
   }
@@ -306,9 +306,9 @@ class ServicioPrediccionGastos {
   /**
    * Analiza patrones estacionales en los datos
    */
-  analizarPatrones(cuentas: CuentaServicio[], tipoServicio?: TipoServicio): AnalisisPatrones {
-    const cuentasFiltradas = tipoServicio 
-      ? cuentas.filter(c => c.tipoServicio === tipoServicio)
+  analizarPatrones(cuentas: CuentaServicio[], servicio?: TipoServicio): AnalisisPatrones {
+    const cuentasFiltradas = servicio 
+      ? cuentas.filter(c => c.servicio === servicio)
       : cuentas;
 
     const gastosPorMes = new Map<number, number[]>();

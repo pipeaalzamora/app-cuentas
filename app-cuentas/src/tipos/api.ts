@@ -28,7 +28,7 @@ export interface MetadataRespuesta {
 export interface ConfiguracionProveedor {
   id: string;
   nombre: string;
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   apiUrl: string;
   apiKey?: string;
   activo: boolean;

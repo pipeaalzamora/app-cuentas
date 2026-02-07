@@ -99,7 +99,7 @@ export class ServicioAlmacenamiento {
         return cuentasConFechas.filter((cuenta: CuentaServicio) => {
           if (filtros.mes !== undefined && cuenta.mes !== filtros.mes) return false;
           if (filtros.año !== undefined && cuenta.año !== filtros.año) return false;
-          if (filtros.tipoServicio !== undefined && cuenta.tipoServicio !== filtros.tipoServicio) return false;
+          if (filtros.servicio !== undefined && cuenta.servicio !== filtros.servicio) return false;
           if (filtros.pagada !== undefined && cuenta.pagada !== filtros.pagada) return false;
           return true;
         });
@@ -364,7 +364,7 @@ export class ServicioAlmacenamiento {
       const cuentas = await this.obtenerCuentas();
       
       const cuentasPagadas = cuentas.filter(c => c.pagada).length;
-      const serviciosUnicos = new Set(cuentas.map(c => c.tipoServicio)).size;
+      const serviciosUnicos = new Set(cuentas.map(c => c.servicio)).size;
       
       const fechas = cuentas.map(c => c.fechaVencimiento).sort((a, b) => a.getTime() - b.getTime());
       

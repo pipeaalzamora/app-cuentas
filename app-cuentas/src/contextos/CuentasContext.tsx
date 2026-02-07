@@ -39,7 +39,7 @@ const aplicarFiltros = (cuentas: CuentaServicio[], filtros: FiltrosCuentas): Cue
   return cuentas.filter(cuenta => {
     if (filtros.mes !== undefined && cuenta.mes !== filtros.mes) return false;
     if (filtros.año !== undefined && cuenta.año !== filtros.año) return false;
-    if (filtros.tipoServicio !== undefined && cuenta.tipoServicio !== filtros.tipoServicio) return false;
+    if (filtros.servicio !== undefined && cuenta.servicio !== filtros.servicio) return false;
     if (filtros.pagada !== undefined && cuenta.pagada !== filtros.pagada) return false;
     return true;
   });

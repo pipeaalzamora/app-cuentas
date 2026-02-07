@@ -6,3 +6,5 @@ export type { AccionCuentas, EstadoCuentas, AccionesCuentas, ContextoCuentas } f
 
 export { ConfiguracionProvider, useConfiguracion } from './ConfiguracionContext';
 export type { AccionConfiguracion, EstadoConfiguracion, AccionesConfiguracion, ContextoConfiguracion } from './ConfiguracionContext';
+
+export { PeriodoProvider, usePeriodo } from './PeriodoContext';

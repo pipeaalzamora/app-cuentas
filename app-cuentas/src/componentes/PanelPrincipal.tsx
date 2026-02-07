@@ -274,7 +274,7 @@ export const PanelPrincipal: React.FC<PanelPrincipalProps> = ({ onNavegar }) => 
                       <div key={cuenta.id} className="cuenta-prioritaria-item">
                         <div className="cuenta-prioritaria-info">
                           <div className="cuenta-prioritaria-servicio">
-                            {ICONOS_SERVICIOS[cuenta.tipoServicio]} {NOMBRES_SERVICIOS[cuenta.tipoServicio]}
+                            {ICONOS_SERVICIOS[cuenta.servicio]} {NOMBRES_SERVICIOS[cuenta.servicio]}
                           </div>
                           <div className="cuenta-prioritaria-periodo">
                             {obtenerNombreMes(cuenta.mes)} {cuenta.año}

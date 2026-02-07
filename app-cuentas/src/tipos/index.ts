@@ -6,7 +6,7 @@ export type TipoServicio = 'luz' | 'agua' | 'gas' | 'internet';
 // Interface principal para una cuenta de servicio
 export interface CuentaServicio {
   id: string;
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   monto: number;
   fechaVencimiento: Date;
   mes: number;
@@ -48,7 +48,7 @@ export interface CuentaServicio {
 
 // Interface para datos básicos del formulario (modo simple)
 export interface CuentaServicioBasica {
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   monto: number;
   fechaVencimiento: Date;
   mes: number;
@@ -118,7 +118,7 @@ export interface AlmacenamientoLocal {
 
 // Tipos para formularios y validación
 export interface FormularioCuentaData {
-  tipoServicio: TipoServicio;
+  servicio: TipoServicio;
   monto: number;
   fechaVencimiento: Date;
   mes: number;
@@ -127,13 +127,13 @@ export interface FormularioCuentaData {
 }
 
 // Tipos para filtros y ordenamiento
-export type CampoOrdenamiento = 'fechaVencimiento' | 'monto' | 'tipoServicio' | 'fechaCreacion';
+export type CampoOrdenamiento = 'fechaVencimiento' | 'monto' | 'servicio' | 'fechaCreacion';
 export type DireccionOrdenamiento = 'asc' | 'desc';
 
 export interface FiltrosCuentas {
   mes?: number;
   año?: number;
-  tipoServicio?: TipoServicio;
+  servicio?: TipoServicio;
   pagada?: boolean;
 }
 
