@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PanelPrincipal } from '../componentes';
+import { DashboardModerno } from '../componentes/DashboardModerno';
 
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -9,14 +9,7 @@ export const Dashboard: React.FC = () => {
     navigate(`/${seccion}`);
   };
 
-  return (
-    <div className="pagina-container">
-      <div className="pagina-header">
-        <h1>Dashboard Principal</h1>
-      </div>
-      <PanelPrincipal onNavegar={manejarNavegacion} />
-    </div>
-  );
+  return <DashboardModerno onNavegar={manejarNavegacion} />;
 };
 
 export default Dashboard;

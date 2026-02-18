@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ListaCuentas } from '../componentes';
 import FormularioCuentaAvanzado from '../componentes/FormularioCuentaAvanzado';
 import type { CuentaServicio } from '../tipos';
+import '../estilos/botones-modernos.css';
+import './Cuentas.css';
 
 export const Cuentas: React.FC = () => {
   const navigate = useNavigate();
@@ -62,10 +64,11 @@ export const Cuentas: React.FC = () => {
       <div className="pagina-header">
         <h1>Gestión de Cuentas</h1>
         <button 
-          className="boton boton-primario"
+          className="btn-moderno btn-moderno--agregar"
           onClick={manejarAgregarCuenta}
         >
-          + Agregar Cuenta
+          <span className="btn-moderno__icono">+</span>
+          <span>Agregar Cuenta</span>
         </button>
       </div>
       <ListaCuentas onEditarCuenta={manejarEditarCuenta} />

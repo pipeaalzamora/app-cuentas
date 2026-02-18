@@ -1,0 +1,279 @@
+/* ============================================
+   BOTÓN MODERNO - Con degradados y efectos
+   ============================================ */
+
+.boton-moderno {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  font-family: var(--fuente-principal);
+  font-weight: var(--peso-semibold);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ========== TAMAÑOS ========== */
+
+.boton-moderno--sm {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--texto-sm);
+  min-height: 36px;
+}
+
+.boton-moderno--md {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--texto-base);
+  min-height: 44px;
+}
+
+.boton-moderno--lg {
+  padding: var(--space-lg) var(--space-xl);
+  font-size: var(--texto-lg);
+  min-height: 52px;
+}
+
+.boton-moderno--full {
+  width: 100%;
+}
+
+/* ========== VARIANTES ========== */
+
+/* Primary */
+.boton-moderno--primary {
+  background: var(--color-primario);
+  color: white;
+}
+
+.boton-moderno--primary:hover:not(:disabled) {
+  background: var(--color-primario-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.boton-moderno--primary.boton-moderno--gradient {
+  background: var(--gradient-primary);
+}
+
+.boton-moderno--primary.boton-moderno--gradient:hover:not(:disabled) {
+  background: var(--gradient-primary-hover);
+}
+
+/* Secondary */
+.boton-moderno--secondary {
+  background: var(--color-secundario);
+  color: white;
+}
+
+.boton-moderno--secondary:hover:not(:disabled) {
+  background: var(--color-secundario-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.boton-moderno--secondary.boton-moderno--gradient {
+  background: var(--gradient-secondary);
+}
+
+/* Accent */
+.boton-moderno--accent {
+  background: var(--color-info);
+  color: white;
+}
+
+.boton-moderno--accent:hover:not(:disabled) {
+  background: var(--color-info-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.boton-moderno--accent.boton-moderno--gradient {
+  background: var(--gradient-accent);
+}
+
+/* Success */
+.boton-moderno--success {
+  background: var(--color-exito);
+  color: white;
+}
+
+.boton-moderno--success:hover:not(:disabled) {
+  background: var(--color-exito-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.boton-moderno--success.boton-moderno--gradient {
+  background: var(--gradient-success);
+}
+
+/* Warning */
+.boton-moderno--warning {
+  background: var(--color-advertencia);
+  color: white;
+}
+
+.boton-moderno--warning:hover:not(:disabled) {
+  background: var(--color-advertencia-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.boton-moderno--warning.boton-moderno--gradient {
+  background: var(--gradient-warning);
+}
+
+/* Error */
+.boton-moderno--error {
+  background: var(--color-error);
+  color: white;
+}
+
+.boton-moderno--error:hover:not(:disabled) {
+  background: var(--color-error-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.boton-moderno--error.boton-moderno--gradient {
+  background: var(--gradient-error);
+}
+
+/* Ghost */
+.boton-moderno--ghost {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.boton-moderno--ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Glass */
+.boton-moderno--glass {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  color: var(--color-texto);
+}
+
+.boton-moderno--glass:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* ========== EFECTOS ========== */
+
+/* Glow Effect */
+.boton-moderno--glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.boton-moderno--primary.boton-moderno--glow {
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.boton-moderno--success.boton-moderno--glow {
+  box-shadow: var(--shadow-glow-success);
+}
+
+.boton-moderno--error.boton-moderno--glow {
+  box-shadow: var(--shadow-glow-error);
+}
+
+/* Active State */
+.boton-moderno:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* ========== ESTADOS ========== */
+
+/* Disabled */
+.boton-moderno--disabled,
+.boton-moderno:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Loading */
+.boton-moderno--loading {
+  pointer-events: none;
+  position: relative;
+}
+
+.boton-moderno--loading .boton-moderno__text {
+  opacity: 0;
+}
+
+/* ========== ELEMENTOS INTERNOS ========== */
+
+.boton-moderno__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+}
+
+.boton-moderno__text {
+  transition: opacity var(--transition-fast);
+}
+
+/* Spinner de carga */
+.boton-moderno__spinner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .boton-moderno--lg {
+    padding: var(--space-md) var(--space-lg);
+    font-size: var(--texto-base);
+    min-height: 48px;
+  }
+}
+
+/* ========== ACCESIBILIDAD ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .boton-moderno,
+  .boton-moderno:hover,
+  .boton-moderno:active {
+    transform: none !important;
+    transition: none;
+  }
+
+  .boton-moderno--glow {
+    animation: none;
+  }
+
+  .boton-moderno__spinner {
+    animation: none;
+  }
+}
+
+.boton-moderno:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}

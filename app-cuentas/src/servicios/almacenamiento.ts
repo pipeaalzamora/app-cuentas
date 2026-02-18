@@ -78,21 +78,27 @@ export class ServicioAlmacenamiento {
     try {
       const cuentas = await cuentasAPI.obtenerTodas();
       
-      // Convertir fechas de string a Date
-      const cuentasConFechas = cuentas.map((cuenta: any) => ({
-        ...cuenta,
-        fechaVencimiento: new Date(cuenta.fechaVencimiento),
-        fechaCreacion: new Date(cuenta.fechaCreacion),
-        fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
-        fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
-        fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
-        fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
-        proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
-        saldoAnterior: cuenta.saldoAnterior || 0,
-        consumoActual: cuenta.consumoActual || cuenta.monto || 0,
-        otrosCargos: cuenta.otrosCargos || 0,
-        descuentos: cuenta.descuentos || 0
-      }));
+      // Convertir fechas de string a Date con validación
+      const cuentasConFechas = cuentas.map((cuenta: any) => {
+        const fechaVencimiento = cuenta.fechaVencimiento ? new Date(cuenta.fechaVencimiento) : new Date();
+        const fechaCreacion = cuenta.fechaCreacion || cuenta.createdAt ? new Date(cuenta.fechaCreacion || cuenta.createdAt) : new Date();
+        
+        return {
+          ...cuenta,
+          id: cuenta._id || cuenta.id,
+          fechaVencimiento: isNaN(fechaVencimiento.getTime()) ? new Date() : fechaVencimiento,
+          fechaCreacion: isNaN(fechaCreacion.getTime()) ? new Date() : fechaCreacion,
+          fechaActualizacion: cuenta.fechaActualizacion || cuenta.updatedAt ? new Date(cuenta.fechaActualizacion || cuenta.updatedAt) : undefined,
+          fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : fechaCreacion,
+          fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : fechaVencimiento,
+          fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : fechaVencimiento,
+          proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
+          saldoAnterior: cuenta.saldoAnterior || 0,
+          consumoActual: cuenta.consumoActual || cuenta.monto || 0,
+          otrosCargos: cuenta.otrosCargos || 0,
+          descuentos: cuenta.descuentos || 0
+        };
+      });
 
       // Aplicar filtros si existen
       if (filtros) {
@@ -119,15 +125,19 @@ export class ServicioAlmacenamiento {
     try {
       const cuenta = await cuentasAPI.obtenerPorId(id);
       
-      // Convertir fechas
+      const fechaVencimiento = cuenta.fechaVencimiento ? new Date(cuenta.fechaVencimiento) : new Date();
+      const fechaCreacion = cuenta.fechaCreacion || cuenta.createdAt ? new Date(cuenta.fechaCreacion || cuenta.createdAt) : new Date();
+      
+      // Convertir fechas con validación
       return {
         ...cuenta,
-        fechaVencimiento: new Date(cuenta.fechaVencimiento),
-        fechaCreacion: new Date(cuenta.fechaCreacion),
-        fechaActualizacion: cuenta.fechaActualizacion ? new Date(cuenta.fechaActualizacion) : undefined,
-        fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : new Date(cuenta.fechaCreacion || cuenta.fechaVencimiento),
-        fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : new Date(cuenta.fechaVencimiento),
-        fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : new Date(cuenta.fechaVencimiento),
+        id: cuenta._id || cuenta.id,
+        fechaVencimiento: isNaN(fechaVencimiento.getTime()) ? new Date() : fechaVencimiento,
+        fechaCreacion: isNaN(fechaCreacion.getTime()) ? new Date() : fechaCreacion,
+        fechaActualizacion: cuenta.fechaActualizacion || cuenta.updatedAt ? new Date(cuenta.fechaActualizacion || cuenta.updatedAt) : undefined,
+        fechaEmision: cuenta.fechaEmision ? new Date(cuenta.fechaEmision) : fechaCreacion,
+        fechaCorte: cuenta.fechaCorte ? new Date(cuenta.fechaCorte) : fechaVencimiento,
+        fechaLectura: cuenta.fechaLectura ? new Date(cuenta.fechaLectura) : fechaVencimiento,
         proximaFechaLectura: cuenta.proximaFechaLectura ? new Date(cuenta.proximaFechaLectura) : undefined,
       };
     } catch (error) {

@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { BottomNavigation, Sidebar, Breadcrumbs } from './navegacion';
 import AlternadorTema from './AlternadorTema';
 import type { NavegacionItem, BreadcrumbItem } from './navegacion';
-import './Layout.css';
+import './LayoutModerno.css';
 
-interface LayoutProps {
+interface LayoutModernoProps {
   children: React.ReactNode;
   seccionActual: string;
   breadcrumbs?: BreadcrumbItem[];
 }
 
-export const Layout: React.FC<LayoutProps> = ({
+export const LayoutModerno: React.FC<LayoutModernoProps> = ({
   children,
   seccionActual,
   breadcrumbs = []
@@ -20,7 +20,6 @@ export const Layout: React.FC<LayoutProps> = ({
   const [sidebarColapsado, setSidebarColapsado] = useState(false);
   const [esMobile, setEsMobile] = useState(false);
 
-  // Detectar si es móvil
   useEffect(() => {
     const detectarMobile = () => {
       setEsMobile(window.innerWidth <= 768);
@@ -32,7 +31,6 @@ export const Layout: React.FC<LayoutProps> = ({
     return () => window.removeEventListener('resize', detectarMobile);
   }, []);
 
-  // Manejar navegación con React Router
   const manejarNavegacion = (seccion: string) => {
     if (seccion === 'dashboard') {
       navigate('/', { replace: true });
@@ -41,14 +39,12 @@ export const Layout: React.FC<LayoutProps> = ({
     }
   };
 
-  // Manejar click en breadcrumbs
   const manejarBreadcrumbClick = (item: BreadcrumbItem) => {
     if (item.ruta) {
       navigate(item.ruta);
     }
   };
 
-  // Items de navegación
   const itemsNavegacion: NavegacionItem[] = [
     {
       id: 'dashboard',
@@ -87,7 +83,10 @@ export const Layout: React.FC<LayoutProps> = ({
   };
 
   return (
-    <div className={`layout ${sidebarColapsado ? 'sidebar-colapsado' : ''}`}>
+    <div className={`layout-moderno ${sidebarColapsado ? 'sidebar-colapsado' : ''}`}>
+      {/* Fondo animado con degradado */}
+      <div className="layout-moderno__background" />
+      
       {/* Sidebar para desktop */}
       {!esMobile && (
         <Sidebar
@@ -99,27 +98,27 @@ export const Layout: React.FC<LayoutProps> = ({
       )}
 
       {/* Contenido principal */}
-      <main className="layout-main">
-        {/* Header con breadcrumbs y alternador de tema */}
-        <div className="layout-header">
+      <main className="layout-moderno__main">
+        {/* Header con efecto glass */}
+        <div className="layout-moderno__header glass">
           {breadcrumbs.length > 0 && (
             <Breadcrumbs
               items={breadcrumbs}
               onItemClick={manejarBreadcrumbClick}
             />
           )}
-          <div className="layout-header__acciones">
+          <div className="layout-moderno__header-acciones">
             <AlternadorTema />
           </div>
         </div>
 
-        {/* Contenido */}
-        <div className="layout-contenido">
+        {/* Contenido con scroll suave */}
+        <div className="layout-moderno__contenido">
           {children}
         </div>
 
         {/* Espaciado inferior para bottom navigation en móvil */}
-        {esMobile && <div className="layout-bottom-spacer" />}
+        {esMobile && <div className="layout-moderno__bottom-spacer" />}
       </main>
 
       {/* Bottom Navigation para móvil */}
@@ -133,4 +132,4 @@ export const Layout: React.FC<LayoutProps> = ({
   );
 };
 
-export default Layout;
+export default LayoutModerno;

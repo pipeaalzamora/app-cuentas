@@ -25,6 +25,11 @@ export function formatearNumeroChileno(numero: number): string {
  * Formatea una fecha según el formato chileno (dd/mm/yyyy)
  */
 export function formatearFechaChilena(fecha: Date): string {
+  // Validación defensiva
+  if (!fecha || !(fecha instanceof Date) || isNaN(fecha.getTime())) {
+    return 'Fecha inválida';
+  }
+  
   return new Intl.DateTimeFormat('es-CL', {
     day: '2-digit',
     month: '2-digit',
@@ -36,6 +41,11 @@ export function formatearFechaChilena(fecha: Date): string {
  * Formatea una fecha con hora según el formato chileno
  */
 export function formatearFechaHoraChilena(fecha: Date): string {
+  // Validación defensiva
+  if (!fecha || !(fecha instanceof Date) || isNaN(fecha.getTime())) {
+    return 'Fecha inválida';
+  }
+  
   return new Intl.DateTimeFormat('es-CL', {
     day: '2-digit',
     month: '2-digit',
@@ -49,6 +59,11 @@ export function formatearFechaHoraChilena(fecha: Date): string {
  * Formatea un mes y año según el formato chileno
  */
 export function formatearMesAñoChileno(fecha: Date): string {
+  // Validación defensiva
+  if (!fecha || !(fecha instanceof Date) || isNaN(fecha.getTime())) {
+    return 'Fecha inválida';
+  }
+  
   return new Intl.DateTimeFormat('es-CL', {
     month: 'long',
     year: 'numeric'

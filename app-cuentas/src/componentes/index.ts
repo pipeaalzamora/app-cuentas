@@ -15,11 +15,9 @@ export { default as FormularioCuentaAvanzado } from './FormularioCuentaAvanzado'
 export { default as ListaCuentas } from './ListaCuentas';
 export { default as PanelEstadisticas } from './PanelEstadisticas';
 export { PanelPredicciones } from './PanelPredicciones';
-export { default as PanelPrincipal } from './PanelPrincipal';
+export { DashboardModerno } from './DashboardModerno';
 export { GeneradorReportes } from './GeneradorReportes';
 export { default as DesglosadorSueldo } from './DesglosadorSueldo';
-export { default as DesglosadorBebe } from './DesglosadorBebe';
-export { default as CalculadoraGastos } from './CalculadoraGastos';
 
 // Exportaciones de componentes de gráficos
 export * from './graficos';
@@ -28,7 +26,7 @@ export * from './graficos';
 export * from './reportes';
 
 // Exportaciones de navegación y layout
-export { default as Layout } from './Layout';
+export { LayoutModerno } from './LayoutModerno';
 export { default as AppRouter } from './AppRouter';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as AlternadorTema } from './AlternadorTema';

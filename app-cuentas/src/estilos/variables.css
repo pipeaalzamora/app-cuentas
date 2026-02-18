@@ -1,50 +1,56 @@
 /* Sistema de Variables CSS para Gestor de Cuentas de Servicios */
+/* NOTA: Este archivo mantiene compatibilidad con código legacy */
+/* Para nuevos componentes, usar design-system.css */
 
 :root {
-  /* Colores Principales */
-  --color-primario: #2563eb;
-  --color-primario-hover: #1d4ed8;
-  --color-primario-light: #dbeafe;
+  /* Colores Principales - Negro Vanguardista */
+  --color-primario: #ffffff;
+  --color-primario-hover: #f5f5f5;
+  --color-primario-light: #1a1a1a;
   
-  --color-secundario: #64748b;
-  --color-secundario-hover: #475569;
-  --color-secundario-light: #f1f5f9;
+  --color-secundario: #a3a3a3;
+  --color-secundario-hover: #737373;
+  --color-secundario-light: #262626;
   
   /* Colores de Estado */
-  --color-exito: #059669;
-  --color-exito-hover: #047857;
-  --color-exito-light: #d1fae5;
+  --color-exito: #22c55e;
+  --color-exito-hover: #16a34a;
+  --color-exito-light: rgba(34, 197, 94, 0.1);
   
-  --color-advertencia: #d97706;
-  --color-advertencia-hover: #b45309;
-  --color-advertencia-light: #fef3c7;
+  --color-advertencia: #eab308;
+  --color-advertencia-hover: #ca8a04;
+  --color-advertencia-light: rgba(234, 179, 8, 0.1);
   
-  --color-error: #dc2626;
-  --color-error-hover: #b91c1c;
-  --color-error-light: #fee2e2;
+  --color-error: #ef4444;
+  --color-error-hover: #dc2626;
+  --color-error-light: rgba(239, 68, 68, 0.1);
   
-  --color-info: #0284c7;
-  --color-info-hover: #0369a1;
-  --color-info-light: #e0f2fe;
+  --color-info: #a3a3a3;
+  --color-info-hover: #737373;
+  --color-info-light: rgba(163, 163, 163, 0.1);
   
   /* Colores de Superficie */
-  --color-fondo: #f8fafc;
-  --color-superficie: #ffffff;
-  --color-superficie-hover: #f1f5f9;
-  --color-borde: #e2e8f0;
-  --color-borde-hover: #cbd5e1;
+  --color-fondo: #000000;
+  --color-superficie: #111111;
+  --color-superficie-hover: #1a1a1a;
+  --color-borde: rgba(255, 255, 255, 0.1);
+  --color-borde-hover: rgba(255, 255, 255, 0.2);
   
   /* Colores de Texto */
-  --color-texto: #1e293b;
-  --color-texto-secundario: #64748b;
-  --color-texto-muted: #94a3b8;
-  --color-texto-invertido: #ffffff;
+  --color-texto: #ffffff;
+  --color-texto-secundario: #a3a3a3;
+  --color-texto-muted: #737373;
+  --color-texto-invertido: #000000;
   
-  /* Colores por Tipo de Servicio */
-  --color-luz: #f59e0b;
-  --color-agua: #06b6d4;
-  --color-gas: #ef4444;
-  --color-internet: #8b5cf6;
+  /* Colores por Tipo de Servicio - Con degradados */
+  --color-luz: #ffd89b;
+  --color-luz-dark: #19547b;
+  --color-agua: #a8edea;
+  --color-agua-dark: #fed6e3;
+  --color-gas: #ff9a9e;
+  --color-gas-dark: #fecfef;
+  --color-internet: #a18cd1;
+  --color-internet-dark: #fbc2eb;
   
   /* Tipografía */
   --fuente-principal: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -118,23 +124,23 @@
 
 /* Tema Oscuro */
 .tema-oscuro {
-  --color-fondo: #0f172a;
-  --color-superficie: #1e293b;
-  --color-superficie-hover: #334155;
-  --color-borde: #334155;
-  --color-borde-hover: #475569;
+  --color-fondo: #000000;
+  --color-superficie: #0a0a0a;
+  --color-superficie-hover: #111111;
+  --color-borde: rgba(255, 255, 255, 0.1);
+  --color-borde-hover: rgba(255, 255, 255, 0.2);
   
-  --color-texto: #f1f5f9;
-  --color-texto-secundario: #cbd5e1;
-  --color-texto-muted: #64748b;
-  --color-texto-invertido: #1e293b;
+  --color-texto: #ffffff;
+  --color-texto-secundario: #a3a3a3;
+  --color-texto-muted: #737373;
+  --color-texto-invertido: #000000;
   
-  --color-primario-light: #1e3a8a;
-  --color-secundario-light: #334155;
-  --color-exito-light: #064e3b;
-  --color-advertencia-light: #92400e;
-  --color-error-light: #7f1d1d;
-  --color-info-light: #0c4a6e;
+  --color-primario-light: #1a1a1a;
+  --color-secundario-light: #262626;
+  --color-exito-light: rgba(34, 197, 94, 0.1);
+  --color-advertencia-light: rgba(234, 179, 8, 0.1);
+  --color-error-light: rgba(239, 68, 68, 0.1);
+  --color-info-light: rgba(163, 163, 163, 0.1);
 }
 
 /* Utilidades de Accesibilidad */

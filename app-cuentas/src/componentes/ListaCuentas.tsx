@@ -351,19 +351,25 @@ const FilaCuenta = memo<{
   onEliminar: (cuenta: CuentaServicio) => void;
   obtenerColorServicio: (tipo: string) => string;
   formatearMonto: (monto: number) => string;
-}>(({ cuenta, onEditar, onEliminar, obtenerColorServicio, formatearMonto }) => (
-  <tr className="lista-cuentas__fila">
-    <td>
-      <div className="lista-cuentas__servicio">
-        <span
-          className="lista-cuentas__servicio-indicador"
-          style={{ backgroundColor: obtenerColorServicio(cuenta.servicio) }}
-        />
-        <span className="lista-cuentas__servicio-texto">
-          {cuenta.servicio.charAt(0).toUpperCase() + cuenta.servicio.slice(1)}
-        </span>
-      </div>
-    </td>
+}>(({ cuenta, onEditar, onEliminar, obtenerColorServicio, formatearMonto }) => {
+  // Validación defensiva para evitar errores si falta el campo servicio
+  const servicioTexto = cuenta.servicio 
+    ? cuenta.servicio.charAt(0).toUpperCase() + cuenta.servicio.slice(1)
+    : 'Sin servicio';
+  
+  return (
+    <tr className="lista-cuentas__fila">
+      <td>
+        <div className="lista-cuentas__servicio">
+          <span
+            className="lista-cuentas__servicio-indicador"
+            style={{ backgroundColor: cuenta.servicio ? obtenerColorServicio(cuenta.servicio) : '#ccc' }}
+          />
+          <span className="lista-cuentas__servicio-texto">
+            {servicioTexto}
+          </span>
+        </div>
+      </td>
     <td className="lista-cuentas__monto">
       {formatearMonto(cuenta.monto)}
     </td>
@@ -404,7 +410,8 @@ const FilaCuenta = memo<{
       </div>
     </td>
   </tr>
-));
+  );
+});
 
 FilaCuenta.displayName = 'FilaCuenta';
 

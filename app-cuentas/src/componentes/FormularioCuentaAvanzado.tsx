@@ -160,7 +160,7 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
 
     if (evento.target.type === 'checkbox') {
       valor = (evento.target as HTMLInputElement).checked;
-    } else if (evento.target.type === 'number' || campo === 'monto') {
+    } else if (evento.target.type === 'number' || campo === 'monto' || campo === 'mes') {
       // Para el campo monto, manejar el formato especial
       if (campo === 'monto') {
         const valorLimpio = evento.target.value.replace(/\D/g, '');
@@ -171,6 +171,9 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
         setTimeout(() => {
           inputElement.value = formatearMonto(valorLimpio);
         }, 0);
+      } else if (campo === 'mes') {
+        // Asegurar que mes sea número
+        valor = parseInt(evento.target.value) || 1;
       } else {
         valor = parseFloat(evento.target.value) || 0;
       }
@@ -213,7 +216,7 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
         // Actualizar cuenta existente
         await actualizarCuenta(cuentaInicial.id, {
           ...datosFormulario,
-          año: new Date().getFullYear(), // Usar año actual
+          año: new Date().getFullYear(),
           fechaActualizacion: new Date()
         });
 
@@ -223,14 +226,14 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
         // Crear nueva cuenta
         const datosAdaptados = {
           ...datosFormulario,
-          año: new Date().getFullYear(), // Usar año actual
+          año: new Date().getFullYear(),
           saldoAnterior: 0,
           consumoActual: datosFormulario.monto,
           otrosCargos: 0,
           descuentos: 0
         };
+        
         await agregarCuenta(datosAdaptados);
-
         mostrarExito('Cuenta registrada correctamente');
         enGuardar?.();
       }

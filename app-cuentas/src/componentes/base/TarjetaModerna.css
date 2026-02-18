@@ -1,0 +1,220 @@
+/* ============================================
+   TARJETA MODERNA - Componente con Glassmorphism
+   ============================================ */
+
+.tarjeta-moderna {
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ========== VARIANTES ========== */
+
+/* Glass Effect */
+.tarjeta-moderna--glass {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Elevated Card */
+.tarjeta-moderna--elevated {
+  background: var(--color-superficie);
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid var(--color-borde);
+}
+
+.tema-oscuro .tarjeta-moderna--elevated {
+  background: var(--color-background-elevated, #1a1625);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Neumorphic */
+.tarjeta-moderna--neumorphic {
+  background: var(--color-superficie);
+  box-shadow: var(--shadow-neumorphic-light);
+  border: none;
+}
+
+.tema-oscuro .tarjeta-moderna--neumorphic {
+  background: var(--color-background-elevated, #1a1625);
+  box-shadow: var(--shadow-neumorphic-dark);
+}
+
+/* Gradient Variants */
+.tarjeta-moderna--gradient-primary {
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+}
+
+.tarjeta-moderna--gradient-secondary {
+  background: var(--gradient-secondary);
+  color: white;
+  border: none;
+}
+
+.tarjeta-moderna--gradient-accent {
+  background: var(--gradient-accent);
+  color: white;
+  border: none;
+}
+
+.tarjeta-moderna--gradient-luz {
+  background: var(--gradient-luz);
+  color: white;
+  border: none;
+}
+
+.tarjeta-moderna--gradient-agua {
+  background: var(--gradient-agua);
+  color: var(--color-texto);
+  border: none;
+}
+
+.tarjeta-moderna--gradient-gas {
+  background: var(--gradient-gas);
+  color: white;
+  border: none;
+}
+
+.tarjeta-moderna--gradient-internet {
+  background: var(--gradient-internet);
+  color: white;
+  border: none;
+}
+
+/* ========== EFECTOS ========== */
+
+/* Hover Effect */
+.tarjeta-moderna--hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-floating);
+}
+
+.tarjeta-moderna--glass.tarjeta-moderna--hover:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Glow Effect */
+.tarjeta-moderna--glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Clickable */
+.tarjeta-moderna--clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tarjeta-moderna--clickable:active {
+  transform: scale(0.98);
+}
+
+/* ========== ESTRUCTURA INTERNA ========== */
+
+.tarjeta-moderna__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.tarjeta-moderna--glass .tarjeta-moderna__header,
+.tarjeta-moderna[class*="gradient"] .tarjeta-moderna__header {
+  border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.tarjeta-moderna__icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tarjeta-moderna[class*="gradient"] .tarjeta-moderna__icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.tarjeta-moderna__title {
+  flex: 1;
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-semibold);
+  color: inherit;
+}
+
+.tarjeta-moderna__body {
+  color: inherit;
+  line-height: 1.6;
+}
+
+.tarjeta-moderna__footer {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-borde);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.tarjeta-moderna--glass .tarjeta-moderna__footer,
+.tarjeta-moderna[class*="gradient"] .tarjeta-moderna__footer {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .tarjeta-moderna {
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+  }
+
+  .tarjeta-moderna__header {
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .tarjeta-moderna__icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  .tarjeta-moderna__title {
+    font-size: var(--texto-lg);
+  }
+}
+
+/* ========== ACCESIBILIDAD ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta-moderna,
+  .tarjeta-moderna--hover:hover,
+  .tarjeta-moderna--clickable:active {
+    transform: none;
+    transition: none;
+  }
+
+  .tarjeta-moderna--glow {
+    animation: none;
+  }
+}
+
+/* Focus visible para accesibilidad */
+.tarjeta-moderna--clickable:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}

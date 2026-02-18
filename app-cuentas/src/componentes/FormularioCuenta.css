@@ -1,41 +1,37 @@
 /* Estilos para el componente FormularioCuenta */
 
 .formulario-cuenta {
-  background: var(--color-superficie);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: var(--radio-lg);
-  padding: var(--espacio-8);
+  padding: var(--espacio-6);
   box-shadow: var(--sombra-lg);
-  max-width: 700px;
-  margin: 0 auto;
-  border: 1px solid var(--color-borde);
+  max-width: 100%;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all var(--transicion-normal);
 }
 
 .formulario-cuenta__header {
-  margin-bottom: var(--espacio-8);
+  margin-bottom: var(--espacio-6);
   text-align: center;
-  padding-bottom: var(--espacio-6);
-  border-bottom: 2px solid var(--color-borde);
+  padding-bottom: var(--espacio-4);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .formulario-cuenta__titulo {
-  font-size: var(--texto-2xl);
+  font-size: var(--texto-xl);
   font-weight: var(--peso-bold);
-  color: var(--color-texto);
+  color: #ffffff;
   margin: 0;
-  background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .formulario-cuenta__error-general {
-  background: var(--color-error-light);
-  border: 1px solid var(--color-error);
-  color: var(--color-error);
-  padding: var(--espacio-4);
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: var(--espacio-3);
   border-radius: var(--radio-md);
-  margin-bottom: var(--espacio-6);
+  margin-bottom: var(--espacio-4);
   font-size: var(--texto-sm);
   font-weight: var(--peso-medium);
   display: flex;
@@ -45,36 +41,36 @@
 
 .formulario-cuenta__error-general::before {
   content: '⚠️';
-  font-size: var(--texto-lg);
+  font-size: var(--texto-base);
 }
 
 .formulario-cuenta__campos {
-  display: flex;
-  flex-direction: column;
-  gap: var(--espacio-8);
-  margin-bottom: var(--espacio-10);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espacio-4);
+  margin-bottom: var(--espacio-6);
 }
 
 .formulario-cuenta__seccion {
-  background: var(--color-fondo);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: var(--radio-md);
-  padding: var(--espacio-6);
-  border: 1px solid var(--color-borde);
+  padding: var(--espacio-4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all var(--transicion-normal);
 }
 
 .formulario-cuenta__seccion:hover {
-  border-color: var(--color-primario);
+  border-color: rgba(255, 255, 255, 0.2);
   box-shadow: var(--sombra-md);
 }
 
 .formulario-cuenta__subtitulo {
-  font-size: var(--texto-lg);
+  font-size: var(--texto-base);
   font-weight: var(--peso-semibold);
-  color: var(--color-texto);
-  margin: 0 0 var(--espacio-5) 0;
-  padding-bottom: var(--espacio-3);
-  border-bottom: 1px solid var(--color-borde);
+  color: #ffffff;
+  margin: 0 0 var(--espacio-4) 0;
+  padding-bottom: var(--espacio-2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: var(--espacio-2);
@@ -82,9 +78,9 @@
 
 .formulario-cuenta__subtitulo::before {
   content: '';
-  width: 4px;
-  height: 20px;
-  background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+  width: 3px;
+  height: 16px;
+  background: #ffffff;
   border-radius: var(--radio-full);
 }
 
@@ -97,50 +93,50 @@
 .formulario-cuenta__etiqueta {
   font-size: var(--texto-sm);
   font-weight: var(--peso-medium);
-  color: var(--color-texto);
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: var(--espacio-1);
   transition: color var(--transicion-rapida);
 }
 
 .formulario-cuenta__select {
-  padding: var(--espacio-4);
-  border: 2px solid var(--color-borde);
+  padding: var(--espacio-3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radio-md);
-  font-size: var(--texto-base);
-  background: var(--color-superficie);
-  color: var(--color-texto);
+  font-size: var(--texto-sm);
+  background: rgba(0, 0, 0, 0.5);
+  color: #ffffff;
   transition: all var(--transicion-normal);
-  min-height: 52px;
+  min-height: 44px;
   font-weight: var(--peso-medium);
 }
 
 .formulario-cuenta__select:focus {
   outline: none;
-  border-color: var(--color-primario);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
 }
 
 .formulario-cuenta__select--error {
-  border-color: var(--color-error);
-  background: var(--color-error-light);
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .formulario-cuenta__select--error:focus {
-  border-color: var(--color-error);
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 .formulario-cuenta__select:disabled {
-  background: var(--color-superficie-hover);
-  color: var(--color-texto-muted);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .formulario-cuenta__error {
   font-size: var(--texto-xs);
-  color: var(--color-error);
+  color: #ef4444;
   margin-top: var(--espacio-1);
   font-weight: var(--peso-medium);
   display: flex;
@@ -156,8 +152,8 @@
 .formulario-cuenta__fila {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--espacio-5);
-  margin-top: var(--espacio-4);
+  gap: var(--espacio-4);
+  margin-top: var(--espacio-3);
 }
 
 .formulario-cuenta__campo--checkbox {
@@ -169,29 +165,29 @@
   align-items: center;
   gap: var(--espacio-3);
   cursor: pointer;
-  font-size: var(--texto-base);
-  color: var(--color-texto);
-  padding: var(--espacio-4);
+  font-size: var(--texto-sm);
+  color: #ffffff;
+  padding: var(--espacio-3);
   border-radius: var(--radio-md);
-  border: 2px solid var(--color-borde);
-  background: var(--color-superficie);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
   transition: all var(--transicion-normal);
   font-weight: var(--peso-medium);
 }
 
 .formulario-cuenta__checkbox-label:hover {
-  border-color: var(--color-primario);
-  background: var(--color-superficie-hover);
+  border-color: rgba(34, 197, 94, 0.5);
+  background: rgba(34, 197, 94, 0.1);
   transform: translateY(-1px);
   box-shadow: var(--sombra-md);
 }
 
 .formulario-cuenta__checkbox {
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--color-borde);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radio-sm);
-  background: var(--color-superficie);
+  background: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   transition: all var(--transicion-normal);
   position: relative;
@@ -199,168 +195,85 @@
 }
 
 .formulario-cuenta__checkbox:checked {
-  background: var(--color-primario);
-  border-color: var(--color-primario);
+  background: #22c55e;
+  border-color: #22c55e;
   transform: scale(1.1);
 }
 
 .formulario-cuenta__checkbox:checked::after {
   content: '';
   position: absolute;
-  top: 3px;
-  left: 7px;
-  width: 6px;
-  height: 12px;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
   border: solid white;
-  border-width: 0 3px 3px 0;
+  border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
 
 .formulario-cuenta__checkbox:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-}
-
-.formulario-cuenta__checkbox:disabled {
-  background: var(--color-superficie-hover);
-  border-color: var(--color-borde);
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.formulario-cuenta__checkbox-texto {
-  user-select: none;
-  flex: 1;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
 .formulario-cuenta__acciones {
   display: flex;
-  gap: var(--espacio-4);
+  gap: var(--espacio-3);
   justify-content: flex-end;
   flex-wrap: wrap;
-  padding-top: var(--espacio-6);
-  border-top: 2px solid var(--color-borde);
+  padding-top: var(--espacio-4);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  grid-column: 1 / -1;
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .formulario-cuenta__campos {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .formulario-cuenta {
-    padding: var(--espacio-6) var(--espacio-4);
-    margin: 0 var(--espacio-4);
-    max-width: none;
+    padding: var(--espacio-4);
   }
 
   .formulario-cuenta__titulo {
-    font-size: var(--texto-xl);
+    font-size: var(--texto-lg);
   }
 
   .formulario-cuenta__fila {
     grid-template-columns: 1fr;
-    gap: var(--espacio-4);
+    gap: var(--espacio-3);
   }
 
   .formulario-cuenta__seccion {
-    padding: var(--espacio-4);
+    padding: var(--espacio-3);
   }
 
   .formulario-cuenta__acciones {
     flex-direction: column-reverse;
-    gap: var(--espacio-3);
+    gap: var(--espacio-2);
   }
 
   .formulario-cuenta__acciones button {
     width: 100%;
-  }
-
-  .formulario-cuenta__checkbox-label {
-    padding: var(--espacio-3);
-    font-size: var(--texto-sm);
   }
 }
 
 /* Estados de hover */
 @media (hover: hover) {
   .formulario-cuenta__select:hover:not(:disabled) {
-    border-color: var(--color-primario);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-1px);
     box-shadow: var(--sombra-md);
   }
 
   .formulario-cuenta__checkbox-label:hover .formulario-cuenta__checkbox:not(:disabled) {
-    border-color: var(--color-primario);
+    border-color: #22c55e;
     transform: scale(1.05);
   }
-}
-
-/* Tema oscuro */
-.tema-oscuro .formulario-cuenta {
-  background: var(--color-superficie);
-  box-shadow: var(--sombra-xl);
-  border-color: var(--color-borde);
-}
-
-.tema-oscuro .formulario-cuenta__titulo {
-  color: var(--color-texto);
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.tema-oscuro .formulario-cuenta__seccion {
-  background: var(--color-fondo);
-  border-color: var(--color-borde);
-}
-
-.tema-oscuro .formulario-cuenta__seccion:hover {
-  border-color: var(--color-primario);
-}
-
-.tema-oscuro .formulario-cuenta__subtitulo {
-  color: var(--color-texto);
-  border-color: var(--color-borde);
-}
-
-.tema-oscuro .formulario-cuenta__etiqueta {
-  color: var(--color-texto);
-}
-
-.tema-oscuro .formulario-cuenta__select {
-  background: var(--color-superficie);
-  border-color: var(--color-borde);
-  color: var(--color-texto);
-}
-
-.tema-oscuro .formulario-cuenta__select:disabled {
-  background: var(--color-superficie-hover);
-  color: var(--color-texto-muted);
-}
-
-.tema-oscuro .formulario-cuenta__checkbox {
-  background: var(--color-superficie);
-  border-color: var(--color-borde);
-}
-
-.tema-oscuro .formulario-cuenta__checkbox:disabled {
-  background: var(--color-superficie-hover);
-  border-color: var(--color-borde);
-}
-
-.tema-oscuro .formulario-cuenta__checkbox-label {
-  color: var(--color-texto);
-  background: var(--color-superficie);
-  border-color: var(--color-borde);
-}
-
-.tema-oscuro .formulario-cuenta__checkbox-label:hover {
-  background: var(--color-superficie-hover);
-  border-color: var(--color-primario);
-}
-
-.tema-oscuro .formulario-cuenta__error-general {
-  background: var(--color-error-light);
-  border-color: var(--color-error);
-  color: var(--color-error);
 }
 
 /* Animaciones mejoradas */

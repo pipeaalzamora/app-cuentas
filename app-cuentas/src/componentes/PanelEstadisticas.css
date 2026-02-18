@@ -1,10 +1,12 @@
 .panel-estadisticas {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1rem;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
+  background: #000000;
+  min-height: 100vh;
 }
 
 /* Filtros de período */
@@ -60,8 +62,8 @@
 /* Métricas principales */
 .metricas-principales {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
 }
 
 .metrica-card {
@@ -107,7 +109,7 @@
 .graficos-principales {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 .grafico-card {
@@ -201,12 +203,12 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background: linear-gradient(135deg, var(--color-primario), #60a5fa);
-  color: white;
+  background: linear-gradient(135deg, #ffffff, #a3a3a3);
+  color: #000000;
   border-radius: 50%;
   font-weight: 700;
   font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
 }
 
 .ranking-icono {
@@ -262,8 +264,8 @@
   height: 100%;
   border-radius: 6px;
   transition: all 0.5s ease;
-  background: linear-gradient(90deg, var(--color-primario), #60a5fa);
-  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+  background: linear-gradient(90deg, #ffffff, #a3a3a3);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 /* Tema oscuro */
@@ -316,9 +318,9 @@
 }
 
 .tema-oscuro .ranking-posicion {
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
-  color: white;
-  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+  background: linear-gradient(135deg, #ffffff, #a3a3a3);
+  color: #000000;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
 }
 
 .tema-oscuro .ranking-header h3 {
@@ -334,8 +336,8 @@
 }
 
 .tema-oscuro .ranking-progreso {
-  background: linear-gradient(90deg, var(--color-primario), #60a5fa);
-  box-shadow: 0 0 8px rgba(96, 165, 250, 0.3);
+  background: linear-gradient(90deg, #ffffff, #a3a3a3);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 /* Responsive */

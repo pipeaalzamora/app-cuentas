@@ -1,0 +1,208 @@
+/* ============================================
+   BOTONES MODERNOS - Sistema unificado
+   ============================================ */
+
+/* ========== BASE COMÚN ========== */
+.btn-moderno {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3) var(--espacio-5);
+  border: none;
+  border-radius: var(--radio-md);
+  font-size: var(--texto-base);
+  font-weight: var(--peso-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+  color: #ffffff;
+}
+
+.btn-moderno::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-moderno:hover::before {
+  opacity: 1;
+}
+
+.btn-moderno:active {
+  transform: translateY(0);
+}
+
+.btn-moderno:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 3px;
+}
+
+/* ========== ICONO ========== */
+.btn-moderno__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radio-sm);
+  font-size: var(--texto-xl);
+  font-weight: var(--peso-bold);
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.btn-moderno:hover .btn-moderno__icono {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== VARIANTES DE COLOR ========== */
+
+/* Verde - Agregar/Crear */
+.btn-moderno--agregar {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn-moderno--agregar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+}
+
+.btn-moderno--agregar:hover .btn-moderno__icono {
+  transform: rotate(90deg);
+}
+
+/* Amarillo - Editar/Modificar */
+.btn-moderno--editar {
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+  box-shadow: 0 2px 8px rgba(234, 179, 8, 0.3);
+}
+
+.btn-moderno--editar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(234, 179, 8, 0.4);
+}
+
+/* Rojo - Eliminar/Borrar */
+.btn-moderno--eliminar {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.btn-moderno--eliminar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+}
+
+/* Blanco - Descargar/Exportar */
+.btn-moderno--descargar {
+  background: linear-gradient(135deg, #ffffff 0%, #e5e5e5 100%);
+  color: #000000;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+.btn-moderno--descargar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.4);
+}
+
+.btn-moderno--descargar .btn-moderno__icono {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.btn-moderno--descargar:hover .btn-moderno__icono {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Gris - Secundario/Cancelar */
+.btn-moderno--secundario {
+  background: linear-gradient(135deg, #737373 0%, #525252 100%);
+  box-shadow: 0 2px 8px rgba(115, 115, 115, 0.3);
+}
+
+.btn-moderno--secundario:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(115, 115, 115, 0.4);
+}
+
+/* Outline - Transparente con borde */
+.btn-moderno--outline {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+}
+
+.btn-moderno--outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+}
+
+.btn-moderno--outline .btn-moderno__icono {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ========== TAMAÑOS ========== */
+
+.btn-moderno--sm {
+  padding: var(--espacio-2) var(--espacio-4);
+  font-size: var(--texto-sm);
+  min-height: 36px;
+}
+
+.btn-moderno--sm .btn-moderno__icono {
+  width: 20px;
+  height: 20px;
+  font-size: var(--texto-base);
+}
+
+.btn-moderno--lg {
+  padding: var(--espacio-4) var(--espacio-6);
+  font-size: var(--texto-lg);
+  min-height: 52px;
+}
+
+.btn-moderno--lg .btn-moderno__icono {
+  width: 28px;
+  height: 28px;
+  font-size: var(--texto-2xl);
+}
+
+/* ========== ESTADOS ========== */
+
+.btn-moderno:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .btn-moderno {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ========== ACCESIBILIDAD ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-moderno,
+  .btn-moderno:hover,
+  .btn-moderno__icono {
+    transition: none;
+    animation: none;
+    transform: none !important;
+  }
+}

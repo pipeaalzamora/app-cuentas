@@ -1,13 +1,15 @@
-/* Bottom Navigation - Navegación inferior para móviles */
+/* Bottom Navigation - Navegación inferior para móviles con Glassmorphism */
 
 .bottom-navigation {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--color-superficie);
-  border-top: 1px solid var(--color-borde);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--glass-background);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
   z-index: var(--z-fixed);
   padding: env(safe-area-inset-bottom) 0 0 0;
 }
@@ -36,12 +38,15 @@
 }
 
 .bottom-navigation-item:hover {
-  background: var(--color-superficie-hover);
+  background: var(--gradient-primary-soft);
   color: var(--color-texto-secundario);
+  transform: translateY(-2px);
 }
 
 .bottom-navigation-item.activo {
-  color: var(--color-primario);
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-glow-primary);
 }
 
 .bottom-navigation-item.activo .bottom-navigation-icono {
@@ -110,7 +115,7 @@
 
 /* Tema oscuro */
 .tema-oscuro .bottom-navigation {
-  background: var(--color-superficie);
-  border-top-color: var(--color-borde);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  border-top-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.5);
 }

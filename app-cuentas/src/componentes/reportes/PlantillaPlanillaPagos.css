@@ -16,7 +16,7 @@
 .planilla-header {
   text-align: center;
   margin-bottom: 25px;
-  border-bottom: 2px solid #2563eb;
+  border-bottom: 2px solid #ffffff;
   padding-bottom: 15px;
 }
 
@@ -65,7 +65,7 @@
 .total-valor {
   font-size: 18px;
   font-weight: bold;
-  color: #2563eb;
+  color: #ffffff;
 }
 
 .totales-por-servicio {
@@ -159,8 +159,8 @@
 }
 
 .cuenta-checkbox:checked + .checkbox-label {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: #22c55e;
+  border-color: #22c55e;
 }
 
 .cuenta-checkbox:checked + .checkbox-label::after {

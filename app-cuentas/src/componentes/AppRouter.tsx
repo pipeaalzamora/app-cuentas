@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { Layout } from './Layout';
+import { LayoutModerno } from './LayoutModerno';
 import { ErrorBoundary } from './ErrorBoundary';
 import type { BreadcrumbItem } from './navegacion';
 
@@ -37,7 +37,7 @@ const AppContent: React.FC = () => {
       '/cuentas': 'Gestión de Cuentas',
       '/estadisticas': 'Estadísticas y Análisis',
       '/reportes': 'Generación de Reportes',
-      '/desglosador': 'Desglosador de Sueldo'
+      '/desglosador': 'Mi Sueldo'
     };
 
     if (path !== '/') {
@@ -74,7 +74,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <Layout
+    <LayoutModerno
       seccionActual={obtenerSeccionActual()}
       breadcrumbs={generarBreadcrumbs()}
     >
@@ -89,7 +89,7 @@ const AppContent: React.FC = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>
-    </Layout>
+    </LayoutModerno>
   );
 };
 

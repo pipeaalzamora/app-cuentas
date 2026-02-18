@@ -17,15 +17,15 @@
 }
 
 .alternador-tema:hover {
-  border-color: var(--color-primario);
+  border-color: #ffffff;
   box-shadow: var(--sombra-md);
   transform: translateY(-1px);
 }
 
 .alternador-tema:focus {
   outline: none;
-  border-color: var(--color-primario);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
 }
 
 .alternador-tema__contenedor {
@@ -57,7 +57,7 @@
   left: 2px;
   width: 26px;
   height: 26px;
-  background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+  background: linear-gradient(135deg, #ffffff, #a3a3a3);
   border-radius: var(--radio-full);
   transition: all var(--transicion-normal);
   box-shadow: var(--sombra-sm);
@@ -76,7 +76,7 @@
 }
 
 .tema-oscuro .alternador-tema:hover {
-  border-color: var(--color-primario);
+  border-color: #ffffff;
 }
 
 /* Animaciones */
