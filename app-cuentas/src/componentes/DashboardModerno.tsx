@@ -5,7 +5,7 @@ import { TarjetaModerna } from './base/TarjetaModerna';
 import { BotonModerno } from './base/BotonModerno';
 import { GraficoEvolucionMensual, GraficoDistribucionServicios } from './graficos';
 import { formatearPesosChilenos } from '../utilidades/formatoChileno';
-import { obtenerEstadisticasEstados, filtrarPorEstado, ordenarPorPrioridad } from '../utilidades/estadosCuentas';
+import { obtenerEstadisticasEstados } from '../utilidades/estadosCuentas';
 import type { TipoServicio } from '../tipos';
 import './DashboardModerno.css';
 
@@ -41,12 +41,6 @@ export const DashboardModerno: React.FC<DashboardModernoProps> = ({ onNavegar })
     return obtenerEstadisticasEstados(cuentas);
   }, [cuentas]);
 
-  const cuentasPrioritarias = useMemo(() => {
-    const enMora = filtrarPorEstado(cuentas, 'mora');
-    const vencidas = filtrarPorEstado(cuentas, 'vencida');
-    const proximas = filtrarPorEstado(cuentas, 'proximas');
-    return ordenarPorPrioridad([...enMora, ...vencidas, ...proximas]).slice(0, 5);
-  }, [cuentas]);
 
   const rankingServicios = useMemo(() => {
     const cuentasMesActual = servicioCalculosEstadisticas.filtrarPorPeriodo(

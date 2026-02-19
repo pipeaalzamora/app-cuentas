@@ -5,5 +5,4 @@ export { default as Dashboard } from './Dashboard';
 export { default as Cuentas } from './Cuentas';
 export { default as Estadisticas } from './Estadisticas';
 export { default as Reportes } from './Reportes';
-export { default as Gastos } from './Gastos';
 export { default as NotFound } from './NotFound';

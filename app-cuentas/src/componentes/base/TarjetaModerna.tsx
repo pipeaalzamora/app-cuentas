@@ -11,7 +11,29 @@ interface TarjetaModernaProps {
   onClick?: () => void;
 }
 
-export const TarjetaModerna: React.FC<TarjetaModernaProps> = ({
+interface TarjetaModernaHeaderProps {
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  className?: string;
+}
+
+interface TarjetaModernaBodyProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface TarjetaModernaFooterProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface TarjetaModernaComposed extends React.FC<TarjetaModernaProps> {
+  Header: React.FC<TarjetaModernaHeaderProps>;
+  Body: React.FC<TarjetaModernaBodyProps>;
+  Footer: React.FC<TarjetaModernaFooterProps>;
+}
+
+export const TarjetaModerna = (({
   children,
   variant = 'elevated',
   gradient,
@@ -35,13 +57,7 @@ export const TarjetaModerna: React.FC<TarjetaModernaProps> = ({
       {children}
     </div>
   );
-};
-
-interface TarjetaModernaHeaderProps {
-  children: React.ReactNode;
-  icon?: React.ReactNode;
-  className?: string;
-}
+}) as TarjetaModernaComposed;
 
 export const TarjetaModernaHeader: React.FC<TarjetaModernaHeaderProps> = ({
   children,
@@ -54,11 +70,6 @@ export const TarjetaModernaHeader: React.FC<TarjetaModernaHeaderProps> = ({
   </div>
 );
 
-interface TarjetaModernaBodyProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
 export const TarjetaModernaBody: React.FC<TarjetaModernaBodyProps> = ({
   children,
   className = ''
@@ -67,11 +78,6 @@ export const TarjetaModernaBody: React.FC<TarjetaModernaBodyProps> = ({
     {children}
   </div>
 );
-
-interface TarjetaModernaFooterProps {
-  children: React.ReactNode;
-  className?: string;
-}
 
 export const TarjetaModernaFooter: React.FC<TarjetaModernaFooterProps> = ({
   children,
@@ -82,7 +88,6 @@ export const TarjetaModernaFooter: React.FC<TarjetaModernaFooterProps> = ({
   </div>
 );
 
-// Composición de subcomponentes
 TarjetaModerna.Header = TarjetaModernaHeader;
 TarjetaModerna.Body = TarjetaModernaBody;
 TarjetaModerna.Footer = TarjetaModernaFooter;
