@@ -358,62 +358,84 @@ interface RankingServicio {
   promedioMonto: number;
 }
 
+const SVG_SERVICIO: Record<string, React.ReactNode> = {
+  luz: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.74V17h8v-2.26A7 7 0 0012 2z"/>
+    </svg>
+  ),
+  agua: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2C6 9 4 13 4 16a8 8 0 0016 0c0-3-2-7-8-14z"/>
+    </svg>
+  ),
+  gas: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2c0 6-6 8-6 14a6 6 0 0012 0c0-6-6-8-6-14z"/>
+      <path d="M12 12c0 3-2 4-2 6a2 2 0 004 0c0-2-2-3-2-6z"/>
+    </svg>
+  ),
+  internet: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/>
+    </svg>
+  ),
+};
+
 // Componente memoizado para ranking de servicios
 const RankingServicios = memo<{
   ranking: RankingServicio[];
   formatearMoneda: (monto: number) => string;
 }>(({ ranking, formatearMoneda }) => {
-  const getIconoServicio = (servicio: TipoServicio): string => {
-    const iconos: Record<TipoServicio, string> = {
-      luz: '💡',
-      agua: '💧',
-      gas: '🔥',
-      internet: '🌐'
-    };
-    return iconos[servicio] || '📋';
-  };
-
-  const getMedalla = (posicion: number): string => {
-    if (posicion === 1) return '🥇';
-    if (posicion === 2) return '🥈';
-    if (posicion === 3) return '🥉';
-    return posicion.toString();
+  const getPosicionClass = (index: number) => {
+    if (index === 0) return 'ranking-posicion ranking-posicion--1';
+    if (index === 1) return 'ranking-posicion ranking-posicion--2';
+    if (index === 2) return 'ranking-posicion ranking-posicion--3';
+    return 'ranking-posicion ranking-posicion--default';
   };
 
   return (
     <Tarjeta className="ranking-servicios">
       <div className="ranking-header">
-        <h3>🏆 Ranking de Servicios</h3>
+        <span className="ranking-header-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M8 21h8M12 17v4M17 3H7l-2 7h12l-2-7z"/>
+            <path d="M5 10c0 3.87 3.13 7 7 7s7-3.13 7-7"/>
+          </svg>
+        </span>
+        <h3>Ranking de Servicios</h3>
         <span className="ranking-subtitle">Por gasto total</span>
       </div>
       <div className="ranking-lista">
         {ranking.map((item, index) => (
           <div key={item.servicio} className="ranking-item">
-            <div className="ranking-posicion">
-              {index < 3 ? getMedalla(index + 1) : index + 1}
+            <div className={getPosicionClass(index)}>
+              {index + 1}
             </div>
-            <div className="ranking-icono">
-              {getIconoServicio(item.servicio)}
+            <div className="ranking-icono" style={{ color: getColorServicio(item.servicio) }}>
+              {SVG_SERVICIO[item.servicio] ?? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <circle cx="12" cy="12" r="9"/>
+                </svg>
+              )}
             </div>
             <div className="ranking-info">
               <div className="ranking-servicio">
                 {item.servicio.charAt(0).toUpperCase() + item.servicio.slice(1)}
               </div>
               <div className="ranking-detalles">
-                {formatearMoneda(item.total)} 
+                {formatearMoneda(item.total)}
                 <span className="ranking-porcentaje">({item.porcentaje.toFixed(1)}%)</span>
               </div>
               <div className="ranking-cuentas">
-                {item.cantidadCuentas} cuentas • Promedio: {formatearMoneda(item.promedioMonto)}
+                {item.cantidadCuentas} cuentas · Promedio: {formatearMoneda(item.promedioMonto)}
               </div>
             </div>
             <div className="ranking-barra">
-              <div 
+              <div
                 className="ranking-progreso"
-                style={{ 
-                  width: `${item.porcentaje}%`,
-                  backgroundColor: getColorServicio(item.servicio)
-                }}
+                style={{ width: `${item.porcentaje}%`, background: getColorServicio(item.servicio) }}
               />
             </div>
           </div>
@@ -428,12 +450,12 @@ RankingServicios.displayName = 'RankingServicios';
 // Función auxiliar para obtener color del servicio
 const getColorServicio = (servicio: TipoServicio): string => {
   const colores: Record<TipoServicio, string> = {
-    luz: '#f59e0b',
-    agua: '#3b82f6',
-    gas: '#ef4444',
-    internet: '#10b981'
+    luz: '#FFD700',
+    agua: '#38BDF8',
+    gas: '#FF3B3B',
+    internet: '#00FF88'
   };
-  return colores[servicio];
+  return colores[servicio] ?? '#00FF88';
 };
 
 export default memo(PanelEstadisticas);

@@ -217,7 +217,8 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
   const agregarCuenta = async (datosCuenta: Omit<CuentaServicio, 'id' | 'fechaCreacion' | 'fechaActualizacion'>): Promise<CuentaServicio> => {
     try {
       const nuevaCuenta = await servicioAlmacenamiento.guardarCuenta(datosCuenta);
-      dispatch({ tipo: 'AGREGAR_CUENTA', payload: nuevaCuenta });
+      // Recargar todas las cuentas para garantizar datos normalizados
+      await cargarCuentas();
       return nuevaCuenta;
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'Error al agregar la cuenta';
@@ -230,7 +231,8 @@ export const CuentasProvider: React.FC<CuentasProviderProps> = ({ children }) =>
   const actualizarCuenta = async (id: string, datosActualizados: Partial<Omit<CuentaServicio, 'id' | 'fechaCreacion'>>): Promise<CuentaServicio> => {
     try {
       const cuentaActualizada = await servicioAlmacenamiento.actualizarCuenta(id, datosActualizados);
-      dispatch({ tipo: 'ACTUALIZAR_CUENTA', payload: { id, cuenta: cuentaActualizada } });
+      // Recargar todas las cuentas para garantizar datos normalizados
+      await cargarCuentas();
       return cuentaActualizada;
     } catch (error) {
       const mensaje = error instanceof Error ? error.message : 'Error al actualizar la cuenta';

@@ -46,36 +46,11 @@ export const LayoutModerno: React.FC<LayoutModernoProps> = ({
   };
 
   const itemsNavegacion: NavegacionItem[] = [
-    {
-      id: 'dashboard',
-      label: 'Dashboard',
-      icono: '🏠',
-      activo: seccionActual === 'dashboard'
-    },
-    {
-      id: 'cuentas',
-      label: 'Cuentas',
-      icono: '📝',
-      activo: seccionActual === 'cuentas'
-    },
-    {
-      id: 'desglosador',
-      label: 'Mi Sueldo',
-      icono: '💵',
-      activo: seccionActual === 'desglosador'
-    },
-    {
-      id: 'estadisticas',
-      label: 'Estadísticas',
-      icono: '📊',
-      activo: seccionActual === 'estadisticas'
-    },
-    {
-      id: 'reportes',
-      label: 'Reportes',
-      icono: '📄',
-      activo: seccionActual === 'reportes'
-    }
+    { id: 'dashboard',    label: 'Dashboard',    icono: '', activo: seccionActual === 'dashboard' },
+    { id: 'cuentas',      label: 'Cuentas',      icono: '', activo: seccionActual === 'cuentas' },
+    { id: 'desglosador',  label: 'Mi Sueldo',    icono: '', activo: seccionActual === 'desglosador' },
+    { id: 'estadisticas', label: 'Estadísticas', icono: '', activo: seccionActual === 'estadisticas' },
+    { id: 'reportes',     label: 'Reportes',     icono: '', activo: seccionActual === 'reportes' },
   ];
 
   const manejarToggleSidebar = () => {

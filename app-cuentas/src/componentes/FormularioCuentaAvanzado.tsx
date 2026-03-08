@@ -78,13 +78,18 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
     proximaFechaLectura.setMonth(fechaActual.getMonth() + 1);
 
     if (cuentaInicial) {
+      const toDate = (val: Date | string | undefined | null): Date => {
+        if (!val) return new Date();
+        const d = val instanceof Date ? val : new Date(val);
+        return isNaN(d.getTime()) ? new Date() : d;
+      };
       return {
         servicio: cuentaInicial.servicio,
         monto: cuentaInicial.monto,
-        fechaVencimiento: cuentaInicial.fechaVencimiento,
-        fechaEmision: cuentaInicial.fechaEmision || fechaEmision,
-        fechaCorte: cuentaInicial.fechaCorte || fechaCorte,
-        proximaFechaLectura: cuentaInicial.proximaFechaLectura || proximaFechaLectura,
+        fechaVencimiento: toDate(cuentaInicial.fechaVencimiento),
+        fechaEmision: toDate(cuentaInicial.fechaEmision) || fechaEmision,
+        fechaCorte: toDate(cuentaInicial.fechaCorte) || fechaCorte,
+        proximaFechaLectura: toDate(cuentaInicial.proximaFechaLectura) || proximaFechaLectura,
         mes: cuentaInicial.mes,
         pagada: cuentaInicial.pagada
       };
@@ -247,7 +252,11 @@ const FormularioCuentaAvanzado: React.FC<Props> = ({
   };
 
   // Formatear fecha para input date (evita problemas de zona horaria)
-  const formatearFechaParaInput = (fecha: Date): string => {
+  const formatearFechaParaInput = (fecha: Date | undefined | null): string => {
+    if (!fecha || !(fecha instanceof Date) || isNaN(fecha.getTime())) {
+      const hoy = new Date();
+      return `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+    }
     const año = fecha.getFullYear();
     const mes = String(fecha.getMonth() + 1).padStart(2, '0');
     const dia = String(fecha.getDate()).padStart(2, '0');
