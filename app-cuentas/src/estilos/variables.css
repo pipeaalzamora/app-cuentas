@@ -13,7 +13,7 @@
   /* ===== TEXTO ===== */
   --color-texto: #FFFFFF;
   --color-texto-secundario: #A0A0A0;
-  --color-texto-muted: #555555;
+  --color-texto-muted: rgba(248,250,252,0.45);
   --color-texto-invertido: #000000;
 
   /* ===== NEON ACCENTS ===== */

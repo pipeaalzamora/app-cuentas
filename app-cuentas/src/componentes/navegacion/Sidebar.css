@@ -81,7 +81,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #555555;
+  color: rgba(248,250,252,0.45);
   transition: all var(--transition-fast);
   flex-shrink: 0;
   cursor: pointer;
@@ -131,7 +131,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-  color: #555555;
+  color: rgba(248,250,252,0.45);
   text-align: left;
   width: 100%;
   position: relative;
@@ -232,7 +232,7 @@
 
 .sidebar-version {
   font-size: 0.6875rem;
-  color: #2A2A2A;
+  color: rgba(248,250,252,0.25);
   font-family: 'Fira Code', monospace;
   text-align: center;
 }

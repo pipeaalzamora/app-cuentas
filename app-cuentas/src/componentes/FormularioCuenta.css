@@ -66,7 +66,7 @@
 .formulario-cuenta__subtitulo {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #555555;
+  color: rgba(248,250,252,0.45);
   margin: 0 0 0.25rem 0;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -81,7 +81,7 @@
 .formulario-cuenta__etiqueta {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #555555;
+  color: rgba(248,250,252,0.45);
   transition: color 150ms ease;
 }
 

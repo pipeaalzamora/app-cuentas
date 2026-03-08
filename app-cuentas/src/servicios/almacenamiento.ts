@@ -378,12 +378,7 @@ export class ServicioAlmacenamiento {
     }
   }
 
-  /**
-   * Genera un ID único para una nueva cuenta
-   */
-  private generarId(): string {
-    return `cuenta_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-  }
+
 }
 
 // Instancia singleton del servicio

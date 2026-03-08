@@ -32,7 +32,7 @@
 .lista-cuentas__filtro label {
   font-size: 0.6875rem;
   font-weight: 500;
-  color: #555555;
+  color: rgba(248,250,252,0.45);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -68,7 +68,7 @@
 
 .lista-cuentas__contador {
   font-size: 0.8125rem;
-  color: #555555;
+  color: rgba(248,250,252,0.45);
   font-family: 'Fira Code', monospace;
 }
 
@@ -98,7 +98,7 @@
   text-align: left;
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #3A3A3A;
+  color: rgba(248,250,252,0.45);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -139,7 +139,7 @@
   font: inherit;
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #3A3A3A;
+  color: rgba(248,250,252,0.45);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   cursor: pointer;
@@ -235,7 +235,7 @@
 }
 
 .lista-cuentas__fecha-creacion {
-  color: #3A3A3A;
+  color: rgba(248,250,252,0.45);
   font-size: 0.8125rem;
   font-family: 'Fira Code', monospace;
 }
@@ -250,7 +250,7 @@
 .lista-cuentas__vacia {
   text-align: center;
   padding: 3rem;
-  color: #3A3A3A;
+  color: rgba(248,250,252,0.45);
 }
 
 .lista-cuentas__vacia p { margin: 0; font-size: 0.9375rem; }
